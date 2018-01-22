@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "normal": {
+      "model": "reengineeredtoolbox:socket"
+    },
+    "inventory": {
+      "model": "reengineeredtoolbox:socket"
+    }
+  }
+}
