@@ -1,0 +1,22 @@
+[
+  {
+    "modid": "reengineeredtoolbox",
+    "name": "Reengineered Toolbox",
+    "description": "A reimagining of Engineer's Toolbox",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "SkySom",
+      "warlordjones",
+      "snurly"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": [
+      "base"
+    ]
+  }
+]

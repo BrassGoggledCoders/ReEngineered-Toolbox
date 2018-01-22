@@ -1,0 +1,94 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "https://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+    }
+}
+
+apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: "maven"
+
+version = "${minecraft_version}-" + getVersion()
+group = "${mod_group}"
+archivesBaseName = "${mod_name}"
+
+minecraft {
+    version = "${minecraft_version}-${forge_version}"
+
+    mappings = "${mappings_version}"
+    runDir = "run/"
+    useDepAts = true
+
+    replace "@VERSION@", project.version
+    replaceIn "${mod_name}.java"
+
+    replace "base@[0.0.0,);", "base@[" + base_version +  ",);"
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven {
+        name "BASE"
+        url "http://maven.blamejared.com"
+    }
+}
+
+dependencies {
+    deobfCompile "com.teamacronymcoders.base:base:${minecraft_version}-${base_version}-SNAPSHOT.+"
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include "mcmod.info"
+
+        expand "version": project.version, "mcversion": project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "mcmod.info"
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://" + (System.getenv("local_maven") != null ? System.getenv("local_maven") : System.getenv("bamboo_local_maven")))
+        }
+    }
+}
+
+String getVersion() {
+    String version = "${mod_version}"
+    String branch = project.hasProperty("branch") ? project.branch : ""
+
+    if(branch != "") {
+        version += "-" + branch
+
+        String buildNumber = getBuildNumber()
+        if(buildNumber != "") {
+            version += "." + buildNumber
+        }
+    }
+
+    return version
+}
+
+static String getBuildNumber() {
+    String buildNumber = System.getenv("BUILD_NUMBER") != null ? System.getenv("BUILD_NUMBER") : ""
+    if(buildNumber == "") {
+        buildNumber = System.getenv("bamboo_buildNumber") != null ? "." + System.getenv("bamboo_buildNumber") : ""
+    }
+    return buildNumber
+}
