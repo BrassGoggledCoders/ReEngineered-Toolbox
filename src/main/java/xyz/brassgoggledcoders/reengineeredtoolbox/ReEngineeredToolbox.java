@@ -1,20 +1,23 @@
-package com.brassgoggledcoders.reengineeredtoolbox;
+package xyz.brassgoggledcoders.reengineeredtoolbox;
 
-import com.brassgoggledcoders.reengineeredtoolbox.block.BlockSocket;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.ToolboxRegistries;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
+import xyz.brassgoggledcoders.reengineeredtoolbox.block.BlockSocket;
+import xyz.brassgoggledcoders.reengineeredtoolbox.proxy.IProxy;
 import com.teamacronymcoders.base.BaseModFoundation;
 import com.teamacronymcoders.base.registrysystem.BlockRegistry;
-import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.registries.RegistryBuilder;
 
 @Mod(
         modid = ReEngineeredToolbox.MOD_ID,
@@ -30,6 +33,10 @@ public class ReEngineeredToolbox extends BaseModFoundation<ReEngineeredToolbox> 
     @Instance(MOD_ID)
     public static ReEngineeredToolbox INSTANCE;
 
+    @SidedProxy(clientSide = "xyz.brassgoggledcoders.reengineeredtoolbox.proxy.ClientProxy",
+            serverSide = "xyz.brassgoggledcoders.reengineeredtoolbox.proxy.ServerProxy")
+    public static IProxy PROXY;
+
     public ReEngineeredToolbox() {
         super(MOD_ID, MOD_NAME, VERSION, CreativeTabs.MISC);
     }
@@ -38,6 +45,7 @@ public class ReEngineeredToolbox extends BaseModFoundation<ReEngineeredToolbox> 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
+        PROXY.initModelLoader();
     }
 
     @Override
@@ -60,5 +68,14 @@ public class ReEngineeredToolbox extends BaseModFoundation<ReEngineeredToolbox> 
     @Override
     public ReEngineeredToolbox getInstance() {
         return INSTANCE;
+    }
+
+    @SubscribeEvent
+    public static void buildFaceRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
+        ToolboxRegistries.FACES = new RegistryBuilder<Face>()
+                .setName(new ResourceLocation(MOD_ID, "faces"))
+                .setType(Face.class)
+                .setDefaultKey(new ResourceLocation(MOD_ID, "blank"))
+                .create();
     }
 }

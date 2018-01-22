@@ -1,7 +1,6 @@
-package com.brassgoggledcoders.reengineeredtoolbox.block;
+package xyz.brassgoggledcoders.reengineeredtoolbox.block;
 
-import com.brassgoggledcoders.reengineeredtoolbox.tileentity.TileEntitySocket;
-import com.teamacronymcoders.base.blocks.BlockBase;
+import xyz.brassgoggledcoders.reengineeredtoolbox.tileentity.TileEntitySocket;
 import com.teamacronymcoders.base.blocks.BlockTEBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
