@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
         maven {
             name = "forge"
             url = "https://files.minecraftforge.net/maven"
@@ -8,10 +8,12 @@ buildscript {
     }
     dependencies {
         classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.3'
     }
 }
 
 apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: 'org.junit.platform.gradle.plugin'
 apply plugin: "maven"
 
 version = "${minecraft_version}-" + getVersion()
@@ -44,6 +46,9 @@ repositories {
 
 dependencies {
     deobfCompile "com.teamacronymcoders.base:base:${minecraft_version}-${base_version}-SNAPSHOT.+"
+
+    testCompile("org.junit.jupiter:junit-jupiter-api:${junit_version}")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:${junit_version}")
 }
 
 processResources {

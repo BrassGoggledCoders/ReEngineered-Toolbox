@@ -1,8 +1,10 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox;
 
+import com.teamacronymcoders.base.registrysystem.ItemRegistry;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ToolboxRegistries;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.block.BlockSocket;
+import xyz.brassgoggledcoders.reengineeredtoolbox.item.ItemFace;
 import xyz.brassgoggledcoders.reengineeredtoolbox.proxy.IProxy;
 import com.teamacronymcoders.base.BaseModFoundation;
 import com.teamacronymcoders.base.registrysystem.BlockRegistry;
@@ -51,6 +53,11 @@ public class ReEngineeredToolbox extends BaseModFoundation<ReEngineeredToolbox> 
     @Override
     public void registerBlocks(BlockRegistry registry) {
         registry.register(new BlockSocket());
+    }
+
+    @Override
+    public void registerItems(ItemRegistry registry) {
+        registry.register(new ItemFace());
     }
 
     @Override
