@@ -15,6 +15,10 @@ public class Face extends IForgeRegistryEntry.Impl<Face> {
         return null;
     }
 
+    public boolean isReplaceable() {
+        return true;
+    }
+
     public List<ResourceLocation> getTextureLocations() {
         List<ResourceLocation> textureLocations = Lists.newArrayList();
 

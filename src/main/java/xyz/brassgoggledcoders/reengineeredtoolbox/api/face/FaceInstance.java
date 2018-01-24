@@ -1,13 +1,14 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.face;
 
-public class FaceInstance {
-    private final Face face;
+import net.minecraft.nbt.NBTTagCompound;
 
-    public FaceInstance(Face face) {
-        this.face = face;
+public class FaceInstance {
+
+    public NBTTagCompound serializeNBT() {
+        return new NBTTagCompound();
     }
 
-    public Face getFace() {
-        return face;
+    public void deserializeNBT(NBTTagCompound nbtTagCompound) {
+
     }
 }
