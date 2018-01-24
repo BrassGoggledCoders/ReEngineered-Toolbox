@@ -26,7 +26,11 @@ public class SocketBakedModel implements IBakedModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
-        return socketBaseBakedModel.getQuads(state, side, rand);
+        List<BakedQuad> bakedQuads = socketBaseBakedModel.getQuads(state, side, rand);
+        if (side != null) {
+            
+        }
+        return bakedQuads;
     }
 
     @Override

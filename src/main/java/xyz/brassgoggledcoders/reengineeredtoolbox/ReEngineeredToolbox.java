@@ -76,13 +76,4 @@ public class ReEngineeredToolbox extends BaseModFoundation<ReEngineeredToolbox> 
     public ReEngineeredToolbox getInstance() {
         return INSTANCE;
     }
-
-    @SubscribeEvent
-    public static void buildFaceRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
-        ToolboxRegistries.FACES = new RegistryBuilder<Face>()
-                .setName(new ResourceLocation(MOD_ID, "faces"))
-                .setType(Face.class)
-                .setDefaultKey(new ResourceLocation(MOD_ID, "blank"))
-                .create();
-    }
 }
