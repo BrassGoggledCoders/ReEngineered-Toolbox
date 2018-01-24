@@ -1,9 +1,8 @@
 ﻿{
   "parent": "block/block",
   "textures": {
-    "0": "reengineeredtoolbox:blocks/socket_block_frame",
-    "1": "reengineeredtoolbox:blocks/socket_block_internal",
-    "particle": "reengineeredtoolbox:blocks/socket_block_frame"
+    "0": "reengineeredtoolbox:blocks/frame",
+    "particle": "reengineeredtoolbox:blocks/frame"
   },
   "elements": [
     {
@@ -842,76 +841,6 @@
             2
           ],
           "texture": "#0"
-        }
-      },
-      "type": "cube"
-    },
-    {
-      "name": "internal",
-      "from": [
-        2,
-        2,
-        2
-      ],
-      "to": [
-        14,
-        14,
-        14
-      ],
-      "faces": {
-        "north": {
-          "uv": [
-            2,
-            2,
-            14,
-            14
-          ],
-          "texture": "#1"
-        },
-        "east": {
-          "uv": [
-            2,
-            2,
-            14,
-            14
-          ],
-          "texture": "#1"
-        },
-        "south": {
-          "uv": [
-            2,
-            2,
-            14,
-            14
-          ],
-          "texture": "#1"
-        },
-        "west": {
-          "uv": [
-            2,
-            2,
-            14,
-            14
-          ],
-          "texture": "#1"
-        },
-        "up": {
-          "uv": [
-            2,
-            2,
-            14,
-            14
-          ],
-          "texture": "#1"
-        },
-        "down": {
-          "uv": [
-            2,
-            2,
-            14,
-            14
-          ],
-          "texture": "#1"
         }
       },
       "type": "cube"
