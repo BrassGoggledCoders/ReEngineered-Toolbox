@@ -10,4 +10,6 @@ public interface ISidedFaceHolder extends INBTSerializable<NBTTagCompound> {
     Face getFace(EnumFacing facing);
 
     FaceInstance getFaceInstance(EnumFacing facing);
+
+    Face[] getFaces();
 }

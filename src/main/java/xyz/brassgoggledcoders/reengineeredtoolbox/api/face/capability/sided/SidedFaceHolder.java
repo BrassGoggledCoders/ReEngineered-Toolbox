@@ -21,6 +21,7 @@ public class SidedFaceHolder implements ISidedFaceHolder {
 
     public SidedFaceHolder() {
         this.faces = new Face[6];
+        this.faceInstances = new FaceInstance[6];
         Arrays.fill(faces, emptyFace);
     }
 
@@ -33,6 +34,11 @@ public class SidedFaceHolder implements ISidedFaceHolder {
     @Nullable
     public FaceInstance getFaceInstance(EnumFacing facing) {
         return faceInstances[facing.ordinal()];
+    }
+
+    @Override
+    public Face[] getFaces() {
+        return faces;
     }
 
     @Override

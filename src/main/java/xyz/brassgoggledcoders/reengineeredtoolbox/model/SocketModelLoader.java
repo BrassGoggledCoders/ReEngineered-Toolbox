@@ -24,7 +24,7 @@ public class SocketModelLoader implements ICustomModelLoader {
     @Override
     public IModel loadModel(ResourceLocation modelLocation) throws Exception {
         if (socketBaseModel == null) {
-            socketBaseModel = ModelLoaderRegistry.getModel(new ResourceLocation(MOD_ID, "block/socket_base"));
+            socketBaseModel = ModelLoaderRegistry.getModel(new ResourceLocation(MOD_ID, "block/socket_frame"));
         }
         return new SocketModel(socketBaseModel);
     }

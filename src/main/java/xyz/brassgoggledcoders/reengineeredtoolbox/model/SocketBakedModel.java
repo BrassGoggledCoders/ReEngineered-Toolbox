@@ -8,6 +8,8 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
@@ -18,54 +20,63 @@ import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class SocketBakedModel implements IBakedModel {
-    private final IBakedModel socketBaseBakedModel;
+    private final IBakedModel socketframeBakedModel;
 
-    public SocketBakedModel(IBakedModel socketBaseBakedModel) {
-        this.socketBaseBakedModel = socketBaseBakedModel;
+    public SocketBakedModel(IBakedModel socketframeBakedModel) {
+        this.socketframeBakedModel = socketframeBakedModel;
     }
 
     @Override
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
-        List<BakedQuad> bakedQuads = socketBaseBakedModel.getQuads(state, side, rand);
+        List<BakedQuad> bakedQuads = socketframeBakedModel.getQuads(state, side, rand);
+
         if (side != null) {
-            
+            handleSide(bakedQuads, side, state);
+        } else {
+            for (EnumFacing facing : EnumFacing.values()) {
+                handleSide(bakedQuads, facing, state);
+            }
         }
         return bakedQuads;
     }
 
+    private void handleSide(List<BakedQuad> bakedQuads, EnumFacing side, @Nullable IBlockState state) {
+        
+    }
+
     @Override
     public boolean isAmbientOcclusion() {
-        return socketBaseBakedModel.isAmbientOcclusion();
+        return socketframeBakedModel.isAmbientOcclusion();
     }
 
     @Override
     public boolean isGui3d() {
-        return socketBaseBakedModel.isGui3d();
+        return socketframeBakedModel.isGui3d();
     }
 
     @Override
     public boolean isBuiltInRenderer() {
-        return socketBaseBakedModel.isBuiltInRenderer();
+        return socketframeBakedModel.isBuiltInRenderer();
     }
 
     @Override
     public TextureAtlasSprite getParticleTexture() {
-        return socketBaseBakedModel.getParticleTexture();
+        return socketframeBakedModel.getParticleTexture();
     }
 
     @Override
     public ItemOverrideList getOverrides() {
-        return socketBaseBakedModel.getOverrides();
+        return socketframeBakedModel.getOverrides();
     }
 
     @Override
     @SuppressWarnings("deprecation")
     public ItemCameraTransforms getItemCameraTransforms() {
-        return socketBaseBakedModel.getItemCameraTransforms();
+        return socketframeBakedModel.getItemCameraTransforms();
     }
 
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType) {
-        return socketBaseBakedModel.handlePerspective(cameraTransformType);
+        return socketframeBakedModel.handlePerspective(cameraTransformType);
     }
 }
