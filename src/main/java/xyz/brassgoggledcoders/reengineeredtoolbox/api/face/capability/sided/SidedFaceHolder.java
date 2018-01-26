@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public class SidedFaceHolder implements ISidedFaceHolder {
-    @ObjectHolder("reengineered-toolbox:empty")
+    @ObjectHolder("reengineeredtoolbox:empty")
     private static Face emptyFace;
 
     private Face[] faces;

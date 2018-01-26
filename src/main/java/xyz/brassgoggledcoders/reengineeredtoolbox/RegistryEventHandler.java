@@ -47,6 +47,7 @@ public class RegistryEventHandler {
                 .create();
     }
 
+    @SubscribeEvent
     public static void registerFaces(RegistryEvent.Register<Face> faceRegister) {
         IForgeRegistry<Face> faceRegistry = faceRegister.getRegistry();
 
