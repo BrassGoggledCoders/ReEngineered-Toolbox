@@ -13,18 +13,18 @@ import java.util.function.Function;
 
 @SideOnly(Side.CLIENT)
 public class SocketModel implements IModel {
-    private final IModel socketBaseModel;
-    private IBakedModel socketBaseBakedModel = null;
+    private final IModel socketModel;
+    private IBakedModel socketFrameBakedModel = null;
 
-    public SocketModel(IModel socketBaseModel) {
-        this.socketBaseModel = socketBaseModel;
+    public SocketModel(IModel socketModel) {
+        this.socketModel = socketModel;
     }
 
     @Override
     public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
-        if (socketBaseBakedModel == null) {
-            socketBaseBakedModel = socketBaseModel.bake(state, format, bakedTextureGetter);
+        if (socketFrameBakedModel == null) {
+            socketFrameBakedModel = socketModel.bake(state, format, bakedTextureGetter);
         }
-        return new SocketBakedModel(socketBaseBakedModel);
+        return new SocketBakedModel(socketFrameBakedModel, bakedTextureGetter);
     }
 }
