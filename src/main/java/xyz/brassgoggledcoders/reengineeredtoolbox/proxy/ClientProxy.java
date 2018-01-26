@@ -9,6 +9,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ClientProxy implements IProxy {
     @Override
     public void initModelLoader() {
-        ModelLoaderRegistry.registerLoader(new SocketModelLoader());
+        //ModelLoaderRegistry.registerLoader(new SocketModelLoader());
     }
 }
