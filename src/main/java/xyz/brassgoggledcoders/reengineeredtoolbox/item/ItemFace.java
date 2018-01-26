@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ToolboxRegistries;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.FaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.FaceHolderProvider;
 
@@ -42,5 +43,13 @@ public class ItemFace extends ItemBase {
                 .map(FaceHolder::new)
                 .map(FaceHolderProvider::new)
                 .orElseGet(() -> new FaceHolderProvider(null));
+    }
+
+    @Override
+    public List<ResourceLocation> getResourceLocations(List<ResourceLocation> resourceLocations) {
+        resourceLocations.addAll(ToolboxRegistries.FACES.getValues().parallelStream()
+                .map(Face::getTextureLocation)
+                .collect(Collectors.toList()));
+        return resourceLocations;
     }
 }

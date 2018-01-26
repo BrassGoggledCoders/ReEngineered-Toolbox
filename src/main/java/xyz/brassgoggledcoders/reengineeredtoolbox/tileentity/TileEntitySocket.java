@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.CapabilitySidedFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.ISidedFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.SidedFaceHolder;
@@ -16,6 +17,10 @@ import javax.annotation.Nullable;
 public class TileEntitySocket extends TileEntityBase {
     private ISidedFaceHolder sidedFaceHolder = new SidedFaceHolder();
 
+    public Face getFace(EnumFacing side) {
+        return sidedFaceHolder.getFace(side);
+    }
+
     @Override
     protected void readFromDisk(NBTTagCompound data) {
         sidedFaceHolder.deserializeNBT(data.getCompoundTag("faces"));
@@ -25,10 +30,6 @@ public class TileEntitySocket extends TileEntityBase {
     protected NBTTagCompound writeToDisk(NBTTagCompound data) {
         data.setTag("faces", sidedFaceHolder.serializeNBT());
         return data;
-    }
-
-    public IExtendedBlockState setExtendedState(IExtendedBlockState blockState) {
-        return blockState.withProperty(BlockSocket.SIDED_FACE_PROPERTY, sidedFaceHolder.getFaces());
     }
 
     public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {

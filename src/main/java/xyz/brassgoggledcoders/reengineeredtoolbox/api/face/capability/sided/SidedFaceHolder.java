@@ -47,7 +47,7 @@ public class SidedFaceHolder implements ISidedFaceHolder {
         for (int i = 0; i < faces.length; i++) {
             NBTTagCompound thisFace = new NBTTagCompound();
             thisFace.setString("face", TextUtils.getRegistryLocation(faces[i]));
-            thisFace.setTag("faceInstance", faceInstances[i].serializeNBT());
+            //thisFace.setTag("faceInstance", faceInstances[i].serializeNBT());
             nbtTagCompound.setTag(Integer.toString(i), thisFace);
         }
         return nbtTagCompound;
@@ -58,9 +58,9 @@ public class SidedFaceHolder implements ISidedFaceHolder {
         for (int i = 0; i < faces.length; i++) {
             NBTTagCompound thisFace = nbt.getCompoundTag(Integer.toString(i));
             faces[i] = ToolboxRegistries.FACES.getValue(new ResourceLocation(thisFace.getString("face")));
-            FaceInstance faceInstance = new FaceInstance();
-            faceInstance.deserializeNBT(thisFace.getCompoundTag("faceInstance"));
-            faceInstances[i] = faceInstance;
+            //FaceInstance faceInstance = new FaceInstance();
+            //faceInstance.deserializeNBT(thisFace.getCompoundTag("faceInstance"));
+            //faceInstances[i] = faceInstance;
         }
     }
 }

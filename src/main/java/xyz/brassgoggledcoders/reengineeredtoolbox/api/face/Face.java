@@ -13,7 +13,7 @@ public class Face extends IForgeRegistryEntry.Impl<Face> {
         return false;
     }
 
-    public ResourceLocation getTextureLocations() {
+    public ResourceLocation getTextureLocation() {
         ResourceLocation textureLocation;
 
         if (this.getRegistryName() != null) {
