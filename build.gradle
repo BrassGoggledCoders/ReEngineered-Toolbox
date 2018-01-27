@@ -42,13 +42,18 @@ repositories {
         name "BASE"
         url "http://maven.blamejared.com"
     }
+    maven {
+        name "bbm"
+        url "http://api.dmodoomsirius.me/"
+    }
 }
 
 dependencies {
     deobfCompile "com.teamacronymcoders.base:base:${minecraft_version}-${base_version}-SNAPSHOT.+"
 
-    testCompile("org.junit.jupiter:junit-jupiter-api:${junit_version}")
-    testRuntime("org.junit.jupiter:junit-jupiter-engine:${junit_version}")
+    compile 'junit:junit:4.11'
+    compile "com.builtbroken.codinglib:CodingLib:0.2.8b50"
+    deobfCompile "com.builtbroken.minecraftjunit:MinecraftJUnit:1.12.2-0.+"
 }
 
 processResources {

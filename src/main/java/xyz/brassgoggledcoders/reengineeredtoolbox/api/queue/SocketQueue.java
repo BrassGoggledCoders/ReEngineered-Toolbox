@@ -22,6 +22,10 @@ public abstract class SocketQueue<T> {
         return value;
     }
 
+    protected void push(T value) {
+        this.queuedList.add(value);
+    }
+
     public Optional<T> peek() {
         return Optional.ofNullable(queuedList.isEmpty() ? null : queuedList.get(0));
     }
@@ -54,7 +58,7 @@ public abstract class SocketQueue<T> {
         return this.queuedList;
     }
 
-    protected abstract T simulateOffer(T value);
+    public abstract T simulateOffer(T value);
 
     protected abstract T addToBack(T value);
 
