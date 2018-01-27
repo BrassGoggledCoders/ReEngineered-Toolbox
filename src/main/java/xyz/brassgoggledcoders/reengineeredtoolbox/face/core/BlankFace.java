@@ -6,6 +6,7 @@ import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.MOD
 
 public class BlankFace extends Face {
     public BlankFace() {
+        super("face." + MOD_ID + ".blank.name");
         this.setRegistryName(MOD_ID, "blank");
     }
 }

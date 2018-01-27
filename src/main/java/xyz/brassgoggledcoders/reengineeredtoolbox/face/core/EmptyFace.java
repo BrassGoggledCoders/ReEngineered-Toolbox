@@ -6,11 +6,17 @@ import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.MOD
 
 public class EmptyFace extends Face {
     public EmptyFace() {
+        super("face." + MOD_ID + ".empty.name");
         this.setRegistryName(MOD_ID, "empty");
     }
 
     @Override
     public boolean isReplaceable() {
         return true;
+    }
+
+    @Override
+    public float getTextureOffset() {
+        return 0f;
     }
 }

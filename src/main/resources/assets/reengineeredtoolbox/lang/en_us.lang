@@ -1,0 +1,6 @@
+tile.reengineeredtoolbox.socket.name=Socket Block
+
+//Core Faces
+face.reengineeredtoolbox.empty.name=Empty Face
+face.reengineeredtoolbox.blank.name=Blank Face
+face.reengineeredtoolbox.unknown.name=Unknown Face
