@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ToolboxRegistries;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.IFaceHolder;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -28,6 +29,11 @@ public class SidedFaceHolder implements ISidedFaceHolder {
     @Override
     public Face getFace(EnumFacing facing) {
         return faces[facing.ordinal()];
+    }
+
+    @Override
+    public void setFace(EnumFacing facing, Face face) {
+        faces[facing.ordinal()] = face;
     }
 
     @Override

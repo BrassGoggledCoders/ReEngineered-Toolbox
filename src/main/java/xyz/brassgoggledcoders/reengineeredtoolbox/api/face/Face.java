@@ -1,29 +1,58 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.face;
 
+import com.teamacronymcoders.base.util.TextureUtils;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class Face extends IForgeRegistryEntry.Impl<Face> {
+    private ResourceLocation textureLocation;
+    private String unlocalizedName;
+
+    @SideOnly(Side.CLIENT)
+    public TextureAtlasSprite sprite;
+
+    public Face(String unlocalizedName) {
+        this.unlocalizedName = unlocalizedName;
+    }
 
     public boolean isReplaceable() {
         return false;
     }
 
     public ResourceLocation getTextureLocation() {
-        ResourceLocation textureLocation;
-
-        if (this.getRegistryName() != null) {
-            textureLocation = new ResourceLocation(this.getRegistryName().getResourceDomain(), "faces/" +
-                    this.getRegistryName().getResourcePath());
-        } else {
-            textureLocation = new ResourceLocation("reengineeredtoolbox", "empty");
+        if (textureLocation == null) {
+            if (this.getRegistryName() != null) {
+                textureLocation = new ResourceLocation(this.getRegistryName().getResourceDomain(), "faces/" +
+                        this.getRegistryName().getResourcePath());
+            } else {
+                textureLocation = new ResourceLocation("reengineeredtoolbox", "empty");
+            }
         }
 
         return textureLocation;
+    }
+
+    public String getUnlocalizedName() {
+        return this.unlocalizedName;
+    }
+
+    public float getTextureOffset() {
+        return 0f;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public TextureAtlasSprite getSprite() {
+        if (sprite == null) {
+            sprite = TextureUtils.getSprite(this.getTextureLocation());
+        }
+        return sprite;
     }
 
     public boolean hasCapability(@Nonnull Capability<?> capability) {

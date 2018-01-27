@@ -3,6 +3,8 @@ package xyz.brassgoggledcoders.reengineeredtoolbox;
 import com.teamacronymcoders.base.registrysystem.ItemRegistry;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ToolboxRegistries;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.CapabilitySidedFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.CapabilityFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.block.BlockSocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.item.ItemFace;
 import xyz.brassgoggledcoders.reengineeredtoolbox.proxy.IProxy;
@@ -47,6 +49,8 @@ public class ReEngineeredToolbox extends BaseModFoundation<ReEngineeredToolbox> 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
+        CapabilitySidedFaceHolder.register();
+        CapabilityFaceHolder.register();
         PROXY.initModelLoader();
     }
 

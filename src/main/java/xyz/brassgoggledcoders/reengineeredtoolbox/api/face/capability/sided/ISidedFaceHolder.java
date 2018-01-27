@@ -9,6 +9,8 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 public interface ISidedFaceHolder extends INBTSerializable<NBTTagCompound> {
     Face getFace(EnumFacing facing);
 
+    void setFace(EnumFacing facing, Face face);
+
     FaceInstance getFaceInstance(EnumFacing facing);
 
     Face[] getFaces();
