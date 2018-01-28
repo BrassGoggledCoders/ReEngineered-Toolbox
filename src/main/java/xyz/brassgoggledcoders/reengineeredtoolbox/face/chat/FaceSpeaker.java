@@ -1,12 +1,12 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.face.machine;
+package xyz.brassgoggledcoders.reengineeredtoolbox.face.chat;
 
 import net.minecraft.util.ResourceLocation;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 
 import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.MOD_ID;
 
-public class FaceFurnace extends Face {
-    public FaceFurnace() {
-        super(new ResourceLocation(MOD_ID, "furnace"));
+public class FaceSpeaker extends Face {
+    public FaceSpeaker() {
+        super(new ResourceLocation(MOD_ID, "speaker"));
     }
 }

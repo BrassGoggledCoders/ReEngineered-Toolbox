@@ -13,8 +13,11 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ToolboxRegistries;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.chat.FaceSpeaker;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.core.BlankFace;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.core.EmptyFace;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.*;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.machine.FaceFurnace;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +37,29 @@ public class RegistryEventHandler {
     }
 
     @SubscribeEvent
-    public static void registerFaces(RegistryEvent.Register<Face> faceRegister) {
-        IForgeRegistry<Face> faceRegistry = faceRegister.getRegistry();
+    public static void registerFaces(RegistryEvent.Register<Face> faceRegisterEvent) {
+        IForgeRegistry<Face> faceRegistry = faceRegisterEvent.getRegistry();
 
         //Core
         faceRegistry.register(new EmptyFace());
         faceRegistry.register(new BlankFace());
+
+        //Machine
+        faceRegistry.register(new FaceFurnace());
+
+        //Input
+        faceRegistry.register(new FaceItemInput());
+        faceRegistry.register(new FaceItemOutput());
+
+        faceRegistry.register(new FaceFluidInput());
+        faceRegistry.register(new FaceFluidOutput());
+
+        faceRegistry.register(new FaceEnergyInput());
+        faceRegistry.register(new FaceEnergyOutput());
+
+        //Chat
+        faceRegistry.register(new FaceSpeaker());
+
     }
 
     @SideOnly(Side.CLIENT)

@@ -1,13 +1,13 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.face.core;
 
+import net.minecraft.util.ResourceLocation;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 
 import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.MOD_ID;
 
 public class EmptyFace extends Face {
     public EmptyFace() {
-        super("face." + MOD_ID + ".empty.name");
-        this.setRegistryName(MOD_ID, "empty");
+        super(new ResourceLocation(MOD_ID, "empty"));
     }
 
     @Override
@@ -17,6 +17,11 @@ public class EmptyFace extends Face {
 
     @Override
     public float getTextureOffset() {
-        return 0f;
+        return 0.125f;
+    }
+
+    @Override
+    public boolean createSubItem() {
+        return false;
     }
 }

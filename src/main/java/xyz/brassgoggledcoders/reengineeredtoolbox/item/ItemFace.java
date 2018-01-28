@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.item;
 
-import com.teamacronymcoders.base.items.ItemBase;
+import com.teamacronymcoders.base.items.IHasItemMeshDefinition;
+import com.teamacronymcoders.base.items.ItemBaseNoModel;
 import com.teamacronymcoders.base.util.TextUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ToolboxRegistries;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.CapabilitySidedFaceHolder;
@@ -30,18 +32,22 @@ import java.util.stream.Collectors;
 
 import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.MOD_ID;
 
-public class ItemFace extends ItemBase {
+public class ItemFace extends ItemBaseNoModel implements IHasItemMeshDefinition {
+    @ObjectHolder(MOD_ID + ":empty")
+    public static Face emptyFace;
+
     public ItemFace() {
         super("face");
+    }
+
+    public ItemFace(String name) {
+        super(name);
     }
 
     @Override
     @Nonnull
     public String getUnlocalizedName(ItemStack stack) {
-        return Optional.ofNullable(stack.getCapability(CapabilityFaceHolder.FACE_HOLDER, null))
-                .map(IFaceHolder::getFace)
-                .map(Face::getUnlocalizedName)
-                .orElse("face." + MOD_ID + ".unknown.name");
+        return this.getFace(stack).getUnlocalizedName();
     }
 
     @Override
@@ -69,7 +75,8 @@ public class ItemFace extends ItemBase {
 
     @Override
     public List<ItemStack> getAllSubItems(List<ItemStack> itemStacks) {
-        return ToolboxRegistries.FACES.getValues().parallelStream()
+        return ToolboxRegistries.FACES.getValues().stream()
+                .filter(Face::createSubItem)
                 .map(TextUtils::getRegistryLocation)
                 .map(value -> {
                     NBTTagCompound compound = new NBTTagCompound();
@@ -82,20 +89,37 @@ public class ItemFace extends ItemBase {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack itemStack, @Nullable NBTTagCompound nbt) {
-        return Optional.ofNullable(nbt)
+        return new FaceHolderProvider(new FaceHolder(Optional.ofNullable(nbt)
                 .map(nbtTagCompound -> nbtTagCompound.getString("face"))
                 .map(ResourceLocation::new)
                 .map(ToolboxRegistries.FACES::getValue)
-                .map(FaceHolder::new)
-                .map(FaceHolderProvider::new)
-                .orElseGet(() -> new FaceHolderProvider(null));
+                .orElse(emptyFace)));
     }
 
     @Override
-    public List<ResourceLocation> getResourceLocations(List<ResourceLocation> resourceLocations) {
-        resourceLocations.addAll(ToolboxRegistries.FACES.getValues().parallelStream()
-                .map(Face::getTextureLocation)
-                .collect(Collectors.toList()));
-        return resourceLocations;
+    public ResourceLocation getResourceLocation(ItemStack itemStack) {
+        return this.getFace(itemStack).getModelLocation();
+    }
+
+    @Override
+    public List<ResourceLocation> getAllVariants() {
+        return ToolboxRegistries.FACES.getValues().stream()
+                .map(Face::getModelLocation)
+                .collect(Collectors.toList());
+    }
+
+    public Face getFace(ItemStack itemStack) {
+        return this.getFaceCapability(itemStack)
+                .map(IFaceHolder::getFace)
+                .orElse(emptyFace);
+    }
+
+    public void setFace(ItemStack itemStack, Face face) {
+        this.getFaceCapability(itemStack)
+                .ifPresent(cap -> cap.setFace(face));
+    }
+
+    public Optional<IFaceHolder> getFaceCapability(ItemStack itemStack) {
+        return Optional.ofNullable(itemStack.getCapability(CapabilityFaceHolder.FACE_HOLDER, null));
     }
 }

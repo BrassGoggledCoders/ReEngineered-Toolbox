@@ -1,18 +1,8 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox;
 
-import com.teamacronymcoders.base.registrysystem.ItemRegistry;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.ToolboxRegistries;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.CapabilitySidedFaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.CapabilityFaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.block.BlockSocket;
-import xyz.brassgoggledcoders.reengineeredtoolbox.item.ItemFace;
-import xyz.brassgoggledcoders.reengineeredtoolbox.proxy.IProxy;
 import com.teamacronymcoders.base.BaseModFoundation;
 import com.teamacronymcoders.base.registrysystem.BlockRegistry;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
+import com.teamacronymcoders.base.registrysystem.ItemRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -20,8 +10,12 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.registries.RegistryBuilder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.CapabilitySidedFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.CapabilityFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.block.BlockSocket;
+import xyz.brassgoggledcoders.reengineeredtoolbox.item.ItemCreativeFace;
+import xyz.brassgoggledcoders.reengineeredtoolbox.item.ItemFace;
+import xyz.brassgoggledcoders.reengineeredtoolbox.proxy.IProxy;
 
 @Mod(
         modid = ReEngineeredToolbox.MOD_ID,
@@ -41,8 +35,9 @@ public class ReEngineeredToolbox extends BaseModFoundation<ReEngineeredToolbox> 
             serverSide = "xyz.brassgoggledcoders.reengineeredtoolbox.proxy.ServerProxy")
     public static IProxy PROXY;
 
+
     public ReEngineeredToolbox() {
-        super(MOD_ID, MOD_NAME, VERSION, CreativeTabs.MISC);
+        super(MOD_ID, MOD_NAME, VERSION, new CreativeTabToolbox());
     }
 
     @Override
@@ -62,6 +57,7 @@ public class ReEngineeredToolbox extends BaseModFoundation<ReEngineeredToolbox> 
     @Override
     public void registerItems(ItemRegistry registry) {
         registry.register(new ItemFace());
+        registry.register(new ItemCreativeFace());
     }
 
     @Override
