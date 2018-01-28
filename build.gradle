@@ -46,10 +46,15 @@ repositories {
         name "bbm"
         url "http://api.dmodoomsirius.me/"
     }
+    maven {
+        name 'JEI'
+        url 'http://dvs1.progwml6.com/files/maven'
+    }
 }
 
 dependencies {
     deobfCompile "com.teamacronymcoders.base:base:${minecraft_version}-${base_version}-SNAPSHOT.+"
+    deobfCompile "mezz.jei:jei_${minecraft_version}:${jei_version}"
 
     compile 'junit:junit:4.11'
     compile "com.builtbroken.codinglib:CodingLib:0.2.8b50"
