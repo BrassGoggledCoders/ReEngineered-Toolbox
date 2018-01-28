@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.item;
 import com.teamacronymcoders.base.items.IHasItemMeshDefinition;
 import com.teamacronymcoders.base.items.ItemBaseNoModel;
 import com.teamacronymcoders.base.util.TextUtils;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -66,6 +67,10 @@ public class ItemFace extends ItemBaseNoModel implements IHasItemMeshDefinition 
                         sidedFaceHolder.setFace(facing, faceHolder.getFace());
                         heldStack.shrink(1);
                         result = EnumActionResult.SUCCESS;
+                        IBlockState blockState = world.getBlockState(pos);
+                        tileEntity.markDirty();
+                        world.notifyBlockUpdate(pos, blockState, blockState,3);
+                        world.notifyNeighborsOfStateChange(pos, blockState.getBlock(), true);
                     }
                 }
             }

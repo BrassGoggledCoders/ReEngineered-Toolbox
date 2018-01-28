@@ -39,7 +39,7 @@ public class Face extends IForgeRegistryEntry.Impl<Face> {
             }
         }
 
-        return textureLocations;
+        return textureLocation;
     }
 
     public ResourceLocation getModelLocation() {

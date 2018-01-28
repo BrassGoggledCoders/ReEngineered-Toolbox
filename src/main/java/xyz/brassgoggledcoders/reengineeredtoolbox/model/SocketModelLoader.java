@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.model;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
@@ -24,7 +23,7 @@ public class SocketModelLoader implements ICustomModelLoader {
     @Override
     public IModel loadModel(ResourceLocation modelLocation) throws Exception {
         if (socketBaseModel == null) {
-            socketBaseModel = ModelLoaderRegistry.getModel(new ResourceLocation(MOD_ID, "block/socket_frame"));
+            socketBaseModel = ModelLoaderRegistry.getModel(new ResourceLocation(MOD_ID, "block/frame"));
         }
         return new SocketModel(socketBaseModel);
     }

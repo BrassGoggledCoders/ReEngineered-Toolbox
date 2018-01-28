@@ -32,6 +32,10 @@ public class TileEntitySocket extends TileEntityBase {
         return data;
     }
 
+    public IExtendedBlockState setExtendedState(IExtendedBlockState blockState) {
+        return blockState.withProperty(BlockSocket.SIDED_FACE_PROPERTY, sidedFaceHolder.getFaces());
+    }
+
     public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
         boolean hasCap = capability == CapabilitySidedFaceHolder.SIDED_FACE_HOLDER;
         if (!hasCap && facing != null) {
