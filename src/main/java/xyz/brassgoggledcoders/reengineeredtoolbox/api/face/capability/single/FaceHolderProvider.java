@@ -8,10 +8,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class FaceHolderProvider implements ICapabilityProvider {
-    private IFaceHolder blockCarrier;
+    private IFaceHolder faceHolder;
 
-    public FaceHolderProvider(IFaceHolder blockCarrier) {
-        this.blockCarrier = blockCarrier;
+    public FaceHolderProvider(IFaceHolder faceHolder) {
+        this.faceHolder = faceHolder;
     }
 
     @Override
@@ -22,6 +22,6 @@ public class FaceHolderProvider implements ICapabilityProvider {
     @Nullable
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-        return hasCapability(capability, facing) ? CapabilityFaceHolder.FACE_HOLDER.cast(blockCarrier) : null;
+        return hasCapability(capability, facing) ? CapabilityFaceHolder.FACE_HOLDER.cast(faceHolder) : null;
     }
 }

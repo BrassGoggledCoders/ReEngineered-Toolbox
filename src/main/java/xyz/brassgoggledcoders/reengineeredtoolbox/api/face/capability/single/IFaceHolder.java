@@ -6,4 +6,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 
 public interface IFaceHolder extends INBTSerializable<NBTTagCompound> {
     Face getFace();
+
+    void setFace(Face face);
 }

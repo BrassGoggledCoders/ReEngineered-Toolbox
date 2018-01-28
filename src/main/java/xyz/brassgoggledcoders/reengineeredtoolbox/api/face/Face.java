@@ -10,16 +10,19 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class Face extends IForgeRegistryEntry.Impl<Face> {
     private ResourceLocation textureLocation;
     private String unlocalizedName;
 
     @SideOnly(Side.CLIENT)
-    public TextureAtlasSprite sprite;
+    private TextureAtlasSprite sprite;
 
-    public Face(String unlocalizedName) {
-        this.unlocalizedName = unlocalizedName;
+    public Face(ResourceLocation resourceLocation) {
+        this.unlocalizedName = "face." + resourceLocation.getResourceDomain() + "." +
+                resourceLocation.getResourcePath().replace("/", "_");
+        this.setRegistryName(resourceLocation);
     }
 
     public boolean isReplaceable() {
@@ -39,12 +42,20 @@ public class Face extends IForgeRegistryEntry.Impl<Face> {
         return textureLocation;
     }
 
+    public ResourceLocation getModelLocation() {
+        return this.getTextureLocation();
+    }
+
     public String getUnlocalizedName() {
         return this.unlocalizedName;
     }
 
     public float getTextureOffset() {
         return 0f;
+    }
+
+    public boolean createSubItem() {
+        return true;
     }
 
     @SideOnly(Side.CLIENT)

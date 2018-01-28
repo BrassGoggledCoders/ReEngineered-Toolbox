@@ -6,23 +6,25 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ToolboxRegistries;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
-
-import javax.annotation.Nullable;
 
 public class FaceHolder implements IFaceHolder {
     private Face face;
-
-    @Override
-    public Face getFace() {
-        return face;
-    }
 
     public FaceHolder() {
 
     }
 
     public FaceHolder(Face face) {
+        this.face = face;
+    }
+
+    @Override
+    public Face getFace() {
+        return face;
+    }
+
+    @Override
+    public void setFace(Face face) {
         this.face = face;
     }
 
