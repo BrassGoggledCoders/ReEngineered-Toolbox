@@ -27,11 +27,9 @@ public class Face extends IForgeRegistryEntry.Impl<Face> {
     }
 
     public void onAttach(ISocketTile tile, FaceData faceData) {
-
     }
 
     public void onTick(ISocketTile tile, FaceData faceData) {
-
     }
 
     public boolean isReplaceable() {
