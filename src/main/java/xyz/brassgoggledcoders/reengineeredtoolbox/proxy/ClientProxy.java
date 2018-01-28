@@ -10,6 +10,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.tileentity.TileEntitySocket;
 public class ClientProxy implements IProxy {
     @Override
     public void initModelLoader() {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySocket.class, new TESRSocket());
+        ModelLoaderRegistry.registerLoader(new SocketModelLoader());
     }
 }

@@ -26,7 +26,7 @@ public class Face extends IForgeRegistryEntry.Impl<Face> {
     }
 
     public boolean isReplaceable() {
-        return false;
+        return true;
     }
 
     public ResourceLocation getTextureLocation() {
@@ -39,7 +39,7 @@ public class Face extends IForgeRegistryEntry.Impl<Face> {
             }
         }
 
-        return textureLocation;
+        return textureLocations;
     }
 
     public ResourceLocation getModelLocation() {
