@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.tileentity;
 
+import com.google.common.collect.Lists;
 import com.teamacronymcoders.base.tileentities.TileEntityBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -9,16 +10,31 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.CapabilitySidedFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.ISidedFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.SidedFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.queue.FluidStackQueue;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.queue.ItemStackQueue;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 import xyz.brassgoggledcoders.reengineeredtoolbox.block.BlockSocket;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
-public class TileEntitySocket extends TileEntityBase {
-    private ISidedFaceHolder sidedFaceHolder = new SidedFaceHolder();
+public class TileEntitySocket extends TileEntityBase implements ISocketTile {
+    private ISidedFaceHolder sidedFaceHolder;
 
-    public Face getFace(EnumFacing side) {
-        return sidedFaceHolder.getFace(side);
+    private List<ItemStackQueue> itemStackQueues;
+    private List<FluidStackQueue> fluidStackQueues;
+
+    public TileEntitySocket() {
+        sidedFaceHolder = new SidedFaceHolder();
+
+        itemStackQueues = Lists.newArrayList();
+        itemStackQueues.add(new ItemStackQueue());
+        itemStackQueues.add(new ItemStackQueue());
+
+        fluidStackQueues = Lists.newArrayList();
+        fluidStackQueues.add(new FluidStackQueue());
+        fluidStackQueues.add(new FluidStackQueue());
     }
 
     @Override
@@ -55,5 +71,30 @@ public class TileEntitySocket extends TileEntityBase {
         }
 
         return cap;
+    }
+
+    @Override
+    public ItemStackQueue getItemStackQueue(int number) {
+        return number < itemStackQueues.size() ? itemStackQueues.get(number) : itemStackQueues.get(0);
+    }
+
+    @Override
+    public FluidStackQueue getFluidStackQueue(int number) {
+        return number < fluidStackQueues.size() ? fluidStackQueues.get(number) : fluidStackQueues.get(0);
+    }
+
+    @Override
+    public List<ItemStackQueue> getItemStackQueues() {
+        return itemStackQueues;
+    }
+
+    @Override
+    public List<FluidStackQueue> getFluidStackQueues() {
+        return fluidStackQueues;
+    }
+
+    @Override
+    public Face getFaceOnSide(EnumFacing facing) {
+        return sidedFaceHolder.getFace(facing);
     }
 }

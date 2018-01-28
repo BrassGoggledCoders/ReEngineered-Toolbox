@@ -7,6 +7,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,6 +24,14 @@ public class Face extends IForgeRegistryEntry.Impl<Face> {
         this.unlocalizedName = "face." + resourceLocation.getResourceDomain() + "." +
                 resourceLocation.getResourcePath().replace("/", "_");
         this.setRegistryName(resourceLocation);
+    }
+
+    public void onAttach(ISocketTile tile, FaceData faceData) {
+
+    }
+
+    public void onTick(ISocketTile tile, FaceData faceData) {
+
     }
 
     public boolean isReplaceable() {
