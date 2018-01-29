@@ -1,12 +1,11 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item;
 
+import com.teamacronymcoders.base.capability.item.ItemStackHandlerExport;
 import com.teamacronymcoders.base.capability.item.ItemStackHandlerImport;
-import com.teamacronymcoders.base.util.ItemStackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.queue.ItemStackQueue;
@@ -14,25 +13,25 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 
-public class FaceInstanceItemInput extends FaceInstance {
-    private ItemStackHandlerImport currentStack = new ItemStackHandlerImport(1);
-    private int itemQueueInput = 0;
+public class FaceInstanceItemOutput extends FaceInstance {
+    private ItemStackHandlerExport currentStack = new ItemStackHandlerExport(1);
+    private int itemQueueOutput = 0;
 
     @Override
     public void onTick(ISocketTile tile) {
         ItemStack itemStack = currentStack.getStackInSlot(0);
-        ItemStackQueue queue = tile.getItemStackQueue(itemQueueInput);
-        if (!itemStack.isEmpty()) {
-            itemStack = queue.offer(itemStack);
-            currentStack.setStackInSlot(0, itemStack);
+        if (itemStack.isEmpty()) {
+            ItemStackQueue itemStackQueue = tile.getItemStackQueue(itemQueueOutput);
+            itemStackQueue.pull().ifPresent(queueStack -> currentStack.setStackInSlot(0, queueStack));
         }
     }
 
     @Override
     public void configureQueue(String name, int queueNumber) {
-        if ("itemQueueInput".equals(name)) {
-            itemQueueInput = queueNumber;
+        if ("itemQueueOutput".equals(name)) {
+            itemQueueOutput = queueNumber;
         }
     }
 
@@ -50,14 +49,14 @@ public class FaceInstanceItemInput extends FaceInstance {
     @Override
     public NBTTagCompound serializeNBT() {
         NBTTagCompound tagCompound = new NBTTagCompound();
-        tagCompound.setInteger("itemQueueInput", itemQueueInput);
+        tagCompound.setInteger("itemQueueOutput", itemQueueOutput);
         tagCompound.setTag("itemHandler", currentStack.serializeNBT());
         return tagCompound;
     }
 
     @Override
     public void deserializeNBT(NBTTagCompound nbt) {
-        itemQueueInput = nbt.getInteger("itemQueueInput");
+        itemQueueOutput = nbt.getInteger("itemQueueOutput");
         currentStack.deserializeNBT(nbt.getCompoundTag("itemHandler"));
     }
 }
