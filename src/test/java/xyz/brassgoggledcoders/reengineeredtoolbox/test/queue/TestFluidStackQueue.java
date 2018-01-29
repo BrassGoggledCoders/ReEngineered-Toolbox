@@ -100,24 +100,4 @@ public class TestFluidStackQueue extends AbstractTest {
         assert fluidStackQueue.peek().isPresent();
         assert fluidStackQueue.pull().isPresent();
     }
-
-    @Test
-    public void testQueueSimulatePush() {
-        FluidStackQueue fluidStackQueue = new FluidStackQueue();
-        FluidStack stack = new FluidStack(FluidRegistry.WATER, 1000);
-
-        assert fluidStackQueue.simulateOffer(stack).amount == 0;
-        assert stack.amount == 1000;
-        assert !fluidStackQueue.pull().isPresent();
-    }
-
-    @Test
-    public void testQueueSimulateOverSizedPush() {
-        FluidStackQueue fluidStackQueue = new FluidStackQueue();
-        FluidStack overSizedStack = new FluidStack(FluidRegistry.WATER, 10000);
-
-        assert fluidStackQueue.simulateOffer(overSizedStack).amount == 5000;
-        assert overSizedStack.amount == 10000;
-        assert !fluidStackQueue.peek().isPresent();
-    }
 }

@@ -102,22 +102,4 @@ public class TestItemStackQueue extends AbstractTest {
         assert itemStackQueue.peek().isPresent();
         assert itemStackQueue.pull().isPresent();
     }
-
-    @Test
-    public void testQueueSimulatePush() {
-        ItemStackQueue itemStackQueue = new ItemStackQueue();
-        ItemStack cartStack = new ItemStack(Items.MINECART, 1, 0);
-
-        assert itemStackQueue.simulateOffer(cartStack).isEmpty();
-        assert !cartStack.isEmpty();
-        assert !itemStackQueue.pull().isPresent();
-    }
-
-    @Test
-    public void testQueueSimulateOverSizedPush() {
-        ItemStackQueue itemStackQueue = new ItemStackQueue();
-        ItemStack cartStack = new ItemStack(Items.MINECART, 6, 0);
-
-        assert itemStackQueue.simulateOffer(cartStack).getCount() == 1;
-    }
 }

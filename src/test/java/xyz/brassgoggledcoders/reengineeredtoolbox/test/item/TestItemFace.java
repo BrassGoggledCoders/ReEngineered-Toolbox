@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.test.queue;
+package xyz.brassgoggledcoders.reengineeredtoolbox.test.item;
 
 import com.builtbroken.mc.testing.junit.AbstractTest;
 import com.builtbroken.mc.testing.junit.VoltzTestRunner;
@@ -7,14 +7,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.registries.ForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import xyz.brassgoggledcoders.reengineeredtoolbox.RegistryEventHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ToolboxRegistries;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.CapabilityFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.IFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.item.ItemFace;
