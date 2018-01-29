@@ -11,29 +11,6 @@ public class ItemStackQueue extends SocketQueue<ItemStack> {
     }
 
     @Override
-    public ItemStack simulateOffer(ItemStack value) {
-        ItemStack toSimulate = value.copy();
-        Optional<ItemStack> endOfQueue = this.getEndOfQueue();
-        if (endOfQueue.isPresent()) {
-            ItemStack endOfQueueStack = endOfQueue.get();
-            if (ItemStackUtils.canStacksMerge(endOfQueueStack, toSimulate)) {
-                int totalOpen = endOfQueueStack.getMaxStackSize() - endOfQueueStack.getCount();
-                int totalAdditional = toSimulate.getCount();
-                if (totalAdditional > totalOpen) {
-                    totalAdditional = totalOpen;
-                }
-                toSimulate.shrink(totalAdditional);
-            }
-        }
-        int totalSlotsOccupied = this.getLength();
-        while (!toSimulate.isEmpty() && totalSlotsOccupied < this.getQueueSize()) {
-            totalSlotsOccupied++;
-            toSimulate.shrink(toSimulate.getMaxStackSize());
-        }
-        return toSimulate;
-    }
-
-    @Override
     protected ItemStack addToBack(ItemStack value) {
         ItemStack remaining = value;
         if (this.getEndOfQueue().isPresent()) {

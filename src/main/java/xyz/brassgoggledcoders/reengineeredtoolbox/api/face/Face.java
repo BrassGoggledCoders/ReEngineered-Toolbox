@@ -26,12 +26,6 @@ public class Face extends IForgeRegistryEntry.Impl<Face> {
         this.setRegistryName(resourceLocation);
     }
 
-    public void onAttach(ISocketTile tile, FaceData faceData) {
-    }
-
-    public void onTick(ISocketTile tile, FaceData faceData) {
-    }
-
     public boolean isReplaceable() {
         return true;
     }
@@ -65,20 +59,15 @@ public class Face extends IForgeRegistryEntry.Impl<Face> {
         return true;
     }
 
+    public FaceInstance createInstance() {
+        return new FaceInstance();
+    }
+
     @SideOnly(Side.CLIENT)
     public TextureAtlasSprite getSprite() {
         if (sprite == null) {
             sprite = TextureUtils.getSprite(this.getTextureLocation());
         }
         return sprite;
-    }
-
-    public boolean hasCapability(@Nonnull Capability<?> capability) {
-        return false;
-    }
-
-    @Nullable
-    public <T> T getCapability(@Nonnull Capability<T> capability) {
-        return null;
     }
 }

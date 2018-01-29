@@ -1,12 +1,12 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.face.io;
+package xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item;
 
 import net.minecraft.util.ResourceLocation;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 
 import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.MOD_ID;
 
-public class FaceItemInput extends Face {
-    public FaceItemInput() {
-        super(new ResourceLocation(MOD_ID, "item_input"));
+public class FaceItemOutput extends Face {
+    public FaceItemOutput() {
+        super(new ResourceLocation(MOD_ID, "item_output"));
     }
 }

@@ -24,6 +24,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.Cap
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.FaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.FaceHolderProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.IFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -65,6 +66,9 @@ public class ItemFace extends ItemBaseNoModel implements IHasItemMeshDefinition 
                     IFaceHolder faceHolder = heldStack.getCapability(CapabilityFaceHolder.FACE_HOLDER, null);
                     if (faceHolder != null) {
                         sidedFaceHolder.setFace(facing, faceHolder.getFace());
+                        if (tileEntity instanceof ISocketTile) {
+                            sidedFaceHolder.getFaceInstance(facing).onAttach((ISocketTile) tileEntity);
+                        }
                         heldStack.shrink(1);
                         result = EnumActionResult.SUCCESS;
                         IBlockState blockState = world.getBlockState(pos);

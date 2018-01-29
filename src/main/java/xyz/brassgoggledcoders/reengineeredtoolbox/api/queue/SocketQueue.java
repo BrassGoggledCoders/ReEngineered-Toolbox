@@ -58,8 +58,6 @@ public abstract class SocketQueue<T> {
         return this.queuedList;
     }
 
-    public abstract T simulateOffer(T value);
-
     protected abstract T addToBack(T value);
 
     protected abstract boolean anyRemainingValue(T value);

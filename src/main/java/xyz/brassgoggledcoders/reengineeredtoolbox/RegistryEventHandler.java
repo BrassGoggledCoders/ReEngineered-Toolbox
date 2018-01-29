@@ -1,12 +1,10 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox;
 
-import com.teamacronymcoders.base.IBaseMod;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -17,11 +15,9 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.face.chat.FaceSpeaker;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.core.BlankFace;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.core.EmptyFace;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.*;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item.FaceItemInput;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item.FaceItemOutput;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.machine.FaceFurnace;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.MOD_ID;
 

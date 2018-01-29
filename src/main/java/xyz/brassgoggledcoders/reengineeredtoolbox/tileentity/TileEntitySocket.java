@@ -4,9 +4,11 @@ import com.google.common.collect.Lists;
 import com.teamacronymcoders.base.tileentities.TileEntityBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.CapabilitySidedFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.ISidedFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.SidedFaceHolder;
@@ -19,7 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class TileEntitySocket extends TileEntityBase implements ISocketTile {
+public class TileEntitySocket extends TileEntityBase implements ISocketTile, ITickable {
     private ISidedFaceHolder sidedFaceHolder;
 
     private List<ItemStackQueue> itemStackQueues;
@@ -55,7 +57,7 @@ public class TileEntitySocket extends TileEntityBase implements ISocketTile {
     public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
         boolean hasCap = capability == CapabilitySidedFaceHolder.SIDED_FACE_HOLDER;
         if (!hasCap && facing != null) {
-            hasCap = sidedFaceHolder.getFace(facing).hasCapability(capability);
+            hasCap = sidedFaceHolder.getFaceInstance(facing).hasCapability(capability);
         }
         return hasCap;
     }
@@ -67,7 +69,7 @@ public class TileEntitySocket extends TileEntityBase implements ISocketTile {
         if (capability == CapabilitySidedFaceHolder.SIDED_FACE_HOLDER) {
             cap = CapabilitySidedFaceHolder.SIDED_FACE_HOLDER.cast(sidedFaceHolder);
         } else if (facing != null) {
-            cap = this.sidedFaceHolder.getFace(facing).getCapability(capability);
+            cap = this.sidedFaceHolder.getFaceInstance(facing).getCapability(capability);
         }
 
         return cap;
@@ -96,5 +98,12 @@ public class TileEntitySocket extends TileEntityBase implements ISocketTile {
     @Override
     public Face getFaceOnSide(EnumFacing facing) {
         return sidedFaceHolder.getFace(facing);
+    }
+
+    @Override
+    public void update() {
+        for (EnumFacing facing : EnumFacing.values()) {
+            this.sidedFaceHolder.getFaceInstance(facing).onTick(this);
+        }
     }
 }

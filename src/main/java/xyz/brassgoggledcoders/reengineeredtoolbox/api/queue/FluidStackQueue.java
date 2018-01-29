@@ -11,27 +11,6 @@ public class FluidStackQueue extends SocketQueue<FluidStack> {
     }
 
     @Override
-    public FluidStack simulateOffer(FluidStack value) {
-        FluidStack remaining = value.copy();
-
-        Optional<FluidStack> endOfQueue = this.getEndOfQueue();
-
-        endOfQueue.ifPresent(fluidStack -> remaining.amount -= FluidStackUtils.moveFluid(value, fluidStack.copy(), 1000, 1000));
-
-        if (remaining.amount > 0) {
-            int amountOfSlots = remaining.amount / 1000;
-            int remainingSlots = this.getQueueSize() - this.getLength();
-            if (amountOfSlots > remainingSlots) {
-                remaining.amount -= (remainingSlots * 1000);
-            } else {
-                remaining.amount = 0;
-            }
-        }
-
-        return remaining;
-    }
-
-    @Override
     protected FluidStack addToBack(FluidStack value) {
         Optional<FluidStack> endOfQueue = this.getEndOfQueue();
         endOfQueue.ifPresent(fluidStack -> FluidStackUtils.moveFluid(value, fluidStack, 1000, 1000));
