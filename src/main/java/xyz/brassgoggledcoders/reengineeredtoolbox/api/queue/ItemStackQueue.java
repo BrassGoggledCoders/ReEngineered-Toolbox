@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.api.queue;
 
 import com.teamacronymcoders.base.util.ItemStackUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Optional;
 
@@ -26,5 +27,15 @@ public class ItemStackQueue extends SocketQueue<ItemStack> {
     @Override
     protected boolean anyRemainingValue(ItemStack value) {
         return !value.isEmpty();
+    }
+
+    @Override
+    public NBTTagCompound serializeValue(ItemStack value) {
+        return value.serializeNBT();
+    }
+
+    @Override
+    public ItemStack deserializeValue(NBTTagCompound nbtTagCompound) {
+        return new ItemStack(nbtTagCompound);
     }
 }

@@ -1,11 +1,15 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.queue;
 
 import com.google.common.collect.Lists;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 import java.util.Optional;
 
-public abstract class SocketQueue<T> {
+public abstract class SocketQueue<T> implements INBTSerializable<NBTTagCompound> {
     private List<T> queuedList;
     private int queueSize;
 
@@ -50,6 +54,10 @@ public abstract class SocketQueue<T> {
         return queueSize;
     }
 
+    protected void setQueueSize(int queueSize) {
+        this.queueSize = queueSize;
+    }
+
     public int getLength() {
         return queuedList.size();
     }
@@ -61,4 +69,29 @@ public abstract class SocketQueue<T> {
     protected abstract T addToBack(T value);
 
     protected abstract boolean anyRemainingValue(T value);
+
+    @Override
+    public NBTTagCompound serializeNBT() {
+        NBTTagCompound nbtTagCompound = new NBTTagCompound();
+        nbtTagCompound.setInteger("queueSize", this.getQueueSize());
+        NBTTagList tagList = new NBTTagList();
+        for (T value : this.getBackingList()) {
+            tagList.appendTag(serializeValue(value));
+        }
+        nbtTagCompound.setTag("queueValues", tagList);
+        return nbtTagCompound;
+    }
+
+    @Override
+    public void deserializeNBT(NBTTagCompound nbt) {
+        this.setQueueSize(nbt.getInteger("queueSize"));
+        NBTTagList queueValueNBT = nbt.getTagList("fluidStacks", 9);
+        for (int i = 0; i < queueValueNBT.tagCount(); i++) {
+            this.getBackingList().add(deserializeValue(queueValueNBT.getCompoundTagAt(i)));
+        }
+    }
+
+    public abstract NBTTagCompound serializeValue(T value);
+
+    public abstract T deserializeValue(NBTTagCompound nbtTagCompound);
 }
