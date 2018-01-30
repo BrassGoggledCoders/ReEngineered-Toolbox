@@ -12,18 +12,25 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class Face extends IForgeRegistryEntry.Impl<Face> {
     private ResourceLocation textureLocation;
     private String unlocalizedName;
+    private Supplier<FaceInstance> faceInstanceConstructor;
 
     @SideOnly(Side.CLIENT)
     private TextureAtlasSprite sprite;
 
     public Face(ResourceLocation resourceLocation) {
+        this(resourceLocation, FaceInstance::new);
+    }
+
+    public Face(ResourceLocation resourceLocation, Supplier<FaceInstance> createFaceInstance) {
         this.unlocalizedName = "face." + resourceLocation.getResourceDomain() + "." +
                 resourceLocation.getResourcePath().replace("/", "_");
         this.setRegistryName(resourceLocation);
+        this.faceInstanceConstructor = createFaceInstance;
     }
 
     public boolean isReplaceable() {
@@ -60,7 +67,7 @@ public class Face extends IForgeRegistryEntry.Impl<Face> {
     }
 
     public FaceInstance createInstance() {
-        return new FaceInstance();
+        return faceInstanceConstructor.get();
     }
 
     @SideOnly(Side.CLIENT)

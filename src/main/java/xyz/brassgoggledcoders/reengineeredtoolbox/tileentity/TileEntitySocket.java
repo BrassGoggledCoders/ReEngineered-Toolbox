@@ -1,12 +1,16 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.tileentity;
 
 import com.google.common.collect.Lists;
+import com.teamacronymcoders.base.capability.energy.EnergyStorageSerializable;
 import com.teamacronymcoders.base.tileentities.TileEntityBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.CapabilitySidedFaceHolder;
@@ -27,6 +31,8 @@ public class TileEntitySocket extends TileEntityBase implements ISocketTile, ITi
     private List<ItemStackQueue> itemStackQueues;
     private List<FluidStackQueue> fluidStackQueues;
 
+    private EnergyStorageSerializable energyStorage;
+
     public TileEntitySocket() {
         sidedFaceHolder = new SidedFaceHolder();
 
@@ -37,16 +43,20 @@ public class TileEntitySocket extends TileEntityBase implements ISocketTile, ITi
         fluidStackQueues = Lists.newArrayList();
         fluidStackQueues.add(new FluidStackQueue());
         fluidStackQueues.add(new FluidStackQueue());
+
+        energyStorage = new EnergyStorageSerializable(100000, 1000, 1000);
     }
 
     @Override
     protected void readFromDisk(NBTTagCompound data) {
         sidedFaceHolder.deserializeNBT(data.getCompoundTag("faces"));
+        energyStorage.deserializeNBT(data.getCompoundTag("energy"));
     }
 
     @Override
     protected NBTTagCompound writeToDisk(NBTTagCompound data) {
         data.setTag("faces", sidedFaceHolder.serializeNBT());
+        data.setTag("energy", energyStorage.serializeNBT());
         return data;
     }
 
@@ -98,6 +108,21 @@ public class TileEntitySocket extends TileEntityBase implements ISocketTile, ITi
     @Override
     public Face getFaceOnSide(EnumFacing facing) {
         return sidedFaceHolder.getFace(facing);
+    }
+
+    @Override
+    public BlockPos getTilePos() {
+        return this.getPos();
+    }
+
+    @Override
+    public boolean isClient() {
+        return this.world.isRemote;
+    }
+
+    @Override
+    public IEnergyStorage getEnergyStorage() {
+        return energyStorage;
     }
 
     @Override

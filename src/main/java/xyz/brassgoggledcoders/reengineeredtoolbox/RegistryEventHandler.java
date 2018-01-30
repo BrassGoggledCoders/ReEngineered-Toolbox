@@ -14,10 +14,13 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.chat.FaceSpeaker;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.core.BlankFace;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.core.EmptyFace;
-import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.*;
-import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item.FaceItemInput;
-import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item.FaceItemOutput;
-import xyz.brassgoggledcoders.reengineeredtoolbox.face.machine.FaceFurnace;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.FaceEnergyInput;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.FaceEnergyOutput;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.FaceFluidInput;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.FaceFluidOutput;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item.FaceInstanceItemInput;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item.FaceInstanceItemOutput;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.machine.FaceInstanceFurnace;
 
 import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.MOD_ID;
 
@@ -41,11 +44,11 @@ public class RegistryEventHandler {
         faceRegistry.register(new BlankFace());
 
         //Machine
-        faceRegistry.register(new FaceFurnace());
+        faceRegistry.register(new Face(new ResourceLocation(MOD_ID, "furnace"), FaceInstanceFurnace::new));
 
         //Input
-        faceRegistry.register(new FaceItemInput());
-        faceRegistry.register(new FaceItemOutput());
+        faceRegistry.register(new Face(new ResourceLocation(MOD_ID, "item_input"), FaceInstanceItemInput::new));
+        faceRegistry.register(new Face(new ResourceLocation(MOD_ID, "item_output"), FaceInstanceItemOutput::new));
 
         faceRegistry.register(new FaceFluidInput());
         faceRegistry.register(new FaceFluidOutput());
