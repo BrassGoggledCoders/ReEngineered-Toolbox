@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.test.item;
 
 import com.builtbroken.mc.testing.junit.AbstractTest;
 import com.builtbroken.mc.testing.junit.VoltzTestRunner;
-import com.builtbroken.mc.testing.junit.capability.CapabilityUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -24,11 +23,11 @@ public class TestItemFace extends AbstractTest {
     @Override
     @BeforeClass
     public void setUpForEntireClass() {
-        RegistryEventHandler.buildFaceRegistry(new RegistryEvent.NewRegistry());
-        RegistryEventHandler.registerFaces(new RegistryEvent.Register<>(new ResourceLocation(MOD_ID, "faces"),
-                ToolboxRegistries.FACES));
-        CapabilityUtils.setupCapability(IFaceHolder.class, nothing -> CapabilityFaceHolder.register(), tCapability ->
-                CapabilityFaceHolder.FACE_HOLDER = tCapability);
+        //.buildFaceRegistry(new RegistryEvent.NewRegistry());
+        ///RegistryEventHandler.registerFaces(new RegistryEvent.Register<>(new ResourceLocation(MOD_ID, "faces"),
+                //ToolboxRegistries.FACES));
+        //CapabilityUtils.setupCapability(IFaceHolder.class, nothing -> CapabilityFaceHolder.register(), tCapability ->
+        //        CapabilityFaceHolder.FACE_HOLDER = tCapability);
     }
 
     @Test
