@@ -2,15 +2,28 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.tileentity;
 
 import com.google.common.collect.Lists;
 import com.teamacronymcoders.base.capability.energy.EnergyStorageSerializable;
+import com.teamacronymcoders.base.guisystem.GuiOpener;
+import com.teamacronymcoders.base.guisystem.IHasGui;
+import com.teamacronymcoders.base.modularguisystem.IModularGuiHost;
 import com.teamacronymcoders.base.tileentities.TileEntityBase;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.CapabilitySidedFaceHolder;
@@ -24,6 +37,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.block.BlockSocket;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public class TileEntitySocket extends TileEntityBase implements ISocketTile, ITickable {
     private ISidedFaceHolder sidedFaceHolder;
@@ -51,12 +65,39 @@ public class TileEntitySocket extends TileEntityBase implements ISocketTile, ITi
     protected void readFromDisk(NBTTagCompound data) {
         sidedFaceHolder.deserializeNBT(data.getCompoundTag("faces"));
         energyStorage.deserializeNBT(data.getCompoundTag("energy"));
+        NBTTagList itemQueues = data.getTagList("itemQueues", 10);
+        itemStackQueues = Lists.newArrayList();
+        for (int i = 0; i < itemQueues.tagCount(); i++) {
+            ItemStackQueue itemStackQueue = new ItemStackQueue();
+            itemStackQueue.deserializeValue(itemQueues.getCompoundTagAt(i));
+            itemStackQueues.add(itemStackQueue);
+        }
+
+        NBTTagList fluidQueues = data.getTagList("fluidQueues", 10);
+        fluidStackQueues = Lists.newArrayList();
+        for (int i = 0; i < fluidQueues.tagCount(); i++) {
+            FluidStackQueue fluidStackQueue = new FluidStackQueue();
+            fluidStackQueue.deserializeValue(fluidQueues.getCompoundTagAt(i));
+            fluidStackQueues.add(fluidStackQueue);
+        }
     }
 
     @Override
     protected NBTTagCompound writeToDisk(NBTTagCompound data) {
         data.setTag("faces", sidedFaceHolder.serializeNBT());
         data.setTag("energy", energyStorage.serializeNBT());
+
+        NBTTagList fluidQueueTag = new NBTTagList();
+        for (FluidStackQueue fluidStackQueue : fluidStackQueues) {
+            fluidQueueTag.appendTag(fluidStackQueue.serializeNBT());
+        }
+        data.setTag("fluidQueues", fluidQueueTag);
+
+        NBTTagList itemQueueTag = new NBTTagList();
+        for (ItemStackQueue itemStackQueue : itemStackQueues) {
+            itemQueueTag.appendTag(itemStackQueue.serializeNBT());
+        }
+        data.setTag("itemQueues", itemQueueTag);
         return data;
     }
 
@@ -64,6 +105,13 @@ public class TileEntitySocket extends TileEntityBase implements ISocketTile, ITi
         return blockState.withProperty(BlockSocket.SIDED_FACE_PROPERTY, sidedFaceHolder.getFaces());
     }
 
+    protected void setWorldCreate(World world) {
+        for (EnumFacing facing : EnumFacing.VALUES) {
+            this.sidedFaceHolder.getFaceInstance(facing).onAttach(this);
+        }
+    }
+
+    @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
         boolean hasCap = capability == CapabilitySidedFaceHolder.SIDED_FACE_HOLDER;
         if (!hasCap && facing != null) {
@@ -72,6 +120,7 @@ public class TileEntitySocket extends TileEntityBase implements ISocketTile, ITi
         return hasCap;
     }
 
+    @Override
     @Nullable
     public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
         T cap = null;
@@ -130,5 +179,26 @@ public class TileEntitySocket extends TileEntityBase implements ISocketTile, ITi
         for (EnumFacing facing : EnumFacing.values()) {
             this.sidedFaceHolder.getFaceInstance(facing).onTick(this);
         }
+    }
+
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        nbttagcompound.setTag("faces", this.sidedFaceHolder.serializeNBT());
+        return new SPacketUpdateTileEntity(this.pos, 3, nbttagcompound);
+    }
+
+    @Nonnull
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        NBTTagCompound nbt = super.writeToNBT(new NBTTagCompound());
+        nbt.setTag("faces", this.sidedFaceHolder.serializeNBT());
+        return nbt;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        this.sidedFaceHolder.deserializeNBT(pkt.getNbtCompound().getCompoundTag("faces"));
     }
 }
