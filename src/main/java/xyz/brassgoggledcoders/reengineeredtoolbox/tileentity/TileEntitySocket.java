@@ -39,13 +39,15 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class TileEntitySocket extends TileEntityBase implements ISocketTile, ITickable {
+public class TileEntitySocket extends TileEntityBase implements ISocketTile, ITickable, IHasGui {
     private ISidedFaceHolder sidedFaceHolder;
 
     private List<ItemStackQueue> itemStackQueues;
     private List<FluidStackQueue> fluidStackQueues;
 
     private EnergyStorageSerializable energyStorage;
+
+    private EnumFacing lastClickedSide;
 
     public TileEntitySocket() {
         sidedFaceHolder = new SidedFaceHolder();
@@ -200,5 +202,39 @@ public class TileEntitySocket extends TileEntityBase implements ISocketTile, ITi
     @SideOnly(Side.CLIENT)
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         this.sidedFaceHolder.deserializeNBT(pkt.getNbtCompound().getCompoundTag("faces"));
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public Gui getGui(EntityPlayer entityPlayer, World world, BlockPos blockPos) {
+        return Optional.ofNullable(this.getLastClickedSide())
+                .map(sidedFaceHolder::getFaceInstance)
+                .map(faceInstance -> faceInstance.getGui(entityPlayer, this))
+                .orElse(null);
+    }
+
+    @Override
+    public Container getContainer(EntityPlayer entityPlayer, World world, BlockPos blockPos) {
+        return Optional.ofNullable(this.getLastClickedSide())
+                .map(sidedFaceHolder::getFaceInstance)
+                .map(faceInstance -> faceInstance.getContainer(entityPlayer, this))
+                .orElse(null);
+    }
+
+    public boolean onBlockActivated(EntityPlayer player, EnumHand hand, EnumFacing facing) {
+        this.lastClickedSide = facing;
+        FaceInstance faceInstance = this.sidedFaceHolder.getFaceInstance(facing);
+        boolean openedGui = faceInstance.hasGui() && !player.isSneaking() && world.isRemote;
+        if (openedGui) {
+            GuiOpener.openTileEntityGui(ReEngineeredToolbox.INSTANCE, player, this.getWorld(), this.getTilePos());
+        }
+        return faceInstance.onBlockActivated(player, hand) || openedGui;
+    }
+
+    @Nullable
+    private EnumFacing getLastClickedSide() {
+        final EnumFacing returnedSide = this.lastClickedSide;
+        this.lastClickedSide = null;
+        return returnedSide;
     }
 }
