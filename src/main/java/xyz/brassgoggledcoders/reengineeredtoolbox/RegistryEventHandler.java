@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ToolboxRegistries;
@@ -28,7 +29,7 @@ import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.MOD
 public class RegistryEventHandler {
     @SubscribeEvent
     public static void buildFaceRegistry(RegistryEvent.NewRegistry newRegistryEvent) {
-        ToolboxRegistries.FACES = new RegistryBuilder<Face>()
+        ToolboxRegistries.FACES = (ForgeRegistry<Face>) new RegistryBuilder<Face>()
                 .setName(new ResourceLocation(MOD_ID, "faces"))
                 .setType(Face.class)
                 .setDefaultKey(new ResourceLocation(MOD_ID, "empty"))

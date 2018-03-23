@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.teamacronymcoders.base.capability.energy.EnergyStorageSerializable;
 import com.teamacronymcoders.base.guisystem.GuiOpener;
 import com.teamacronymcoders.base.guisystem.IHasGui;
-import com.teamacronymcoders.base.modularguisystem.IModularGuiHost;
 import com.teamacronymcoders.base.tileentities.TileEntityBase;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.EntityPlayer;
@@ -228,7 +227,7 @@ public class TileEntitySocket extends TileEntityBase implements ISocketTile, ITi
         if (openedGui) {
             GuiOpener.openTileEntityGui(ReEngineeredToolbox.INSTANCE, player, this.getWorld(), this.getTilePos());
         }
-        return faceInstance.onBlockActivated(player, hand) || openedGui;
+        return openedGui || faceInstance.onBlockActivated(player, hand);
     }
 
     @Nullable

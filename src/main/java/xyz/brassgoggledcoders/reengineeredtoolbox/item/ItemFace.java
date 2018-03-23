@@ -22,8 +22,8 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.Capa
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.ISidedFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.CapabilityFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.FaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.FaceHolderProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.IFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.ItemFaceHolderProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 
 import javax.annotation.Nonnull;
@@ -84,25 +84,16 @@ public class ItemFace extends ItemBaseNoModel implements IHasItemMeshDefinition 
 
     @Override
     public List<ItemStack> getAllSubItems(List<ItemStack> itemStacks) {
-        return ToolboxRegistries.FACES.getValues().stream()
+        return ToolboxRegistries.FACES.getValues().parallelStream()
                 .filter(Face::createSubItem)
-                .map(TextUtils::getRegistryLocation)
-                .map(value -> {
-                    NBTTagCompound compound = new NBTTagCompound();
-                    compound.setString("face", value);
-                    return compound;
-                })
-                .map(value -> new ItemStack(this, 1, 0, value))
+                .map(ToolboxRegistries.FACES::getID)
+                .map(value -> new ItemStack(this, 1, value))
                 .collect(Collectors.toList());
     }
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack itemStack, @Nullable NBTTagCompound nbt) {
-        return new FaceHolderProvider(new FaceHolder(Optional.ofNullable(nbt)
-                .map(nbtTagCompound -> nbtTagCompound.getString("face"))
-                .map(ResourceLocation::new)
-                .map(ToolboxRegistries.FACES::getValue)
-                .orElse(emptyFace)));
+        return new ItemFaceHolderProvider(itemStack);
     }
 
     @Override

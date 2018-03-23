@@ -30,7 +30,7 @@ public class ItemCreativeFace extends ItemFace {
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack itemStack = player.getHeldItem(hand);
         Face currentFace = this.getFace(itemStack);
-        ForgeRegistry<Face> faces = (ForgeRegistry<Face>) ToolboxRegistries.FACES;
+        ForgeRegistry<Face> faces = ToolboxRegistries.FACES;
         int id = faces.getID(currentFace);
         boolean foundFace = false;
         for (int testId = ++id; testId < id + 20; testId++) {
