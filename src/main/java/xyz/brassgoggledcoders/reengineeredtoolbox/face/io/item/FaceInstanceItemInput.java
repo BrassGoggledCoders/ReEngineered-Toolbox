@@ -3,7 +3,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item;
 import com.teamacronymcoders.base.capability.item.ItemStackHandlerImport;
 import com.teamacronymcoders.base.util.ItemStackUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;

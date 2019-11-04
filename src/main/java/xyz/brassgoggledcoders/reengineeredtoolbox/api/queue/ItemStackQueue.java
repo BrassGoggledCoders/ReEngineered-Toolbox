@@ -1,10 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.queue;
 
-import com.teamacronymcoders.base.util.ItemStackUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
-import java.util.Optional;
+import net.minecraft.nbt.CompoundNBT;
 
 public class ItemStackQueue extends SocketQueue<ItemStack> {
     public ItemStackQueue() {
@@ -15,7 +12,7 @@ public class ItemStackQueue extends SocketQueue<ItemStack> {
     protected ItemStack addToBack(ItemStack value) {
         ItemStack remaining = value;
         if (this.getEndOfQueue().isPresent()) {
-            remaining = ItemStackUtils.mergeStacks(this.getEndOfQueue().get(), value);
+            mergeStacks(this.getEndOfQueue().get(), value);
         }
         if (anyRemainingValue(remaining) && this.getLength() < this.getQueueSize()) {
             this.push(remaining);
@@ -30,12 +27,34 @@ public class ItemStackQueue extends SocketQueue<ItemStack> {
     }
 
     @Override
-    public NBTTagCompound serializeValue(ItemStack value) {
+    public CompoundNBT serializeValue(ItemStack value) {
         return value.serializeNBT();
     }
 
     @Override
-    public ItemStack deserializeValue(NBTTagCompound nbtTagCompound) {
-        return new ItemStack(nbtTagCompound);
+    public ItemStack deserializeValue(CompoundNBT compoundNBT) {
+        return ItemStack.read(compoundNBT);
+    }
+
+    private static ItemStack mergeStacks(ItemStack original, ItemStack addition) {
+        if (canStacksMerge(original, addition)) {
+            int spaceToAdd = original.getMaxStackSize() - original.getCount();
+            if (spaceToAdd > 0) {
+                int amountToAdd = addition.getCount();
+                if (amountToAdd > spaceToAdd) {
+                    amountToAdd = spaceToAdd;
+                }
+
+                addition.shrink(amountToAdd);
+                original.grow(amountToAdd);
+            }
+        }
+
+        return addition;
+    }
+
+    private static boolean canStacksMerge(ItemStack original, ItemStack addition) {
+        return ItemStack.areItemsEqual(original, addition) &&
+                ItemStack.areItemStackTagsEqual(original, addition);
     }
 }

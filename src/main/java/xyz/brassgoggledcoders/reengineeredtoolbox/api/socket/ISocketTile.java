@@ -1,6 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.socket;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -20,7 +20,7 @@ public interface ISocketTile extends ICapabilityProvider {
 
     List<FluidStackQueue> getFluidStackQueues();
 
-    Face getFaceOnSide(EnumFacing facing);
+    Face getFaceOnSide(Direction facing);
 
     World getWorld();
 

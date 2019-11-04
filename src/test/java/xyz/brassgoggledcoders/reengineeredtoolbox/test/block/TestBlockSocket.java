@@ -10,7 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.CapabilitySidedFaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.block.BlockSocket;
+import xyz.brassgoggledcoders.reengineeredtoolbox.block.SocketBlock;
 import xyz.brassgoggledcoders.reengineeredtoolbox.test.utils.Setup;
 
 @RunWith(VoltzTestRunner.class)
@@ -29,7 +29,7 @@ public class TestBlockSocket extends AbstractTest {
     @Test
     public void testPlaceBlock() {
         BlockPos socketPos = new BlockPos(8, 8, 8);
-        BlockSocket socket = new BlockSocket();
+        SocketBlock socket = new SocketBlock();
         world.setBlockState(socketPos, socket.getDefaultState());
 
         TileEntity tileEntity = world.getTileEntity(socketPos);

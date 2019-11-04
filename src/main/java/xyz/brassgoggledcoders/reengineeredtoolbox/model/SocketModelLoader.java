@@ -8,7 +8,7 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.MOD_ID;
+import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.ID;
 
 @SideOnly(Side.CLIENT)
 public class SocketModelLoader implements ICustomModelLoader {
@@ -16,14 +16,14 @@ public class SocketModelLoader implements ICustomModelLoader {
 
     @Override
     public boolean accepts(ResourceLocation modelLocation) {
-        return modelLocation.getResourceDomain().equalsIgnoreCase(MOD_ID) &&
+        return modelLocation.getResourceDomain().equalsIgnoreCase(ID) &&
                 modelLocation.getResourcePath().replace("models/", "").equalsIgnoreCase("socket");
     }
 
     @Override
     public IModel loadModel(ResourceLocation modelLocation) throws Exception {
         if (socketBaseModel == null) {
-            socketBaseModel = ModelLoaderRegistry.getModel(new ResourceLocation(MOD_ID, "block/frame"));
+            socketBaseModel = ModelLoaderRegistry.getModel(new ResourceLocation(ID, "block/frame"));
         }
         return new SocketModel(socketBaseModel);
     }

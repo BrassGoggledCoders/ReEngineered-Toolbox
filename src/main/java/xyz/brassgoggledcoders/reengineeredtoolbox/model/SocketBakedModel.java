@@ -1,30 +1,24 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.model;
 
-import com.teamacronymcoders.base.client.models.ModelUtils;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.util.vector.Vector3f;
+import net.minecraftforge.client.model.data.IModelData;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
-import xyz.brassgoggledcoders.reengineeredtoolbox.block.BlockSocket;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Function;
 
-@SideOnly(Side.CLIENT)
 public class SocketBakedModel implements IBakedModel {
     private final IBakedModel socketFrameBakedModel;
     private final Function<ResourceLocation, TextureAtlasSprite> spriteFunction;
@@ -34,83 +28,33 @@ public class SocketBakedModel implements IBakedModel {
         this.spriteFunction = spriteFunction1;
     }
 
-    @Override
-    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
-        List<BakedQuad> bakedQuads = socketFrameBakedModel.getQuads(state, side, rand);
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
+        List<BakedQuad> quads = socketFrameBakedModel.getQuads(state, side, rand, extraData);
 
-        if (state instanceof IExtendedBlockState) {
-            IExtendedBlockState extendedState = (IExtendedBlockState) state;
 
-            if (side != null) {
-                handleSide(bakedQuads, side, extendedState, spriteFunction);
-            } else {
-                for (EnumFacing facing : EnumFacing.values()) {
-                    handleSide(bakedQuads, facing, extendedState, spriteFunction);
-                }
+        if (side != null) {
+            handleSide(quads, side, extendedState, spriteFunction);
+        } else {
+            for (EnumFacing facing : EnumFacing.values()) {
+                handleSide(bakedQuads, facing, extendedState, spriteFunction);
             }
         }
 
-        return bakedQuads;
+        return quads;
     }
 
-    private void handleSide(List<BakedQuad> bakedQuads, EnumFacing side, IExtendedBlockState state, Function<ResourceLocation, TextureAtlasSprite> spriteFunction) {
-        Face[] faces = state.getValue(BlockSocket.SIDED_FACE_PROPERTY);
+    private void handleSide(List<BakedQuad> bakedQuads, Direction side, IModelData data, Function<ResourceLocation, TextureAtlasSprite> spriteFunction) {
+        Face face = data.getData(ModelProperties.)
         if (faces != null) {
             Face sideFace = faces[side.ordinal()];
-            bakedQuads.add(ModelUtils.createBakedQuad(DefaultVertexFormats.ITEM, getVerticesForSide(sideFace, side),
+            bakedQuads.add(ModelUtils.createBakedQuad(DefaultVertexFormats.ITEM, getDefaultVertices(side),
                     side, sideFace.getSprite(), new double[]{2, 2, 14, 14}, new float[]{1, 1, 1, 1},
                     side.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE));
 
         }
     }
 
-    @Override
-    public boolean isAmbientOcclusion() {
-        return socketFrameBakedModel.isAmbientOcclusion();
-    }
-
-    @Override
-    public boolean isGui3d() {
-        return socketFrameBakedModel.isGui3d();
-    }
-
-    @Override
-    public boolean isBuiltInRenderer() {
-        return socketFrameBakedModel.isBuiltInRenderer();
-    }
-
-    @Override
-    public TextureAtlasSprite getParticleTexture() {
-        return socketFrameBakedModel.getParticleTexture();
-    }
-
-    @Override
-    public ItemOverrideList getOverrides() {
-        return socketFrameBakedModel.getOverrides();
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return socketFrameBakedModel.getItemCameraTransforms();
-    }
-
-    @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType) {
-        return socketFrameBakedModel.handlePerspective(cameraTransformType);
-    }
-
-    private Vector3f[] getVerticesForSide(Face face, EnumFacing facing) {
-        float xOffset = 0;
-        float yOffset = 0;
-        float zOffset = 0;
-
-        Vector3f[] vertices = getDefaultVertices(facing);
-
-        return vertices;
-    }
-
-    private Vector3f[] getDefaultVertices(EnumFacing facing) {
+    private Vector3f[] getDefaultVertices(Direction facing) {
         Vector3f[] vertices = new Vector3f[4];
         switch (facing) {
             case DOWN:
@@ -151,6 +95,38 @@ public class SocketBakedModel implements IBakedModel {
                 break;
         }
         return vertices;
+    }
+
+
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isAmbientOcclusion() {
+        return false;
+    }
+
+    @Override
+    public boolean isGui3d() {
+        return false;
+    }
+
+    @Override
+    public boolean isBuiltInRenderer() {
+        return false;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public TextureAtlasSprite getParticleTexture() {
+        return socketFrameBakedModel.getParticleTexture();
+    }
+
+    @Override
+    public ItemOverrideList getOverrides() {
+        return socketFrameBakedModel.getOverrides();
     }
 }
 

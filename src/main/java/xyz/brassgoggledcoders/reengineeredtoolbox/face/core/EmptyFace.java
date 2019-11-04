@@ -3,11 +3,11 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.face.core;
 import net.minecraft.util.ResourceLocation;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 
-import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.MOD_ID;
+import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.ID;
 
 public class EmptyFace extends Face {
     public EmptyFace() {
-        super(new ResourceLocation(MOD_ID, "empty"));
+        super(new ResourceLocation(ID, "empty"));
     }
 
     @Override

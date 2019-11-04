@@ -1,8 +1,8 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single;
+package xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -18,13 +18,13 @@ public class CapabilityFaceHolder {
         CapabilityManager.INSTANCE.register(IFaceHolder.class, new Capability.IStorage<IFaceHolder>() {
             @Nullable
             @Override
-            public NBTBase writeNBT(Capability<IFaceHolder> capability, IFaceHolder instance, EnumFacing side) {
+            public INBT writeNBT(Capability<IFaceHolder> capability, IFaceHolder instance, Direction side) {
                 return instance.serializeNBT();
             }
 
             @Override
-            public void readNBT(Capability<IFaceHolder> capability, IFaceHolder instance, EnumFacing side, NBTBase nbt) {
-                instance.deserializeNBT((NBTTagCompound) nbt);
+            public void readNBT(Capability<IFaceHolder> capability, IFaceHolder instance, Direction side, INBT nbt) {
+                instance.deserializeNBT((CompoundNBT) nbt);
             }
         }, FaceHolder::new);
     }

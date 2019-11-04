@@ -1,23 +1,16 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.face;
 
-import com.teamacronymcoders.base.guisystem.GuiOpener;
-import net.minecraft.client.gui.Gui;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class FaceInstance implements INBTSerializable<NBTTagCompound> {
+public class FaceInstance implements INBTSerializable<CompoundNBT> {
 
     public void onAttach(ISocketTile tile) {
 
@@ -37,12 +30,12 @@ public class FaceInstance implements INBTSerializable<NBTTagCompound> {
     }
 
     @Override
-    public NBTTagCompound serializeNBT() {
-        return new NBTTagCompound();
+    public CompoundNBT serializeNBT() {
+        return new CompoundNBT();
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
+    public void deserializeNBT(CompoundNBT nbt) {
 
     }
 
@@ -50,22 +43,11 @@ public class FaceInstance implements INBTSerializable<NBTTagCompound> {
 
     }
 
-    public boolean onBlockActivated(EntityPlayer player, EnumHand hand) {
+    public boolean onBlockActivated(PlayerEntity player, Hand hand) {
         return false;
     }
 
     public boolean hasGui() {
         return false;
-    }
-
-    @Nullable
-    @SideOnly(Side.CLIENT)
-    public Gui getGui(EntityPlayer player, ISocketTile socketTile) {
-        return null;
-    }
-
-    @Nullable
-    public Container getContainer(EntityPlayer player, ISocketTile socketTile) {
-        return null;
     }
 }

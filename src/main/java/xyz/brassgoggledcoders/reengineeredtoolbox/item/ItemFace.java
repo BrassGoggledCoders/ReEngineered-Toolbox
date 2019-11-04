@@ -1,125 +1,59 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.item;
 
-import com.teamacronymcoders.base.items.IHasItemMeshDefinition;
-import com.teamacronymcoders.base.items.ItemBaseNoModel;
-import com.teamacronymcoders.base.util.TextUtils;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.util.ActionResultType;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.ToolboxRegistries;
+import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.CapabilitySidedFaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.ISidedFaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.CapabilityFaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.FaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.IFaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.single.ItemFaceHolderProvider;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.CapabilityFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.FaceHolderProvider;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.IFaceHolder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
 
-import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.MOD_ID;
+public class ItemFace extends Item {
+    private final Supplier<Face> faceSupplier;
 
-public class ItemFace extends ItemBaseNoModel implements IHasItemMeshDefinition {
-    @ObjectHolder(MOD_ID + ":empty")
-    public static Face emptyFace;
-
-    public ItemFace() {
-        super("face");
-    }
-
-    public ItemFace(String name) {
-        super(name);
+    public ItemFace(Item.Properties properties, Supplier<Face> faceSupplier) {
+        super(properties);
+        this.faceSupplier = faceSupplier;
     }
 
     @Override
     @Nonnull
-    public String getUnlocalizedName(ItemStack stack) {
-        return this.getFace(stack).getUnlocalizedName();
-    }
-
-    @Override
-    @Nonnull
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing,
-                                      float hitX, float hitY, float hitZ) {
-        EnumActionResult result = EnumActionResult.PASS;
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity != null && tileEntity.hasCapability(CapabilitySidedFaceHolder.SIDED_FACE_HOLDER, facing)) {
-            ISidedFaceHolder sidedFaceHolder = tileEntity.getCapability(CapabilitySidedFaceHolder.SIDED_FACE_HOLDER, facing);
-            if (sidedFaceHolder != null && sidedFaceHolder.getFace(facing).isReplaceable()) {
-                ItemStack heldStack = player.getHeldItem(hand);
-                if (heldStack.hasCapability(CapabilityFaceHolder.FACE_HOLDER, null)) {
-                    IFaceHolder faceHolder = heldStack.getCapability(CapabilityFaceHolder.FACE_HOLDER, null);
-                    if (faceHolder != null) {
-                        sidedFaceHolder.setFace(facing, faceHolder.getFace());
-                        if (tileEntity instanceof ISocketTile) {
-                            sidedFaceHolder.getFaceInstance(facing).onAttach((ISocketTile) tileEntity);
-                        }
-                        heldStack.shrink(1);
-                        result = EnumActionResult.SUCCESS;
-                        IBlockState blockState = world.getBlockState(pos);
-                        tileEntity.markDirty();
-                        world.notifyBlockUpdate(pos, blockState, blockState,3);
-                        world.notifyNeighborsOfStateChange(pos, blockState.getBlock(), true);
-                    }
+    public ActionResultType onItemUse(ItemUseContext context) {
+        TileEntity tileEntity = context.getWorld().getTileEntity(context.getPos());
+        if (tileEntity != null) {
+            LazyOptional<IFaceHolder> socketFaceHolder = tileEntity.getCapability(CapabilityFaceHolder.FACE_HOLDER, context.getFace());
+            socketFaceHolder.ifPresent(socketFaceHolderValue -> {
+                if (socketFaceHolderValue.getFace().isReplaceable()) {
+                    ItemStack heldStack = context.getItem();
+                    heldStack.getCapability(CapabilityFaceHolder.FACE_HOLDER)
+                            .ifPresent(stackFaceHolder -> {
+                                socketFaceHolderValue.setFace(stackFaceHolder.getFace());
+                                heldStack.shrink(1);
+                                BlockState blockState = context.getWorld().getBlockState(context.getPos());
+                                context.getWorld().notifyBlockUpdate(context.getPos(), blockState, blockState, 3);
+                                context.getWorld().notifyNeighborsOfStateChange(context.getPos(), blockState.getBlock());
+                            });
                 }
+            });
+            if (socketFaceHolder.isPresent()) {
+                return ActionResultType.SUCCESS;
             }
         }
-        return result;
+        return ActionResultType.PASS;
     }
 
     @Override
-    public List<ItemStack> getAllSubItems(List<ItemStack> itemStacks) {
-        return ToolboxRegistries.FACES.getValues().parallelStream()
-                .filter(Face::createSubItem)
-                .map(ToolboxRegistries.FACES::getID)
-                .map(value -> new ItemStack(this, 1, value))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack itemStack, @Nullable NBTTagCompound nbt) {
-        return new ItemFaceHolderProvider(itemStack);
-    }
-
-    @Override
-    public ResourceLocation getResourceLocation(ItemStack itemStack) {
-        return this.getFace(itemStack).getModelLocation();
-    }
-
-    @Override
-    public List<ResourceLocation> getAllVariants() {
-        return ToolboxRegistries.FACES.getValues().stream()
-                .map(Face::getModelLocation)
-                .collect(Collectors.toList());
-    }
-
-    public Face getFace(ItemStack itemStack) {
-        return this.getFaceCapability(itemStack)
-                .map(IFaceHolder::getFace)
-                .orElse(emptyFace);
-    }
-
-    public void setFace(ItemStack itemStack, Face face) {
-        this.getFaceCapability(itemStack)
-                .ifPresent(cap -> cap.setFace(face));
-    }
-
-    public Optional<IFaceHolder> getFaceCapability(ItemStack itemStack) {
-        return Optional.ofNullable(itemStack.getCapability(CapabilityFaceHolder.FACE_HOLDER, null));
+    public ICapabilityProvider initCapabilities(ItemStack itemStack, @Nullable CompoundNBT nbt) {
+        return new FaceHolderProvider(faceSupplier.get());
     }
 }
