@@ -1,7 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "reengineeredtoolbox:frame",
+    "model": "reengineeredtoolbox:blocks/frame",
     "uvlock": true,
     "transform": "forge:default-block"
   },

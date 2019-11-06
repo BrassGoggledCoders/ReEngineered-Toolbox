@@ -7,6 +7,6 @@ import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.ID;
 
 public class BlankFace extends Face {
     public BlankFace() {
-        super(new ResourceLocation(ID, "blank"));
+        super();
     }
 }

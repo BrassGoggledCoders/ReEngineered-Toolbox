@@ -12,21 +12,9 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.queue.ItemStackQueue;
 import java.util.List;
 
 public interface ISocketTile extends ICapabilityProvider {
-    ItemStackQueue getItemStackQueue(int number);
-
-    FluidStackQueue getFluidStackQueue(int number);
-
-    List<ItemStackQueue> getItemStackQueues();
-
-    List<FluidStackQueue> getFluidStackQueues();
-
     Face getFaceOnSide(Direction facing);
 
     World getWorld();
 
     BlockPos getTilePos();
-
-    boolean isClient();
-
-    IEnergyStorage getEnergyStorage();
 }

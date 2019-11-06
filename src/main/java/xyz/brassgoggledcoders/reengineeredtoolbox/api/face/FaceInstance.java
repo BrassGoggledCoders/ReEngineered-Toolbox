@@ -2,15 +2,24 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.api.face;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class FaceInstance implements INBTSerializable<CompoundNBT> {
+public class FaceInstance implements INBTSerializable<CompoundNBT>, ICapabilityProvider {
+    private final Face face;
+
+    public FaceInstance(Face face) {
+        this.face = face;
+    }
 
     public void onAttach(ISocketTile tile) {
 
@@ -20,13 +29,10 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
 
     }
 
-    public boolean hasCapability(@Nonnull Capability<?> capability) {
-        return false;
-    }
-
-    @Nullable
-    public <T> T getCapability(@Nonnull Capability<T> capability) {
-        return null;
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        return LazyOptional.empty();
     }
 
     @Override
@@ -39,15 +45,15 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
 
     }
 
-    public void configureQueue(String name, int queueNumber) {
-
-    }
-
     public boolean onBlockActivated(PlayerEntity player, Hand hand) {
         return false;
     }
 
-    public boolean hasGui() {
-        return false;
+    public Face getFace() {
+        return this.face;
+    }
+
+    public ResourceLocation getSpriteLocation() {
+        return face.getSpriteLocation();
     }
 }

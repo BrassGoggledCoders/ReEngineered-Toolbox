@@ -1,0 +1,11 @@
+modLoader="javafml"
+loaderVersion="[28,)"
+issueTrackerURL="https://github.com/The-Acronym-Coders/The Loader/issues"
+
+[[mods]]
+    modId="reengineeredtoolbox"
+    version="${file.jarVersion}"
+    displayName="Reengineered Toolbox"
+    authors="SkySom"
+    description='''
+    '''
