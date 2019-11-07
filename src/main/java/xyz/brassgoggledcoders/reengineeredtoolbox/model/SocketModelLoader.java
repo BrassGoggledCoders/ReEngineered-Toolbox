@@ -14,8 +14,10 @@ public class SocketModelLoader implements ICustomModelLoader {
 
     @Override
     public boolean accepts(ResourceLocation modelLocation) {
-        return modelLocation.getNamespace().equalsIgnoreCase(ID) &&
-                modelLocation.getPath().replace("models/", "").equalsIgnoreCase("socket");
+        if (modelLocation.getNamespace().equalsIgnoreCase(ID)) {
+            return modelLocation.getPath().replace("models/", "").equalsIgnoreCase("socket");
+        }
+        return false;
     }
 
     @Override

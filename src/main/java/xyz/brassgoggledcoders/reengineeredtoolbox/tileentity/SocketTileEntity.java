@@ -1,18 +1,24 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.tileentity;
 
 import com.google.common.collect.Maps;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.CapabilityFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.FaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.IFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
+import xyz.brassgoggledcoders.reengineeredtoolbox.model.FaceProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,7 +34,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
         faceHolders = Maps.newEnumMap(Direction.class);
         faceHolderOptionals = Maps.newEnumMap(Direction.class);
 
-        for (Direction direction: Direction.values()) {
+        for (Direction direction : Direction.values()) {
             FaceHolder faceHolder = new FaceHolder();
             faceHolders.put(direction, faceHolder);
             faceHolderOptionals.put(direction, LazyOptional.of(() -> faceHolder));
@@ -44,7 +50,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
             } else {
                 IFaceHolder faceHolder = faceHolders.get(facing);
                 if (faceHolder != null && faceHolder.getFaceInstance() != null) {
-
+                    faceHolder.getFaceInstance().getCapability(capability);
                 }
             }
         }
@@ -67,5 +73,27 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
         for (Direction facing : Direction.values()) {
             this.faceHolders.get(facing).getFaceInstance().onTick(this);
         }
+    }
+
+    public void updateFaces() {
+        requestModelDataUpdate();
+    }
+
+    @Override
+    public IModelData getModelData() {
+        ModelDataMap.Builder map = new ModelDataMap.Builder();
+        for (FaceProperty faceProperty : FaceProperty.VALUES) {
+            map.withInitial(faceProperty.getModelProperty(), faceHolders.get(faceProperty.getDirection()).getFaceInstance());
+        }
+        return map.build();
+    }
+
+    public void read(CompoundNBT compound) {
+        super.read(compound);
+    }
+
+    public CompoundNBT write(CompoundNBT compound) {
+        super.write(compound);
+        return compound;
     }
 }

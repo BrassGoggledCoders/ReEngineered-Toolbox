@@ -7,6 +7,9 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
@@ -18,10 +21,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class ItemFace extends Item {
+public class FaceItem extends Item {
     private final Supplier<Face> faceSupplier;
 
-    public ItemFace(Item.Properties properties, Supplier<Face> faceSupplier) {
+    public FaceItem(Item.Properties properties, Supplier<Face> faceSupplier) {
         super(properties);
         this.faceSupplier = faceSupplier;
     }
@@ -33,7 +36,7 @@ public class ItemFace extends Item {
         if (tileEntity != null) {
             LazyOptional<IFaceHolder> socketFaceHolder = tileEntity.getCapability(CapabilityFaceHolder.FACE_HOLDER, context.getFace());
             socketFaceHolder.ifPresent(socketFaceHolderValue -> {
-                if (socketFaceHolderValue.getFace().isReplaceable()) {
+                if (socketFaceHolderValue.getFace() == null) {
                     ItemStack heldStack = context.getItem();
                     heldStack.getCapability(CapabilityFaceHolder.FACE_HOLDER)
                             .ifPresent(stackFaceHolder -> {
@@ -51,6 +54,13 @@ public class ItemFace extends Item {
         }
         return ActionResultType.PASS;
     }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public ITextComponent getName() {
+        return faceSupplier.get().getName();
+    }
+
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack itemStack, @Nullable CompoundNBT nbt) {

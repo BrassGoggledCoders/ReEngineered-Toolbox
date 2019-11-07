@@ -14,7 +14,7 @@ public enum FaceProperty {
     WEST(Direction.WEST),
     EAST(Direction.EAST);
 
-    private static FaceProperty[] VALUES = values();
+    public static FaceProperty[] VALUES = values();
 
     private final Direction direction;
     private final ModelProperty<FaceInstance> modelProperty;
@@ -38,7 +38,7 @@ public enum FaceProperty {
         return this.direction;
     }
 
-    private ModelProperty<FaceInstance> getModelProperty() {
+    public ModelProperty<FaceInstance> getModelProperty() {
         return this.modelProperty;
     }
 }

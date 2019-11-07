@@ -8,12 +8,17 @@ import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
+import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
+import xyz.brassgoggledcoders.reengineeredtoolbox.tileentity.SocketTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,17 +29,18 @@ import java.util.function.Function;
 
 public class SocketBakedModel implements IBakedModel {
     private final IBakedModel socketFrameBakedModel;
+    private final TextureAtlasSprite emptySprite;
     private final Function<ResourceLocation, TextureAtlasSprite> spriteFunction;
 
-    public SocketBakedModel(IBakedModel socketFrameBakedModel, Function<ResourceLocation, TextureAtlasSprite> spriteFunction1) {
+    public SocketBakedModel(IBakedModel socketFrameBakedModel, Function<ResourceLocation, TextureAtlasSprite> spriteFunction) {
         this.socketFrameBakedModel = socketFrameBakedModel;
-        this.spriteFunction = spriteFunction1;
+        this.spriteFunction = spriteFunction;
+        this.emptySprite = spriteFunction.apply(new ResourceLocation(ReEngineeredToolbox.ID, "faces/empty"));
     }
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
         List<BakedQuad> quads = socketFrameBakedModel.getQuads(state, side, rand, extraData);
-
 
         if (side != null) {
             handleSide(quads, side, extraData);
@@ -49,12 +55,10 @@ public class SocketBakedModel implements IBakedModel {
 
     private void handleSide(List<BakedQuad> bakedQuads, @Nonnull Direction side, IModelData modelData) {
         FaceInstance faceInstance = modelData.getData(FaceProperty.getModelForSide(side));
-        if (faceInstance != null) {
-            bakedQuads.add(createBakedQuad(DefaultVertexFormats.ITEM, getDefaultVertices(side),
-                    side, faceInstance.getSpriteLocation(), new double[]{2, 2, 14, 14}, new float[]{1, 1, 1, 1},
-                    side.getAxisDirection() == Direction.AxisDirection.NEGATIVE, new float[]{1, 1, 1, 1}));
-
-        }
+        TextureAtlasSprite sprite = faceInstance == null ? emptySprite : spriteFunction.apply(faceInstance.getSpriteLocation());
+        bakedQuads.add(createBakedQuad(DefaultVertexFormats.ITEM, getDefaultVertices(side),
+                side, sprite, new double[]{2, 2, 14, 14}, new float[]{1, 1, 1, 1},
+                side.getAxisDirection() == Direction.AxisDirection.NEGATIVE, new float[]{1, 1, 1, 1}));
     }
 
     private Vector3f[] getDefaultVertices(Direction facing) {
@@ -101,10 +105,9 @@ public class SocketBakedModel implements IBakedModel {
     }
 
     private BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, Direction facing,
-                                            ResourceLocation spriteLocation, double[] uvs, float[] colour,
-                                            boolean invert, float[] alpha) {
+                                      TextureAtlasSprite sprite, double[] uvs, float[] colour,
+                                      boolean invert, float[] alpha) {
         UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
-        TextureAtlasSprite sprite = spriteFunction.apply(spriteLocation);
         builder.setQuadOrientation(facing);
         builder.setTexture(sprite);
         Normal faceNormal = new Normal(facing.getDirectionVec().getX(), facing.getDirectionVec().getY(), facing.getDirectionVec().getZ());
@@ -124,7 +127,7 @@ public class SocketBakedModel implements IBakedModel {
     }
 
     private void putVertexData(VertexFormat format, UnpackedBakedQuad.Builder builder, Vector3f pos, Normal faceNormal,
-                                        double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha) {
+                               double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha) {
         for (int e = 0; e < format.getElementCount(); e++) {
             switch (format.getElement(e).getUsage()) {
                 case POSITION:

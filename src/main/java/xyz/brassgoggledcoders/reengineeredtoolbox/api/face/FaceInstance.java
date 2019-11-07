@@ -14,7 +14,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class FaceInstance implements INBTSerializable<CompoundNBT>, ICapabilityProvider {
+public class FaceInstance implements INBTSerializable<CompoundNBT> {
     private final Face face;
 
     public FaceInstance(Face face) {
@@ -30,8 +30,7 @@ public class FaceInstance implements INBTSerializable<CompoundNBT>, ICapabilityP
     }
 
     @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
         return LazyOptional.empty();
     }
 

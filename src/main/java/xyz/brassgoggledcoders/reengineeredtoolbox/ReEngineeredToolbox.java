@@ -3,13 +3,21 @@ package xyz.brassgoggledcoders.reengineeredtoolbox;
 import com.hrznstudio.titanium.tab.TitaniumTab;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETRegistries;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.CapabilityFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Faces;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.Items;
 import xyz.brassgoggledcoders.reengineeredtoolbox.model.SocketModelLoader;
 
 @Mod(value = ReEngineeredToolbox.ID)
@@ -26,8 +34,14 @@ public class ReEngineeredToolbox {
 
         Faces.register(modBus);
         Blocks.register(modBus);
+        Items.register(modBus);
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+        modBus.addListener(this::commonSetup);
+        modBus.addListener(this::clientSetup);
+    }
+
+    private void commonSetup(FMLCommonSetupEvent event) {
+        CapabilityFaceHolder.register();
     }
 
     private void clientSetup(FMLClientSetupEvent event) {

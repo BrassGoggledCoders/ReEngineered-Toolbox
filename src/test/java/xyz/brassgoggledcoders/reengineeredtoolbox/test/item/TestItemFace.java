@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.CapabilityFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.IFaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.item.ItemFace;
+import xyz.brassgoggledcoders.reengineeredtoolbox.item.FaceItem;
 import xyz.brassgoggledcoders.reengineeredtoolbox.test.utils.Setup;
 
 import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.ID;
@@ -29,7 +29,7 @@ public class TestItemFace extends AbstractTest {
     public void testCapabilityInit() {
         CompoundNBT tagCompound = new CompoundNBT();
         tagCompound.setString("face", new ResourceLocation(ID, "blank").toString());
-        ItemStack itemStack = new ItemStack(new ItemFace(), 1, 0, tagCompound);
+        ItemStack itemStack = new ItemStack(new FaceItem(), 1, 0, tagCompound);
 
         IFaceHolder faceHolder = itemStack.getCapability(CapabilityFaceHolder.FACE_HOLDER, null);
         assert faceHolder != null;
