@@ -5,12 +5,13 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETRegistries;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.CapabilityFaceHolder;
@@ -72,19 +73,19 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     @Override
     public void tick() {
         for (Direction facing : Direction.values()) {
-            this.faceHolders.get(facing).getFaceInstance().onTick(this);
+            FaceInstance faceInstance = this.faceHolders.get(facing).getFaceInstance();
+            if (faceInstance != null) {
+                faceInstance.onTick(this);
+            }
         }
-    }
-
-    @Nonnull
-    public World getRealWorld() {
-        return Objects.requireNonNull(this.getWorld());
     }
 
     public void updateFaces() {
         requestModelDataUpdate();
         this.markDirty();
-        this.getRealWorld().notifyBlockUpdate(pos, this.getBlockState(), this.getBlockState(), 3);
+        if (this.getWorld() != null) {
+            this.getWorld().notifyBlockUpdate(pos, this.getBlockState(), this.getBlockState(), 3);
+        }
     }
 
     @Override
@@ -96,12 +97,43 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
         return map.build();
     }
 
+    @Override
     public void read(CompoundNBT compound) {
         super.read(compound);
+        if (compound.contains("faceHolders")) {
+            CompoundNBT faceHolderNBT = compound.getCompound("faceHolders");
+            for (Direction direction : Direction.values()) {
+                if (faceHolderNBT.contains(direction.getName())) {
+                    CompoundNBT faceNBT = faceHolderNBT.getCompound(direction.getName());
+                    Face face = RETRegistries.FACES.getValue(new ResourceLocation(faceNBT.getString("face")));
+                    if (face != null) {
+                        IFaceHolder faceHolder = faceHolders.get(direction);
+                        faceHolder.setFace(face);
+                        if (faceNBT.contains("instance")) {
+                            faceHolder.getFaceInstance().deserializeNBT(faceNBT.getCompound("instance"));
+                        }
+                    }
+                }
+            }
+        }
     }
 
+    @Override
     public CompoundNBT write(CompoundNBT compound) {
         super.write(compound);
+        CompoundNBT faceHolderNBT = new CompoundNBT();
+        for (Direction direction : Direction.values()) {
+            IFaceHolder faceHolder = faceHolders.get(direction);
+            if (faceHolder.getFace() != null) {
+                CompoundNBT faceNBT = new CompoundNBT();
+                faceNBT.putString("face", Objects.requireNonNull(faceHolder.getFace().getRegistryName()).toString());
+                if (faceHolder.getFaceInstance() != null) {
+                    faceNBT.put("instance", faceHolder.getFaceInstance().serializeNBT());
+                }
+                faceHolderNBT.put(direction.getName(), faceNBT);
+            }
+        }
+        compound.put("faceHolders", faceHolderNBT);
         return compound;
     }
 }

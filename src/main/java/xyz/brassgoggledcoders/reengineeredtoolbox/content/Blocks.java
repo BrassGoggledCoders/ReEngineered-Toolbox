@@ -34,7 +34,7 @@ public class Blocks {
     );
 
     public static final RegistryObject<TileEntityType<?>> SOCKET_TYPE = TILE_TYPE.register("socket", () ->
-            TileEntityType.Builder.create(SocketTileEntity::new).build(null));
+            TileEntityType.Builder.create(SocketTileEntity::new, SOCKET.get()).build(null));
 
     public static void register(IEventBus bus) {
         BLOCKS.register(bus);
