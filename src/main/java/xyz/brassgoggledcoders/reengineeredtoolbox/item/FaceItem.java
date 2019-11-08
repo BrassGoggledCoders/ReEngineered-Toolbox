@@ -61,6 +61,11 @@ public class FaceItem extends Item {
         return faceSupplier.get().getName();
     }
 
+    @Override
+    public String getTranslationKey(ItemStack stack) {
+        return faceSupplier.get().getTranslationKey();
+    }
+
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack itemStack, @Nullable CompoundNBT nbt) {

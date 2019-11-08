@@ -10,12 +10,12 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class Face extends ForgeRegistryEntry<Face> {
     private final Function<Face, FaceInstance> faceInstanceConstructor;
     private final LazyLoadBase<ResourceLocation> spriteLocation;
-    private final LazyLoadBase<ITextComponent> textComponent;
+    private final LazyLoadBase<String> translationKey;
+    private final LazyLoadBase<ITextComponent> name;
 
     public Face() {
         this(FaceInstance::new);
@@ -27,10 +27,11 @@ public class Face extends ForgeRegistryEntry<Face> {
             ResourceLocation registryName = Objects.requireNonNull(this.getRegistryName());
             return new ResourceLocation(registryName.getNamespace(), "faces/" + registryName.getPath());
         });
-        this.textComponent = new LazyLoadBase<>(() -> {
+        this.translationKey = new LazyLoadBase<>(() -> {
             ResourceLocation registryName = Objects.requireNonNull(this.getRegistryName());
-            return new TranslationTextComponent("face." + registryName.getNamespace() + "." + registryName.getPath());
+            return "face." + registryName.getNamespace() + "." + registryName.getPath();
         });
+        this.name = new LazyLoadBase<>(() -> new TranslationTextComponent(this.translationKey.getValue()));
     }
 
     public FaceInstance createInstance() {
@@ -38,7 +39,11 @@ public class Face extends ForgeRegistryEntry<Face> {
     }
 
     public ITextComponent getName() {
-        return this.textComponent.getValue();
+        return this.name.getValue();
+    }
+
+    public String getTranslationKey() {
+        return this.translationKey.getValue();
     }
 
     public ResourceLocation getSpriteLocation() {
