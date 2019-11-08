@@ -8,17 +8,13 @@ import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
-import xyz.brassgoggledcoders.reengineeredtoolbox.tileentity.SocketTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

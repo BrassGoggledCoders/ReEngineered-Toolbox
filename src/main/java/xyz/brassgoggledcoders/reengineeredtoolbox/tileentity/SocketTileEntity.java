@@ -22,6 +22,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.model.FaceProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 import java.util.EnumMap;
 import java.util.Objects;
 
@@ -35,7 +36,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
         faceHolderOptionals = Maps.newEnumMap(Direction.class);
 
         for (Direction direction : Direction.values()) {
-            FaceHolder faceHolder = new FaceHolder();
+            FaceHolder faceHolder = new SocketFaceHolder(new WeakReference<>(this));
             faceHolders.put(direction, faceHolder);
             faceHolderOptionals.put(direction, LazyOptional.of(() -> faceHolder));
         }
@@ -75,8 +76,15 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
         }
     }
 
+    @Nonnull
+    public World getRealWorld() {
+        return Objects.requireNonNull(this.getWorld());
+    }
+
     public void updateFaces() {
         requestModelDataUpdate();
+        this.markDirty();
+        this.getRealWorld().notifyBlockUpdate(pos, this.getBlockState(), this.getBlockState(), 3);
     }
 
     @Override

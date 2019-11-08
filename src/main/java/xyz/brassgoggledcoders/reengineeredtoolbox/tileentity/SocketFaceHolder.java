@@ -15,7 +15,9 @@ public class SocketFaceHolder extends FaceHolder {
     @Override
     public void setFace(Face face) {
         super.setFace(face);
-        if (socketReference.get() != null)
-        socketReference.get().updateFaces();
+        SocketTileEntity tileEntity = socketReference.get();
+        if (tileEntity != null) {
+            tileEntity.updateFaces();
+        }
     }
 }

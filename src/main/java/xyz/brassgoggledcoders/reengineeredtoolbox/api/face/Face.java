@@ -25,7 +25,7 @@ public class Face extends ForgeRegistryEntry<Face> {
         this.faceInstanceConstructor = createFaceInstance;
         this.spriteLocation = new LazyLoadBase<>(() -> {
             ResourceLocation registryName = Objects.requireNonNull(this.getRegistryName());
-            return new ResourceLocation(registryName.getNamespace(), "faces/" + registryName.getNamespace());
+            return new ResourceLocation(registryName.getNamespace(), "faces/" + registryName.getPath());
         });
         this.textComponent = new LazyLoadBase<>(() -> {
             ResourceLocation registryName = Objects.requireNonNull(this.getRegistryName());
