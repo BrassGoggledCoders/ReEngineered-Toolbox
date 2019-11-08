@@ -2,6 +2,8 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.tileentity;
 
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -26,6 +28,9 @@ import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.EnumMap;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class SocketTileEntity extends TileEntity implements ISocketTile, ITickableTileEntity {
     private EnumMap<Direction, IFaceHolder> faceHolders;
@@ -101,39 +106,72 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     public void read(CompoundNBT compound) {
         super.read(compound);
         if (compound.contains("faceHolders")) {
-            CompoundNBT faceHolderNBT = compound.getCompound("faceHolders");
-            for (Direction direction : Direction.values()) {
-                if (faceHolderNBT.contains(direction.getName())) {
-                    CompoundNBT faceNBT = faceHolderNBT.getCompound(direction.getName());
-                    Face face = RETRegistries.FACES.getValue(new ResourceLocation(faceNBT.getString("face")));
-                    if (face != null) {
-                        IFaceHolder faceHolder = faceHolders.get(direction);
-                        faceHolder.setFace(face);
-                        if (faceNBT.contains("instance")) {
-                            faceHolder.getFaceInstance().deserializeNBT(faceNBT.getCompound("instance"));
-                        }
-                    }
-                }
-            }
+            handleFaceHolderNBT(compound.getCompound("faceHolders"), FaceInstance::deserializeNBT);
         }
     }
 
     @Override
     public CompoundNBT write(CompoundNBT compound) {
         super.write(compound);
-        CompoundNBT faceHolderNBT = new CompoundNBT();
+        compound.put("faceHolders", createFaceNBT(FaceInstance::serializeNBT));
+        return compound;
+    }
+
+    @Override
+    @Nullable
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket();
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        handleUpdateTag(pkt.getNbtCompound());
+    }
+
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = new CompoundNBT();
+        updateTag.put("faceHolder", this.createFaceNBT(FaceInstance::getUpdateTag));
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundNBT tag) {
+        if (tag.contains("faceHolders")) {
+            handleFaceHolderNBT(tag.getCompound("faceHolders"), FaceInstance::handleUpdateTag);
+        }
+    }
+
+    private void handleFaceHolderNBT(CompoundNBT faceHolderNBT, BiConsumer<FaceInstance, CompoundNBT> handleInstanceNBT) {
         for (Direction direction : Direction.values()) {
+            if (faceHolderNBT.contains(direction.getName())) {
+                CompoundNBT faceNBT = faceHolderNBT.getCompound(direction.getName());
+                Face face = RETRegistries.FACES.getValue(new ResourceLocation(faceNBT.getString("face")));
+                if (face != null) {
+                    IFaceHolder faceHolder = faceHolders.get(direction);
+                    faceHolder.setFace(face);
+                    if (faceNBT.contains("instance")) {
+                        handleInstanceNBT.accept(faceHolder.getFaceInstance(), faceNBT.getCompound("instance"));
+                    }
+                }
+            }
+        }
+    }
+
+    private CompoundNBT createFaceNBT(Function<FaceInstance, CompoundNBT> writeInstanceTag) {
+        CompoundNBT faceHolderTag = new CompoundNBT();
+        for (Direction direction: Direction.values()) {
             IFaceHolder faceHolder = faceHolders.get(direction);
             if (faceHolder.getFace() != null) {
                 CompoundNBT faceNBT = new CompoundNBT();
-                faceNBT.putString("face", Objects.requireNonNull(faceHolder.getFace().getRegistryName()).toString());
+                faceNBT.putString("face", String.valueOf(faceHolder.getFace().getRegistryName()));
                 if (faceHolder.getFaceInstance() != null) {
-                    faceNBT.put("instance", faceHolder.getFaceInstance().serializeNBT());
+                    faceNBT.put("instance", writeInstanceTag.apply(faceHolder.getFaceInstance()));
                 }
-                faceHolderNBT.put(direction.getName(), faceNBT);
+                faceHolderTag.put(direction.getName(), faceNBT);
             }
         }
-        compound.put("faceHolders", faceHolderNBT);
-        return compound;
+        return faceHolderTag;
     }
+
 }
