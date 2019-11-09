@@ -1,7 +1,10 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.face;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -49,5 +52,9 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
 
     public void handleUpdateTag(CompoundNBT updateNBT) {
 
+    }
+
+    public boolean onActivated(ISocketTile tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        return false;
     }
 }

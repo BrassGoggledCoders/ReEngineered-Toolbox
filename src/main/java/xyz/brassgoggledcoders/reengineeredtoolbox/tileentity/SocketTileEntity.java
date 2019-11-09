@@ -1,14 +1,17 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.tileentity;
 
 import com.google.common.collect.Maps;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.common.capabilities.Capability;
@@ -174,4 +177,8 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
         return faceHolderTag;
     }
 
+    public boolean onBlockActivated(PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        FaceInstance faceInstance = faceHolders.get(hit.getFace()).getFaceInstance();
+        return faceInstance != null && faceInstance.onActivated(this, player, hand, hit);
+    }
 }
