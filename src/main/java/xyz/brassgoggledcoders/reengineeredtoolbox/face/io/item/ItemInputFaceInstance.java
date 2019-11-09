@@ -4,9 +4,9 @@ import net.minecraftforge.items.ItemStackHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 
-public class FaceInstanceItemInput extends FaceInstanceItemIO {
+public class ItemInputFaceInstance extends ItemIOFaceInstance {
 
-    public FaceInstanceItemInput(Face face) {
+    public ItemInputFaceInstance(Face face) {
         super(face, new ItemStackHandler(1));
     }
 

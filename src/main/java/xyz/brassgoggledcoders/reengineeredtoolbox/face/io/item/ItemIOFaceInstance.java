@@ -12,12 +12,12 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class FaceInstanceItemIO extends FaceInstance {
+public class ItemIOFaceInstance extends FaceInstance {
     protected final ItemStackHandler currentStack;
     private final LazyOptional<IItemHandler> itemHandlerLazyOptional;
     protected int itemQueueNumber = 0;
 
-    public FaceInstanceItemIO(Face face, ItemStackHandler itemStackHandler) {
+    public ItemIOFaceInstance(Face face, ItemStackHandler itemStackHandler) {
         super(face);
         this.currentStack = itemStackHandler;
         this.itemHandlerLazyOptional = LazyOptional.of(() -> currentStack);
