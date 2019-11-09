@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.face;
 
 import com.google.common.collect.Lists;
+import net.minecraft.util.Direction;
 import net.minecraft.util.LazyLoadBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -52,5 +53,9 @@ public class Face extends ForgeRegistryEntry<Face> {
 
     public List<ResourceLocation> getAllSprites() {
         return Lists.newArrayList(spriteLocation.getValue());
+    }
+
+    public boolean isValidForSide(Direction side) {
+        return true;
     }
 }

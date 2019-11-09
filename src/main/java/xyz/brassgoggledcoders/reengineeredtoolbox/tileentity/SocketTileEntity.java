@@ -29,7 +29,6 @@ import java.lang.ref.WeakReference;
 import java.util.EnumMap;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class SocketTileEntity extends TileEntity implements ISocketTile, ITickableTileEntity {
@@ -120,7 +119,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     @Override
     @Nullable
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket();
+        return new SUpdateTileEntityPacket(this.getTilePos(), -1, this.getUpdateTag());
     }
 
     @Override
@@ -131,7 +130,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     @Override
     public CompoundNBT getUpdateTag() {
         CompoundNBT updateTag = new CompoundNBT();
-        updateTag.put("faceHolder", this.createFaceNBT(FaceInstance::getUpdateTag));
+        updateTag.put("faceHolders", this.createFaceNBT(FaceInstance::getUpdateTag));
         return updateTag;
     }
 
@@ -140,6 +139,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
         if (tag.contains("faceHolders")) {
             handleFaceHolderNBT(tag.getCompound("faceHolders"), FaceInstance::handleUpdateTag);
         }
+        updateFaces();
     }
 
     private void handleFaceHolderNBT(CompoundNBT faceHolderNBT, BiConsumer<FaceInstance, CompoundNBT> handleInstanceNBT) {

@@ -40,11 +40,14 @@ public class FaceItem extends Item {
                     ItemStack heldStack = context.getItem();
                     heldStack.getCapability(CapabilityFaceHolder.FACE_HOLDER)
                             .ifPresent(stackFaceHolder -> {
-                                socketFaceHolderValue.setFace(stackFaceHolder.getFace());
-                                heldStack.shrink(1);
-                                BlockState blockState = context.getWorld().getBlockState(context.getPos());
-                                context.getWorld().notifyBlockUpdate(context.getPos(), blockState, blockState, 3);
-                                context.getWorld().notifyNeighborsOfStateChange(context.getPos(), blockState.getBlock());
+                                Face face = stackFaceHolder.getFace();
+                                if (face.isValidForSide(context.getFace())) {
+                                    socketFaceHolderValue.setFace(stackFaceHolder.getFace());
+                                    heldStack.shrink(1);
+                                    BlockState blockState = context.getWorld().getBlockState(context.getPos());
+                                    context.getWorld().notifyBlockUpdate(context.getPos(), blockState, blockState, 3);
+                                    context.getWorld().notifyNeighborsOfStateChange(context.getPos(), blockState.getBlock());
+                                }
                             });
                 }
             });
