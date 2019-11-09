@@ -15,7 +15,6 @@ import javax.annotation.Nullable;
 public class ItemIOFaceInstance extends FaceInstance {
     protected final ItemStackHandler currentStack;
     private final LazyOptional<IItemHandler> itemHandlerLazyOptional;
-    protected int itemQueueNumber = 0;
 
     public ItemIOFaceInstance(Face face, ItemStackHandler itemStackHandler) {
         super(face);

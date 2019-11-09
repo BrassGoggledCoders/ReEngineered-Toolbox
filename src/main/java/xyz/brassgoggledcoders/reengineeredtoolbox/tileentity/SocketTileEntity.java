@@ -38,6 +38,8 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     private EnumMap<Direction, IFaceHolder> faceHolders;
     private EnumMap<Direction, LazyOptional<IFaceHolder>> faceHolderOptionals;
 
+    private boolean updateRequested = false;
+
     public SocketTileEntity() {
         super(Objects.requireNonNull(Blocks.SOCKET_TYPE.get()));
         faceHolders = Maps.newEnumMap(Direction.class);
@@ -68,13 +70,13 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     }
 
     @Override
-    public Face getFaceOnSide(Direction facing) {
-        return faceHolders.get(facing).getFace();
+    public BlockPos getTilePos() {
+        return this.getPos();
     }
 
     @Override
-    public BlockPos getTilePos() {
-        return this.getPos();
+    public void requestUpdate() {
+        updateRequested = true;
     }
 
     @Override
@@ -84,6 +86,10 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
             if (faceInstance != null) {
                 faceInstance.onTick(this);
             }
+        }
+        if (updateRequested) {
+            updateFaces();
+            updateRequested = false;
         }
     }
 
@@ -179,6 +185,8 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
 
     public boolean onBlockActivated(PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         FaceInstance faceInstance = faceHolders.get(hit.getFace()).getFaceInstance();
-        return faceInstance != null && faceInstance.onActivated(this, player, hand, hit);
+        boolean activated = faceInstance != null && faceInstance.onActivated(this, player, hand, hit);
+        updateFaces();
+        return activated;
     }
 }
