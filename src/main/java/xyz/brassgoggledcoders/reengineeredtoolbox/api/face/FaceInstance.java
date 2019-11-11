@@ -8,9 +8,12 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class FaceInstance implements INBTSerializable<CompoundNBT> {
     private final Face face;
@@ -56,5 +59,15 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
 
     public boolean onActivated(ISocketTile tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         return false;
+    }
+
+    @Nullable
+    public IFaceContainer getContainer(ISocketContainer container) {
+        return null;
+    }
+
+    @Nullable
+    public IFaceScreen getScreen(ISocketScreen screen) {
+        return null;
     }
 }

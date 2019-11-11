@@ -13,12 +13,12 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.CapabilityFaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.SocketContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.container.block.SocketContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Faces;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Items;
 import xyz.brassgoggledcoders.reengineeredtoolbox.model.SocketModelLoader;
-import xyz.brassgoggledcoders.reengineeredtoolbox.screen.SocketScreen;
+import xyz.brassgoggledcoders.reengineeredtoolbox.screen.socket.SocketScreen;
 
 @Mod(value = ReEngineeredToolbox.ID)
 public class ReEngineeredToolbox {
