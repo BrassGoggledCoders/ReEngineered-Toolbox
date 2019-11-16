@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.CapabilitySidedFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.sided.CapabilitySidedFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.block.SocketBlock;
 import xyz.brassgoggledcoders.reengineeredtoolbox.test.utils.Setup;
 

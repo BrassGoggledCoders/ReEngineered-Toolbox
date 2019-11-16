@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability;
+package xyz.brassgoggledcoders.reengineeredtoolbox.api.capability;
 
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;

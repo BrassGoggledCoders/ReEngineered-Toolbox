@@ -1,7 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.tileentity;
 
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.FaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.FaceHolder;
 
 import java.lang.ref.WeakReference;
 

@@ -1,12 +1,8 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.tileentity;
 
 import com.google.common.collect.Maps;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -17,8 +13,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.common.capabilities.Capability;
@@ -27,11 +21,11 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETRegistries;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.CapabilityFaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.FaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.IFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.CapabilityFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.FaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.block.SocketContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.container.block.SocketFaceContainerProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
 import xyz.brassgoggledcoders.reengineeredtoolbox.model.FaceProperty;
 
@@ -40,15 +34,13 @@ import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.EnumMap;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class SocketTileEntity extends TileEntity implements ISocketTile, ITickableTileEntity, INamedContainerProvider {
+public class SocketTileEntity extends TileEntity implements ISocketTile, ITickableTileEntity {
     private EnumMap<Direction, IFaceHolder> faceHolders;
     private EnumMap<Direction, LazyOptional<IFaceHolder>> faceHolderOptionals;
 
-    private Direction lastOpenedSide;
     private boolean updateRequested = false;
 
     public SocketTileEntity() {
@@ -92,9 +84,8 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
 
     @Override
     public void openGui(PlayerEntity playerEntity, Direction side) {
-        lastOpenedSide = side;
         if (playerEntity instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) playerEntity, this,
+            NetworkHooks.openGui((ServerPlayerEntity) playerEntity, new SocketFaceContainerProvider(this, side),
                     packetBuffer -> {
                         packetBuffer.writeBlockPos(this.getTilePos());
                         packetBuffer.writeString(side.getName());
@@ -216,19 +207,5 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
 
     public FaceInstance getFaceInstance(Direction sideOpened) {
         return faceHolders.get(sideOpened).getFaceInstance();
-    }
-
-    @Override
-    public ITextComponent getDisplayName() {
-        return Optional.ofNullable(Blocks.SOCKET.get())
-                .map(Block::getNameTextComponent)
-                .orElseGet(() -> new StringTextComponent(""));
-    }
-
-    @Nullable
-    @Override
-    public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-        return new SocketContainer(id, playerInventory, this, Optional.ofNullable(lastOpenedSide)
-                .orElse(Direction.UP));
     }
 }

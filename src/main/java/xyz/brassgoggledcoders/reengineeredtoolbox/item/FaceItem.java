@@ -13,9 +13,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.CapabilityFaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.FaceHolderProvider;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.IFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.CapabilityFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.FaceHolderProvider;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFaceHolder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

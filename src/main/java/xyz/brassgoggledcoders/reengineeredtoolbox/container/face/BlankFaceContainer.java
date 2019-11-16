@@ -1,7 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.container.face;
 
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.IFaceContainer;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.ISocketContainer;
 
 import javax.annotation.Nonnull;
 

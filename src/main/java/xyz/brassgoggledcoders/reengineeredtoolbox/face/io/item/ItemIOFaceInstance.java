@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item;
 
+import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
@@ -9,21 +10,27 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.ISocketContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.ISocketScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
+import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.io.ItemIOFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.io.ItemIOFaceScreen;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class ItemIOFaceInstance extends FaceInstance {
-    protected final ItemStackHandler currentStack;
+    protected final PosInvHandler inventory;
     private final LazyOptional<IItemHandler> itemHandlerLazyOptional;
 
-    public ItemIOFaceInstance(Face face, ItemStackHandler itemStackHandler) {
+    public ItemIOFaceInstance(Face face, PosInvHandler itemStackHandler) {
         super(face);
-        this.currentStack = itemStackHandler;
-        this.itemHandlerLazyOptional = LazyOptional.of(() -> currentStack);
+        this.inventory = itemStackHandler;
+        this.itemHandlerLazyOptional = LazyOptional.of(() -> inventory);
     }
 
     @Override
@@ -43,12 +50,26 @@ public class ItemIOFaceInstance extends FaceInstance {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT tagCompound = new CompoundNBT();
-        tagCompound.put("itemHandler", currentStack.serializeNBT());
+        tagCompound.put("inventory", inventory.serializeNBT());
         return tagCompound;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        currentStack.deserializeNBT(nbt.getCompound("itemHandler"));
+        inventory.deserializeNBT(nbt.getCompound("inventory"));
+    }
+
+    @Nullable
+    public IFaceContainer getContainer(ISocketContainer container) {
+        return new ItemIOFaceContainer(this);
+    }
+
+    @Nullable
+    public IFaceScreen getScreen(ISocketScreen screen) {
+        return new ItemIOFaceScreen(this);
+    }
+
+    public PosInvHandler getInventory() {
+        return this.inventory;
     }
 }

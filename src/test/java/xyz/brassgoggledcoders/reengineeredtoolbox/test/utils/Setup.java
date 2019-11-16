@@ -4,9 +4,9 @@ import com.builtbroken.mc.testing.junit.capability.CapabilityUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETRegistries;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.sided.SidedFaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.CapabilityFaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.IFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.sided.SidedFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.CapabilityFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFaceHolder;
 
 import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.ID;
 

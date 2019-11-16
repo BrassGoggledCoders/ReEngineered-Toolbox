@@ -1,7 +1,9 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.container.block;
 
 import com.hrznstudio.titanium.container.TitaniumContainerBase;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
@@ -10,8 +12,8 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.registries.ObjectHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.IFaceContainer;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.ISocketContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BlankFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
 import xyz.brassgoggledcoders.reengineeredtoolbox.tileentity.SocketTileEntity;
@@ -37,6 +39,7 @@ public class SocketContainer extends TitaniumContainerBase implements ISocketCon
         this.faceContainer = Optional.ofNullable(faceInstance.getContainer(this))
                 .orElseGet(BlankFaceContainer::new);
         this.playerInventory = inventory;
+        this.faceContainer.setup(this);
     }
 
     @Nullable
@@ -48,6 +51,11 @@ public class SocketContainer extends TitaniumContainerBase implements ISocketCon
         }
         ReEngineeredToolbox.LOGGER.warn("Failed to find TileEntity for Container");
         return null;
+    }
+
+    @Override
+    public boolean canInteractWith(PlayerEntity player) {
+        return faceContainer.canInteractWith(player);
     }
 
     public SocketTileEntity getSocketTileEntity() {
@@ -62,5 +70,10 @@ public class SocketContainer extends TitaniumContainerBase implements ISocketCon
     @Nonnull
     public Slot addSlot(@Nonnull Slot slot) {
         return super.addSlot(slot);
+    }
+
+    @Override
+    public Container getContainer() {
+        return this;
     }
 }

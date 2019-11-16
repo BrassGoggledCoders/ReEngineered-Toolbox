@@ -8,8 +8,8 @@ import net.minecraft.util.ResourceLocation;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.CapabilityFaceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.capability.IFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.CapabilityFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.item.FaceItem;
 import xyz.brassgoggledcoders.reengineeredtoolbox.test.utils.Setup;
 

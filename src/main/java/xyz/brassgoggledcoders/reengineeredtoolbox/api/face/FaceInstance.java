@@ -8,8 +8,10 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketContainer;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketScreen;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.ISocketContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.ISocketScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 
 import javax.annotation.Nonnull;
