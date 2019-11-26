@@ -1,6 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.container.block;
 
-import com.hrznstudio.titanium.container.TitaniumContainerBase;
+import com.hrznstudio.titanium.container.impl.ContainerInventoryBase;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -11,9 +11,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.registries.ObjectHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.ISocketContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BlankFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
 import xyz.brassgoggledcoders.reengineeredtoolbox.tileentity.SocketTileEntity;
@@ -23,22 +23,20 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SocketContainer extends TitaniumContainerBase implements ISocketContainer {
+public class SocketContainer extends ContainerInventoryBase implements ISocketContainer {
     @ObjectHolder(ReEngineeredToolbox.ID + ":socket")
     public static ContainerType<SocketContainer> type;
 
     private final SocketTileEntity socketTileEntity;
     private final FaceInstance faceInstance;
-    private final PlayerInventory playerInventory;
     private final IFaceContainer faceContainer;
 
     public SocketContainer(int id, PlayerInventory inventory, SocketTileEntity socketTileEntity, Direction sideOpened) {
-        super(Objects.requireNonNull(Blocks.SOCKET_CONTAINER.get()), id);
+        super(Objects.requireNonNull(Blocks.SOCKET_CONTAINER.get()), inventory, id);
         this.socketTileEntity = socketTileEntity;
         this.faceInstance = socketTileEntity.getFaceInstance(sideOpened);
         this.faceContainer = Optional.ofNullable(faceInstance.getContainer(this))
                 .orElseGet(BlankFaceContainer::new);
-        this.playerInventory = inventory;
         this.faceContainer.setup(this);
     }
 
