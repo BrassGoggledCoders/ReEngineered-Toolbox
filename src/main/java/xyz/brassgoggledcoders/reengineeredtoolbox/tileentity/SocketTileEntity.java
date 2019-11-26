@@ -208,4 +208,8 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     public FaceInstance getFaceInstance(Direction sideOpened) {
         return faceHolders.get(sideOpened).getFaceInstance();
     }
+
+    public Face getFace(Direction side) {
+        return faceHolders.get(side).getFace();
+    }
 }

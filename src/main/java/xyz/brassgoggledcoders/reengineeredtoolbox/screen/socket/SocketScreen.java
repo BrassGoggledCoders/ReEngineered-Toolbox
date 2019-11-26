@@ -1,12 +1,9 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.screen.socket;
 
-import com.google.common.collect.Lists;
-import com.hrznstudio.titanium.api.IFactory;
-import com.hrznstudio.titanium.api.client.IGuiAddon;
-import com.hrznstudio.titanium.client.gui.GuiTileAddonScreen;
-import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.client.gui.container.GuiContainerBase;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
@@ -17,16 +14,15 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.screen.builder.ScreenBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.BlankFaceScreen;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.Optional;
 
-public class SocketScreen extends GuiTileAddonScreen implements IHasContainer<SocketContainer>, ISocketScreen {
+public class SocketScreen extends GuiContainerBase<SocketContainer> implements IHasContainer<SocketContainer>, ISocketScreen {
     private final SocketContainer container;
     private final ScreenBuilder screenBuilder;
     private final IFaceScreen faceScreen;
 
-    public SocketScreen(SocketContainer container) {
-        super(container.getSocketTileEntity(), IAssetProvider.DEFAULT_PROVIDER, true);
+    public SocketScreen(SocketContainer container, PlayerInventory playerInventory, ITextComponent name) {
+        super(container, playerInventory, name);
         this.container = container;
         this.screenBuilder = new ScreenBuilder();
         this.faceScreen = Optional.ofNullable(container.getFaceInstance().getScreen(this))
@@ -34,24 +30,9 @@ public class SocketScreen extends GuiTileAddonScreen implements IHasContainer<So
         faceScreen.setup(this);
     }
 
-    @Override
-    public List<IFactory<IGuiAddon>> guiAddons() {
-        return screenBuilder.getGuiAddonFactories();
-    }
-
-    public void renderBackground(int mouseX, int mouseY, float partialTicks) {
-        super.renderBackground(mouseX, mouseY, partialTicks);
-        faceScreen.renderBackground(mouseX, mouseY, partialTicks);
-    }
-
-    public void renderForeground(int mouseX, int mouseY, float partialTicks) {
-        super.renderForeground(mouseX, mouseY, partialTicks);
-        faceScreen.renderForeground(mouseX, mouseY, partialTicks);
-    }
-
     @SuppressWarnings("unused")
     public static SocketScreen create(SocketContainer container, PlayerInventory playerInventory, ITextComponent name) {
-        return new SocketScreen(container);
+        return new SocketScreen(container, playerInventory, name);
     }
 
     @Override

@@ -1,5 +1,9 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.container.block;
 
+import com.hrznstudio.titanium.api.client.AssetTypes;
+import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
+import com.hrznstudio.titanium.client.gui.asset.DefaultAssetProvider;
+import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.impl.ContainerInventoryBase;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -20,6 +24,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.tileentity.SocketTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,6 +35,7 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
     private final SocketTileEntity socketTileEntity;
     private final FaceInstance faceInstance;
     private final IFaceContainer faceContainer;
+    private final PlayerInventory playerInventory;
 
     public SocketContainer(int id, PlayerInventory inventory, SocketTileEntity socketTileEntity, Direction sideOpened) {
         super(Objects.requireNonNull(Blocks.SOCKET_CONTAINER.get()), inventory, id);
@@ -37,7 +43,17 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
         this.faceInstance = socketTileEntity.getFaceInstance(sideOpened);
         this.faceContainer = Optional.ofNullable(faceInstance.getContainer(this))
                 .orElseGet(BlankFaceContainer::new);
+        this.playerInventory = inventory;
         this.faceContainer.setup(this);
+
+        this.addHotBar();
+    }
+
+    private void addHotBar() {
+        Point hotBarPoint = IAssetProvider.getAsset(this.getAssetProvider(), AssetTypes.BACKGROUND).getHotbarPosition();
+        for(int k = 0; k < 9; ++k) {
+            this.addSlot(new Slot(this.getPlayerInventory(), k, hotBarPoint.x + k * 18, hotBarPoint.y));
+        }
     }
 
     @Nullable
@@ -52,7 +68,7 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player) {
+    public boolean canInteractWith(@Nonnull PlayerEntity player) {
         return faceContainer.canInteractWith(player);
     }
 
@@ -73,5 +89,10 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
     @Override
     public Container getContainer() {
         return this;
+    }
+
+    @Override
+    public PlayerInventory getPlayerInventory() {
+        return this.playerInventory;
     }
 }
