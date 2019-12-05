@@ -72,4 +72,13 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
     public IFaceScreen getScreen(ISocketScreen screen) {
         return null;
     }
+
+    /**
+     * This call isn't side specific so the block will output based on highest strength through all faces
+     *
+     * @return The Strength of signal that a Comparator should output
+     */
+    public int getComparatorStrength() {
+        return 0;
+    }
 }

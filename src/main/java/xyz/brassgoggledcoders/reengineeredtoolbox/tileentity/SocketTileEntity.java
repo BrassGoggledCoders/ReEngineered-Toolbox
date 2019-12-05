@@ -212,4 +212,14 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     public Face getFace(Direction side) {
         return faceHolders.get(side).getFace();
     }
+
+    public int getComparatorSignal() {
+        return this.faceHolders.values()
+                .stream()
+                .map(IFaceHolder::getFaceInstance)
+                .filter(Objects::nonNull)
+                .map(FaceInstance::getComparatorStrength)
+                .max(Integer::compareTo)
+                .orElse(0);
+    }
 }
