@@ -41,7 +41,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     private EnumMap<Direction, IFaceHolder> faceHolders;
     private EnumMap<Direction, LazyOptional<IFaceHolder>> faceHolderOptionals;
 
-    private boolean updateRequested = false;
+    private boolean updateRequested = true;
 
     public SocketTileEntity() {
         super(Objects.requireNonNull(Blocks.SOCKET_TYPE.get()));
@@ -64,12 +64,12 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
             } else {
                 IFaceHolder faceHolder = faceHolders.get(facing);
                 if (faceHolder != null && faceHolder.getFaceInstance() != null) {
-                    faceHolder.getFaceInstance().getCapability(capability);
+                    return faceHolder.getFaceInstance().getCapability(capability);
                 }
             }
         }
 
-        return LazyOptional.empty();
+        return super.getCapability(capability, facing);
     }
 
     @Override
@@ -92,6 +92,16 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
                     });
         }
 
+    }
+
+    @Override
+    public <T> LazyOptional<T> getInternalCapability(Capability<T> capability, Direction side) {
+        IFaceHolder faceHolder = faceHolders.get(side);
+        if (faceHolder != null && faceHolder.getFaceInstance() != null) {
+            return faceHolder.getFaceInstance().getInternalCapability(capability);
+        }
+
+        return LazyOptional.empty();
     }
 
     @Override
