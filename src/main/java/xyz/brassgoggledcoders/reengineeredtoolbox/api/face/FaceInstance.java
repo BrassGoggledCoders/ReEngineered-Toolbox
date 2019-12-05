@@ -33,6 +33,11 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
         return LazyOptional.empty();
     }
 
+    @Nonnull
+    public <T> LazyOptional<T> getInternalCapability(@Nonnull Capability<T> cap) {
+        return LazyOptional.empty();
+    }
+
     @Override
     public CompoundNBT serializeNBT() {
         return new CompoundNBT();

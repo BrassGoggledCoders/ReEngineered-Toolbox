@@ -5,7 +5,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item.ItemIOFaceInstance;
@@ -28,4 +30,6 @@ public interface ISocketTile extends ICapabilityProvider {
     void requestUpdate();
 
     void openGui(PlayerEntity playerEntity, Direction side);
+
+    <T> LazyOptional<T> getInternalCapability(Capability<T> capability, Direction side);
 }
