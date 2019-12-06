@@ -7,13 +7,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
 public class Face extends ForgeRegistryEntry<Face> {
-    private final Function<Face, FaceInstance> faceInstanceConstructor;
+    private final Function<SocketContext, FaceInstance> faceInstanceConstructor;
     private final LazyLoadBase<ResourceLocation> spriteLocation;
     private final LazyLoadBase<String> translationKey;
     private final LazyLoadBase<ITextComponent> name;
@@ -22,7 +23,7 @@ public class Face extends ForgeRegistryEntry<Face> {
         this(FaceInstance::new);
     }
 
-    public Face(Function<Face, FaceInstance> createFaceInstance) {
+    public Face(Function<SocketContext, FaceInstance> createFaceInstance) {
         this.faceInstanceConstructor = createFaceInstance;
         this.spriteLocation = new LazyLoadBase<>(() -> {
             ResourceLocation registryName = Objects.requireNonNull(this.getRegistryName());
@@ -35,8 +36,8 @@ public class Face extends ForgeRegistryEntry<Face> {
         this.name = new LazyLoadBase<>(() -> new TranslationTextComponent(this.translationKey.getValue()));
     }
 
-    public FaceInstance createInstance() {
-        return faceInstanceConstructor.apply(this);
+    public FaceInstance createInstance(SocketContext context) {
+        return faceInstanceConstructor.apply(context);
     }
 
     public ITextComponent getName() {

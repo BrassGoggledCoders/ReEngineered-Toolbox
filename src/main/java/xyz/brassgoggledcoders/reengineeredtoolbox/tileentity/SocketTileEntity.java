@@ -34,11 +34,15 @@ import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.EnumMap;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.ToIntBiFunction;
 
 public class SocketTileEntity extends TileEntity implements ISocketTile, ITickableTileEntity {
     private EnumMap<Direction, IFaceHolder> faceHolders;
+    private EnumMap<Direction, FaceInstance> faceInstances;
     private EnumMap<Direction, LazyOptional<IFaceHolder>> faceHolderOptionals;
 
     private boolean updateRequested = true;
@@ -47,7 +51,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
         super(Objects.requireNonNull(Blocks.SOCKET_TYPE.get()));
         faceHolders = Maps.newEnumMap(Direction.class);
         faceHolderOptionals = Maps.newEnumMap(Direction.class);
-
+        faceInstances = Maps.newEnumMap(Direction.class);
         for (Direction direction : Direction.values()) {
             FaceHolder faceHolder = new SocketFaceHolder(new WeakReference<>(this));
             faceHolders.put(direction, faceHolder);
@@ -62,9 +66,9 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
             if (capability == CapabilityFaceHolder.FACE_HOLDER) {
                 return faceHolderOptionals.getOrDefault(facing, LazyOptional.empty()).cast();
             } else {
-                IFaceHolder faceHolder = faceHolders.get(facing);
-                if (faceHolder != null && faceHolder.getFaceInstance() != null) {
-                    return faceHolder.getFaceInstance().getCapability(capability);
+                FaceInstance faceInstance = faceInstances.get(facing);
+                if (faceInstance != null) {
+                    return faceInstance.getCapability(capability);
                 }
             }
         }
@@ -83,31 +87,35 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     }
 
     @Override
-    public void openGui(PlayerEntity playerEntity, Direction side) {
+    public void openGui(PlayerEntity playerEntity, SocketContext context) {
         if (playerEntity instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) playerEntity, new SocketFaceContainerProvider(this, side),
+            NetworkHooks.openGui((ServerPlayerEntity) playerEntity, new SocketFaceContainerProvider(this, context),
                     packetBuffer -> {
                         packetBuffer.writeBlockPos(this.getTilePos());
-                        packetBuffer.writeString(side.getName());
+                        packetBuffer.writeString(context.getSide().getName());
                     });
         }
 
     }
 
     @Override
-    public <T> LazyOptional<T> getInternalCapability(Capability<T> capability, Direction side) {
-        IFaceHolder faceHolder = faceHolders.get(side);
-        if (faceHolder != null && faceHolder.getFaceInstance() != null) {
-            return faceHolder.getFaceInstance().getInternalCapability(capability);
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side, SocketContext context) {
+        FaceInstance faceInstance = faceInstances.get(side);
+        if (faceInstance != null) {
+            return faceInstance.getCapability(capability, context);
         }
-
         return LazyOptional.empty();
+    }
+
+    @Override
+    public Optional<FaceInstance> getFaceInstanceOnSide(Direction side) {
+        return Optional.ofNullable(this.faceInstances.get(side));
     }
 
     @Override
     public void tick() {
         for (Direction facing : Direction.values()) {
-            FaceInstance faceInstance = this.faceHolders.get(facing).getFaceInstance();
+            FaceInstance faceInstance = this.faceInstances.get(facing);
             if (faceInstance != null) {
                 faceInstance.onTick(this);
             }
@@ -127,10 +135,11 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     }
 
     @Override
+    @Nonnull
     public IModelData getModelData() {
         ModelDataMap.Builder map = new ModelDataMap.Builder();
         for (FaceProperty faceProperty : FaceProperty.VALUES) {
-            map.withInitial(faceProperty.getModelProperty(), faceHolders.get(faceProperty.getDirection()).getFaceInstance());
+            map.withInitial(faceProperty.getModelProperty(), faceInstances.get(faceProperty.getDirection()));
         }
         return map.build();
     }
@@ -144,6 +153,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     }
 
     @Override
+    @Nonnull
     public CompoundNBT write(CompoundNBT compound) {
         super.write(compound);
         compound.put("faceHolders", createFaceNBT(FaceInstance::serializeNBT));
@@ -162,6 +172,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     }
 
     @Override
+    @Nonnull
     public CompoundNBT getUpdateTag() {
         CompoundNBT updateTag = new CompoundNBT();
         updateTag.put("faceHolders", this.createFaceNBT(FaceInstance::getUpdateTag));
@@ -184,9 +195,11 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
                 if (face != null) {
                     IFaceHolder faceHolder = faceHolders.get(direction);
                     faceHolder.setFace(face);
+                    FaceInstance faceInstance = face.createInstance(new SocketContext(face, direction));
                     if (faceNBT.contains("instance")) {
-                        handleInstanceNBT.accept(faceHolder.getFaceInstance(), faceNBT.getCompound("instance"));
+                        handleInstanceNBT.accept(faceInstance, faceNBT.getCompound("instance"));
                     }
+                    faceInstances.put(direction, faceInstance);
                 }
             }
         }
@@ -194,39 +207,35 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
 
     private CompoundNBT createFaceNBT(Function<FaceInstance, CompoundNBT> writeInstanceTag) {
         CompoundNBT faceHolderTag = new CompoundNBT();
-        for (Direction direction: Direction.values()) {
-            IFaceHolder faceHolder = faceHolders.get(direction);
-            if (faceHolder.getFace() != null) {
-                CompoundNBT faceNBT = new CompoundNBT();
-                faceNBT.putString("face", String.valueOf(faceHolder.getFace().getRegistryName()));
-                if (faceHolder.getFaceInstance() != null) {
-                    faceNBT.put("instance", writeInstanceTag.apply(faceHolder.getFaceInstance()));
-                }
-                faceHolderTag.put(direction.getName(), faceNBT);
-            }
+        for (Direction direction : Direction.values()) {
+            CompoundNBT directionNBT = new CompoundNBT();
+            Optional.ofNullable(this.faceHolders.get(direction))
+                    .map(IFaceHolder::getFace)
+                    .map(Face::getRegistryName)
+                    .map(ResourceLocation::toString)
+                    .ifPresent(name -> directionNBT.putString("face", name));
+            Optional.ofNullable(this.faceInstances.get(direction))
+                    .map(writeInstanceTag)
+                    .ifPresent(tag -> directionNBT.put("instance", tag));
+            faceHolderTag.put(direction.getName(), directionNBT);
         }
         return faceHolderTag;
     }
 
     public boolean onBlockActivated(PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        FaceInstance faceInstance = faceHolders.get(hit.getFace()).getFaceInstance();
+        FaceInstance faceInstance = faceInstances.get(hit.getFace());
         boolean activated = faceInstance != null && faceInstance.onActivated(this, player, hand, hit);
         updateFaces();
         return activated;
     }
 
-    public FaceInstance getFaceInstance(Direction sideOpened) {
-        return faceHolders.get(sideOpened).getFaceInstance();
-    }
-
-    public Face getFace(Direction side) {
-        return faceHolders.get(side).getFace();
+    public FaceInstance getFaceInstance(Direction side) {
+        return faceInstances.get(side);
     }
 
     public int getComparatorSignal() {
-        return this.faceHolders.values()
+        return this.faceInstances.values()
                 .stream()
-                .map(IFaceHolder::getFaceInstance)
                 .filter(Objects::nonNull)
                 .map(FaceInstance::getComparatorStrength)
                 .max(Integer::compareTo)

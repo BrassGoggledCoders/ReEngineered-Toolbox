@@ -19,6 +19,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.ISocketScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.io.ItemIOFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.FaceScreenGuiAddon;
 
@@ -31,8 +32,8 @@ public class ItemIOFaceInstance extends FaceInstance implements IGuiAddonProvide
     protected final PosInvHandler inventory;
     private final LazyOptional<IItemHandler> itemHandlerLazyOptional;
 
-    public ItemIOFaceInstance(Face face, PosInvHandler itemStackHandler) {
-        super(face);
+    public ItemIOFaceInstance(SocketContext context, PosInvHandler itemStackHandler) {
+        super(context);
         this.inventory = itemStackHandler;
         this.itemHandlerLazyOptional = LazyOptional.of(() -> inventory);
     }
@@ -46,7 +47,7 @@ public class ItemIOFaceInstance extends FaceInstance implements IGuiAddonProvide
     @Override
     public boolean onActivated(ISocketTile tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!player.isSneaking()) {
-            tile.openGui(player, hit.getFace());
+            tile.openGui(player, this.getSocketContext());
         }
         return super.onActivated(tile, player, hand, hit);
     }

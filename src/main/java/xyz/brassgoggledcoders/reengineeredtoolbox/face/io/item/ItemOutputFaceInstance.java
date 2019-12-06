@@ -4,10 +4,11 @@ import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
 public class ItemOutputFaceInstance extends ItemIOFaceInstance {
-    public ItemOutputFaceInstance(Face face) {
-        super(face, new PosInvHandler("Item Output", 80, 35, 1));
+    public ItemOutputFaceInstance(SocketContext socketContext) {
+        super(socketContext, new PosInvHandler("Item Output", 80, 35, 1));
     }
 
     @Override

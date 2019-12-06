@@ -29,7 +29,7 @@ public interface ISocketTile extends ICapabilityProvider {
      */
     void requestUpdate();
 
-    void openGui(PlayerEntity playerEntity, Direction side);
+    void openGui(PlayerEntity playerEntity, SocketContext context);
 
-    <T> LazyOptional<T> getInternalCapability(Capability<T> capability, Direction side);
+    <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side, SocketContext context);
 }

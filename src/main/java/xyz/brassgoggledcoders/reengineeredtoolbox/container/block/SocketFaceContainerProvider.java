@@ -7,6 +7,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.tileentity.SocketTileEntity;
 
 import javax.annotation.Nonnull;
@@ -15,23 +16,23 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 public class SocketFaceContainerProvider implements INamedContainerProvider {
     private final SocketTileEntity tileEntity;
-    private final Direction side;
+    private final SocketContext socketContext;
 
-    public SocketFaceContainerProvider(SocketTileEntity tileEntity, Direction side) {
+    public SocketFaceContainerProvider(SocketTileEntity tileEntity, SocketContext socketContext) {
         this.tileEntity = tileEntity;
-        this.side = side;
+        this.socketContext = socketContext;
     }
 
     @Override
     @Nonnull
     public ITextComponent getDisplayName() {
-        return tileEntity.getFace(side).getName().applyTextStyle(TextFormatting.BLACK);
+        return socketContext.getFace().getName().applyTextStyle(TextFormatting.BLACK);
     }
 
     @Nullable
     @Override
     @ParametersAreNonnullByDefault
     public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-        return new SocketContainer(id, playerInventory, tileEntity, side);
+        return new SocketContainer(id, playerInventory, tileEntity, socketContext.getSide());
     }
 }

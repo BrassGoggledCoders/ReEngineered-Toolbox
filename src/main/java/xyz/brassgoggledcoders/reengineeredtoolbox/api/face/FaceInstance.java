@@ -13,16 +13,17 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.ISocketContainer
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.ISocketScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public class FaceInstance implements INBTSerializable<CompoundNBT> {
-    private final Face face;
+    private final SocketContext socketContext;
 
-    public FaceInstance(Face face) {
-        this.face = face;
+    public FaceInstance(SocketContext socketContext) {
+        this.socketContext = socketContext;
     }
 
     public void onTick(ISocketTile tile) {
@@ -49,12 +50,16 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
 
     }
 
+    public SocketContext getSocketContext() {
+        return this.socketContext;
+    }
+
     public Face getFace() {
-        return this.face;
+        return this.getSocketContext().getFace();
     }
 
     public ResourceLocation getSpriteLocation() {
-        return face.getSpriteLocation();
+        return this.getFace().getSpriteLocation();
     }
 
     public CompoundNBT getUpdateTag() {
