@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
 public class SocketModel implements IUnbakedModel {
     private static final List<ResourceLocation> ALL_TEXTURES = getAllTextures();
 
-    private final IModel socketModel;
+    private final IUnbakedModel socketModel;
     private IBakedModel socketFrameBakedModel = null;
     private boolean loaded = false;
 
-    public SocketModel(IModel socketModel) {
+    public SocketModel(IUnbakedModel socketModel) {
         this.socketModel = socketModel;
     }
 

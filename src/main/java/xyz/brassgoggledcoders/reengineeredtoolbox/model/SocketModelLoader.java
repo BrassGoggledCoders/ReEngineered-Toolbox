@@ -10,7 +10,7 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import static xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox.ID;
 
 public class SocketModelLoader implements ICustomModelLoader {
-    private IModel socketBaseModel;
+    private IUnbakedModel socketBaseModel;
 
     @Override
     public boolean accepts(ResourceLocation modelLocation) {
