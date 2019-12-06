@@ -16,6 +16,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public class FaceInstance implements INBTSerializable<CompoundNBT> {
     private final Face face;
@@ -69,12 +70,12 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
     }
 
     @Nullable
-    public IFaceContainer getContainer(ISocketContainer container) {
+    public IFaceContainer getContainer() {
         return null;
     }
 
     @Nullable
-    public IFaceScreen getScreen(ISocketScreen screen) {
+    public IFaceScreen getScreen() {
         return null;
     }
 

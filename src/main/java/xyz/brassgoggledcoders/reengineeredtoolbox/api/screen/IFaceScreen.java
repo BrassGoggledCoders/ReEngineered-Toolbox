@@ -11,7 +11,7 @@ public interface IFaceScreen {
 
     }
 
-    default void renderForeground(int mouseX, int mouseY, float partialTicks) {
+    default void renderForeground(int mouseX, int mouseY) {
 
     }
 }

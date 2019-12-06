@@ -1,9 +1,10 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.screen.socket;
 
+import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.client.gui.container.GuiContainerBase;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
@@ -25,15 +26,38 @@ public class SocketScreen extends GuiContainerBase<SocketContainer> implements I
         super(container, playerInventory, name);
         this.container = container;
         this.screenBuilder = new ScreenBuilder();
-        this.faceScreen = Optional.ofNullable(container.getFaceInstance().getScreen(this))
+        this.faceScreen = Optional.ofNullable(container.getFaceInstance().getScreen())
                 .orElseGet(BlankFaceScreen::new);
         faceScreen.setup(this);
+        if (faceScreen instanceof IGuiAddonProvider) {
+            ((IGuiAddonProvider) faceScreen).getGuiAddons()
+                    .stream()
+                    .map(IFactory::create)
+                    .forEach(this.getAddons()::add);
+        }
+        this.screenBuilder.getGuiAddonFactories()
+                .stream()
+                .map(IFactory::create)
+                .forEach(this.getAddons()::add);
     }
 
     @SuppressWarnings("unused")
     public static SocketScreen create(SocketContainer container, PlayerInventory playerInventory, ITextComponent name) {
         return new SocketScreen(container, playerInventory, name);
     }
+
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+        super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
+        faceScreen.renderBackground(mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        faceScreen.renderForeground(mouseX, mouseY);
+    }
+
 
     @Override
     @Nonnull

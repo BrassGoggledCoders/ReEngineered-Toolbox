@@ -7,7 +7,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 
 public class ItemInputFaceInstance extends ItemIOFaceInstance {
     public ItemInputFaceInstance(Face face) {
-        super(face, new PosInvHandler("Item Input", 28, 28, 1));
+        super(face, new PosInvHandler("Item Input", 80, 35, 1));
     }
 
     @Override

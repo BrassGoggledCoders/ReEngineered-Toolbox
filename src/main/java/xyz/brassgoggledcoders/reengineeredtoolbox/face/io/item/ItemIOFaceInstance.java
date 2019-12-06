@@ -1,5 +1,8 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item;
 
+import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.client.IGuiAddon;
+import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -9,7 +12,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.ISocketContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
@@ -18,12 +20,14 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.ISocketScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.io.ItemIOFaceContainer;
-import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.io.ItemIOFaceScreen;
+import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.FaceScreenGuiAddon;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Supplier;
 
-public class ItemIOFaceInstance extends FaceInstance {
+public class ItemIOFaceInstance extends FaceInstance implements IGuiAddonProvider {
     protected final PosInvHandler inventory;
     private final LazyOptional<IItemHandler> itemHandlerLazyOptional;
 
@@ -60,16 +64,23 @@ public class ItemIOFaceInstance extends FaceInstance {
     }
 
     @Nullable
-    public IFaceContainer getContainer(ISocketContainer container) {
+    @Override
+    public IFaceContainer getContainer() {
         return new ItemIOFaceContainer(this);
     }
 
     @Nullable
-    public IFaceScreen getScreen(ISocketScreen screen) {
-        return new ItemIOFaceScreen(this);
+    @Override
+    public IFaceScreen getScreen() {
+        return new FaceScreenGuiAddon(this);
     }
 
     public PosInvHandler getInventory() {
         return this.inventory;
+    }
+
+    @Override
+    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
+        return this.inventory.getGuiAddons();
     }
 }

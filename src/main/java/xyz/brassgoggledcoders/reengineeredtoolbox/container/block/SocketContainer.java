@@ -41,7 +41,7 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
         super(Objects.requireNonNull(Blocks.SOCKET_CONTAINER.get()), inventory, id);
         this.socketTileEntity = socketTileEntity;
         this.faceInstance = socketTileEntity.getFaceInstance(sideOpened);
-        this.faceContainer = Optional.ofNullable(faceInstance.getContainer(this))
+        this.faceContainer = Optional.ofNullable(faceInstance.getContainer())
                 .orElseGet(BlankFaceContainer::new);
         this.playerInventory = inventory;
         this.faceContainer.setup(this);
