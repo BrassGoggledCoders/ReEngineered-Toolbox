@@ -92,4 +92,12 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
     public int getComparatorStrength() {
         return 0;
     }
+
+    public int getStrongPower(@Nullable Direction side) {
+        return 0;
+    }
+
+    public int getWeakPower(@Nullable Direction side) {
+        return 0;
+    }
 }

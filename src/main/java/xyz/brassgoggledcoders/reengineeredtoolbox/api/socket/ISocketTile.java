@@ -8,9 +8,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
-import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item.ItemIOFaceInstance;
+
+import java.util.Optional;
 
 public interface ISocketTile extends ICapabilityProvider {
     World getWorld();
@@ -32,4 +32,6 @@ public interface ISocketTile extends ICapabilityProvider {
     void openGui(PlayerEntity playerEntity, SocketContext context);
 
     <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side, SocketContext context);
+
+    Optional<FaceInstance> getFaceInstanceOnSide(Direction side);
 }

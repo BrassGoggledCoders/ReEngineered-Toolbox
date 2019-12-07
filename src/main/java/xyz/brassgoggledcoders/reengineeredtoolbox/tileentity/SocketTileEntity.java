@@ -19,12 +19,13 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETRegistries;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.CapabilityFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.FaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.block.SocketFaceContainerProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
 import xyz.brassgoggledcoders.reengineeredtoolbox.model.FaceProperty;
@@ -36,7 +37,6 @@ import java.util.EnumMap;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
 
@@ -240,5 +240,21 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
                 .map(FaceInstance::getComparatorStrength)
                 .max(Integer::compareTo)
                 .orElse(0);
+    }
+
+    public int getStrongPower(Direction side) {
+        return getIntValue(side, FaceInstance::getStrongPower);
+    }
+
+    public int getWeakPower(Direction side) {
+        return getIntValue(side, FaceInstance::getWeakPower);
+    }
+
+    private int getIntValue(Direction side, ToIntBiFunction<FaceInstance, Direction> function) {
+        FaceInstance faceInstance = faceInstances.get(side);
+        if (faceInstance != null) {
+            return function.applyAsInt(faceInstance, null);
+        }
+        return 0;
     }
 }

@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -46,10 +47,23 @@ public class SocketBlock extends Block {
     @Override
     @SuppressWarnings("deprecation")
     public int getComparatorInputOverride(BlockState blockState, World world, BlockPos pos) {
-        return handleTile(world, pos, socketTileEntity -> socketTileEntity.getComparatorSignal(), 0);
+        return handleTile(world, pos, SocketTileEntity::getComparatorSignal, 0);
     }
 
-    private <T> T handleTile(IWorldReader reader, BlockPos blockPos, Function<SocketTileEntity, T> handleTile, T value) {
+    @Override
+    @SuppressWarnings("deprecation")
+    public int getStrongPower(BlockState blockState, IBlockReader blockReader, BlockPos pos, Direction side) {
+        return handleTile(blockReader, pos, tile -> tile.getStrongPower(side), 0);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+
+    public int getWeakPower(BlockState blockState, IBlockReader blockReader, BlockPos pos, Direction side) {
+        return handleTile(blockReader, pos, tile -> tile.getWeakPower(side), 0);
+    }
+
+    private <T> T handleTile(IBlockReader reader, BlockPos blockPos, Function<SocketTileEntity, T> handleTile, T value) {
         TileEntity tileEntity = reader.getTileEntity(blockPos);
         if (tileEntity instanceof SocketTileEntity) {
             return handleTile.apply((SocketTileEntity) tileEntity);
