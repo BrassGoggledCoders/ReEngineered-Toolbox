@@ -1,0 +1,10 @@
+{
+  "type": "reengineeredtoolbox:freezer",
+  "inputFluid": {
+    "Fluid": "minecraft:water",
+    "Amount": 100
+  },
+  "output": {
+    "item": "minecraft:ice"
+  }
+}

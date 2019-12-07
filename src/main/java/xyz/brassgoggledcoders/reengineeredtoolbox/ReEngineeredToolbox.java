@@ -17,6 +17,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.container.block.SocketContaine
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Faces;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Items;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.Recipes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.model.SocketModelLoader;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.socket.SocketScreen;
 
@@ -37,6 +38,7 @@ public class ReEngineeredToolbox {
         Faces.register(modBus);
         Blocks.register(modBus);
         Items.register(modBus);
+        Recipes.register(modBus);
 
         modBus.addListener(this::commonSetup);
         modBus.addListener(this::clientSetup);
