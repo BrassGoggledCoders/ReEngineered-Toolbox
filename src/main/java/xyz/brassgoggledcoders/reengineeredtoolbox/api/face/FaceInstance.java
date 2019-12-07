@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.api.face;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -9,15 +10,12 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.ISocketContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.ISocketScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.function.Supplier;
 
 public class FaceInstance implements INBTSerializable<CompoundNBT> {
     private final SocketContext socketContext;
@@ -31,12 +29,12 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
     }
 
     @Nonnull
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, SocketContext callerContext) {
         return LazyOptional.empty();
     }
 
     @Nonnull
-    public <T> LazyOptional<T> getInternalCapability(@Nonnull Capability<T> cap) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
         return LazyOptional.empty();
     }
 

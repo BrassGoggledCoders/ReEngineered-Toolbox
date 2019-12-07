@@ -41,7 +41,6 @@ public class SocketScreen extends GuiContainerBase<SocketContainer> implements I
                 .forEach(this.getAddons()::add);
     }
 
-    @SuppressWarnings("unused")
     public static SocketScreen create(SocketContainer container, PlayerInventory playerInventory, ITextComponent name) {
         return new SocketScreen(container, playerInventory, name);
     }

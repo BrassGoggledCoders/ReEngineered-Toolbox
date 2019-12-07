@@ -4,24 +4,26 @@ import com.google.common.collect.Maps;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
 public abstract class SideSelector<T> implements INBTSerializable<CompoundNBT> {
+    private final SocketContext socketContext;
     private final SelectorType push;
     private final SelectorType pull;
     private final EnumMap<Direction, SelectorState> selectorStates;
-    private final Capability<T> capability;
 
-    protected SideSelector(Capability<T> capability, SelectorType push, SelectorType pull) {
+    protected SideSelector(SocketContext socketContext, SelectorType push, SelectorType pull) {
+        this.socketContext = socketContext;
         this.push = push;
         this.pull = pull;
-        this.capability = capability;
         this.selectorStates = Maps.newEnumMap(Direction.class);
     }
 
@@ -30,15 +32,17 @@ public abstract class SideSelector<T> implements INBTSerializable<CompoundNBT> {
     }
 
     public void tick(ISocketTile socketTile) {
-        for (Entry<Direction, SelectorState> selectorStateEntry: selectorStates.entrySet()) {
+        for (Entry<Direction, SelectorState> selectorStateEntry : selectorStates.entrySet()) {
             switch (selectorStateEntry.getValue()) {
                 case PUSH:
-                    socketTile.getInternalCapability(capability, selectorStateEntry.getKey())
-                            .ifPresent(this::handlePush);
+                    if (push.isInternal()) {
+                        activePush(socketTile, selectorStateEntry.getKey());
+                    }
                     break;
                 case PULL:
-                    socketTile.getInternalCapability(capability, selectorStateEntry.getKey())
-                            .ifPresent(this::handlePull);
+                    if (pull.isInternal()) {
+                        activePull(socketTile, selectorStateEntry.getKey());
+                    }
                     break;
                 case NONE:
                     break;
@@ -46,9 +50,27 @@ public abstract class SideSelector<T> implements INBTSerializable<CompoundNBT> {
         }
     }
 
-    protected abstract void handlePull(T target);
+    public T getPassive(ISocketTile socketTile, Direction callerSide) {
+        if (callerSide != null) {
+            SelectorState state = this.getSelectorStates().get(callerSide);
+            if (state != null) {
+                if (state == SelectorState.PULL && this.getPull().isExternal()) {
+                    return this.passivePull(socketTile, callerSide);
+                } else if (state == SelectorState.PUSH && this.getPush().isExternal()) {
+                    return this.passivePush(socketTile, callerSide);
+                }
+            }
+        }
+        return null;
+    }
 
-    protected abstract void handlePush(T target);
+    protected abstract void activePull(ISocketTile socketTile, Direction targetSide);
+
+    protected abstract void activePush(ISocketTile socketTile, Direction targetSide);
+
+    protected abstract T passivePull(ISocketTile socketTile, Direction callerSide);
+
+    protected abstract T passivePush(ISocketTile socketTile, Direction callerSide);
 
     @Override
     public CompoundNBT serializeNBT() {
@@ -81,5 +103,13 @@ public abstract class SideSelector<T> implements INBTSerializable<CompoundNBT> {
 
     public SelectorType getPull() {
         return pull;
+    }
+
+    public Map<Direction, SelectorState> getSelectorStates() {
+        return selectorStates;
+    }
+
+    protected SocketContext getSocketContext() {
+        return socketContext;
     }
 }
