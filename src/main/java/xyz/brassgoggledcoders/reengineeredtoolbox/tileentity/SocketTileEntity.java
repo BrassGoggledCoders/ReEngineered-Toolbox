@@ -77,7 +77,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     }
 
     @Override
-    public BlockPos getTilePos() {
+    public BlockPos getBlockPos() {
         return this.getPos();
     }
 
@@ -91,7 +91,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
         if (playerEntity instanceof ServerPlayerEntity) {
             NetworkHooks.openGui((ServerPlayerEntity) playerEntity, new SocketFaceContainerProvider(this, context),
                     packetBuffer -> {
-                        packetBuffer.writeBlockPos(this.getTilePos());
+                        packetBuffer.writeBlockPos(this.getBlockPos());
                         packetBuffer.writeString(context.getSide().getName());
                     });
         }
@@ -163,7 +163,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     @Override
     @Nullable
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.getTilePos(), -1, this.getUpdateTag());
+        return new SUpdateTileEntityPacket(this.getBlockPos(), -1, this.getUpdateTag());
     }
 
     @Override

@@ -19,6 +19,7 @@ import javax.annotation.Nullable;
 
 public class FaceInstance implements INBTSerializable<CompoundNBT> {
     private final SocketContext socketContext;
+    private boolean dirty;
 
     public FaceInstance(SocketContext socketContext) {
         this.socketContext = socketContext;
@@ -97,5 +98,17 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
 
     public int getWeakPower(@Nullable Direction side) {
         return 0;
+    }
+
+    public void markDirty() {
+        this.setDirty(true);
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    public boolean isDirty() {
+        return this.dirty;
     }
 }

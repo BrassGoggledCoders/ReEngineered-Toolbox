@@ -13,20 +13,16 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.ISocketContainer;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.ISocketScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.io.ItemIOFaceContainer;
-import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.FaceScreenGuiAddon;
+import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.inventory.SingleInventoryFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class ItemIOFaceInstance extends FaceInstance implements IGuiAddonProvider {
     protected final PosInvHandler inventory;
@@ -67,13 +63,13 @@ public class ItemIOFaceInstance extends FaceInstance implements IGuiAddonProvide
     @Nullable
     @Override
     public IFaceContainer getContainer() {
-        return new ItemIOFaceContainer(this);
+        return new SingleInventoryFaceContainer<>(this, this.inventory);
     }
 
     @Nullable
     @Override
     public IFaceScreen getScreen() {
-        return new FaceScreenGuiAddon(this);
+        return new GuiAddonFaceScreen(this);
     }
 
     public PosInvHandler getInventory() {

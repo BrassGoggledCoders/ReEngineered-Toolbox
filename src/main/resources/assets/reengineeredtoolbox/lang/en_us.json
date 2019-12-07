@@ -1,5 +1,8 @@
 {
+  "itemGroup.reengineeredtoolbox": "ReEngineered Toolbox",
+
   "block.reengineeredtoolbox.socket": "Socket Block",
+
   "face.reengineeredtoolbox.empty": "Empty Face",
   "face.reengineeredtoolbox.blank": "Blank Face",
   "face.reengineeredtoolbox.furnace": "Furnace Face",

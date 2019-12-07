@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface ISocketTile extends ICapabilityProvider {
     World getWorld();
 
-    BlockPos getTilePos();
+    BlockPos getBlockPos();
 
     BlockState getBlockState();
 

@@ -7,10 +7,10 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
 
 import java.util.List;
 
-public class FaceScreenGuiAddon implements IFaceScreen, IGuiAddonProvider {
+public class GuiAddonFaceScreen implements IFaceScreen, IGuiAddonProvider {
     private final IGuiAddonProvider guiAddonProvider;
 
-    public FaceScreenGuiAddon(IGuiAddonProvider guiAddonProvider) {
+    public GuiAddonFaceScreen(IGuiAddonProvider guiAddonProvider) {
         this.guiAddonProvider = guiAddonProvider;
     }
 

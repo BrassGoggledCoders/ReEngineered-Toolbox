@@ -8,7 +8,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETRegistries;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item.ItemInputFaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item.ItemOutputFaceInstance;
-import xyz.brassgoggledcoders.reengineeredtoolbox.face.machine.DispenserFaceInstance;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.machine.dispenser.DispenserFaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.machine.FurnaceFaceInstance;
 
 public class Faces {
