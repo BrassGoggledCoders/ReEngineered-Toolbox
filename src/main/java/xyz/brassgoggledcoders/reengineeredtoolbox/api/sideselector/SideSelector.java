@@ -5,7 +5,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
@@ -50,27 +49,29 @@ public abstract class SideSelector<T> implements INBTSerializable<CompoundNBT> {
         }
     }
 
-    public T getPassive(ISocketTile socketTile, Direction callerSide) {
-        if (callerSide != null) {
-            SelectorState state = this.getSelectorStates().get(callerSide);
+    public T getPassive(ISocketTile socketTile, SocketContext callerContext) {
+        if (callerContext != null) {
+            SelectorState state = this.getSelectorStates().get(callerContext.getSide());
             if (state != null) {
                 if (state == SelectorState.PULL && this.getPull().isExternal()) {
-                    return this.passivePull(socketTile, callerSide);
+                    return this.passivePull(socketTile, callerContext);
                 } else if (state == SelectorState.PUSH && this.getPush().isExternal()) {
-                    return this.passivePush(socketTile, callerSide);
+                    return this.passivePush(socketTile, callerContext);
                 }
             }
         }
         return null;
     }
 
+    public abstract T getValue(ISocketTile socketTile, boolean simulate);
+
     protected abstract void activePull(ISocketTile socketTile, Direction targetSide);
 
     protected abstract void activePush(ISocketTile socketTile, Direction targetSide);
 
-    protected abstract T passivePull(ISocketTile socketTile, Direction callerSide);
+    protected abstract T passivePull(ISocketTile socketTile, SocketContext callerSide);
 
-    protected abstract T passivePush(ISocketTile socketTile, Direction callerSide);
+    protected abstract T passivePush(ISocketTile socketTile, SocketContext callerSide);
 
     @Override
     public CompoundNBT serializeNBT() {

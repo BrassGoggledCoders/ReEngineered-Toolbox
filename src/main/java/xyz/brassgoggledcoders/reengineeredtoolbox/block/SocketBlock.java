@@ -57,10 +57,8 @@ public class SocketBlock extends Block {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-
-    public int getWeakPower(BlockState blockState, IBlockReader blockReader, BlockPos pos, Direction side) {
-        return handleTile(blockReader, pos, tile -> tile.getWeakPower(side), 0);
+    public boolean canConnectRedstone(BlockState state, IBlockReader blockReader, BlockPos pos, @Nullable Direction side) {
+        return handleTile(blockReader, pos, tile -> tile.canConnectRedstone(side), false);
     }
 
     private <T> T handleTile(IBlockReader reader, BlockPos blockPos, Function<SocketTileEntity, T> handleTile, T value) {

@@ -17,10 +17,16 @@ public class Items {
             () -> new FaceItem(new Item.Properties().group(ReEngineeredToolbox.instance.itemGroup), Faces.DISPENSER));
     public static final RegistryObject<Item> FURNACE_FACE = ITEMS.register("furnace_face",
             () -> new FaceItem(new Item.Properties().group(ReEngineeredToolbox.instance.itemGroup), Faces.FURNACE));
+
     public static final RegistryObject<Item> ITEM_INPUT_FACE = ITEMS.register("item_input_face",
             () -> new FaceItem(new Item.Properties().group(ReEngineeredToolbox.instance.itemGroup), Faces.ITEM_INPUT));
     public static final RegistryObject<Item> ITEM_OUTPUT_FACE = ITEMS.register("item_output_face",
             () -> new FaceItem(new Item.Properties().group(ReEngineeredToolbox.instance.itemGroup), Faces.ITEM_OUTPUT));
+
+    public static final RegistryObject<Item> REDSTONE_INPUT_FACE = ITEMS.register("redstone_input_face",
+            () -> new FaceItem(new Item.Properties().group(ReEngineeredToolbox.instance.itemGroup), Faces.REDSTONE_INPUT));
+    public static final RegistryObject<Item> REDSTONE_OUTPUT_FACE = ITEMS.register("redstone_output_face",
+            () -> new FaceItem(new Item.Properties().group(ReEngineeredToolbox.instance.itemGroup), Faces.REDSTONE_OUTPUT));
 
     public static void register(IEventBus bus) {
         ITEMS.register(bus);

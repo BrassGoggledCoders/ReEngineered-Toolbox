@@ -8,6 +8,8 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETRegistries;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item.ItemInputFaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item.ItemOutputFaceInstance;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.redstone.RedstoneInputFaceInstance;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.redstone.RedstoneOutputFaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.machine.dispenser.DispenserFaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.machine.FurnaceFaceInstance;
 
@@ -25,6 +27,11 @@ public class Faces {
             () -> new Face(ItemInputFaceInstance::new));
     public static final RegistryObject<Face> ITEM_OUTPUT = FACES.register("item_output",
             () -> new Face(ItemOutputFaceInstance::new));
+
+    public static final RegistryObject<Face> REDSTONE_INPUT = FACES.register("redstone_input",
+            () -> new Face(RedstoneInputFaceInstance::new));
+    public static final RegistryObject<Face> REDSTONE_OUTPUT = FACES.register("redstone_output",
+            () -> new Face(RedstoneOutputFaceInstance::new));
 
     public static void register(IEventBus eventBus) {
         FACES.register(eventBus);

@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.api.face;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -16,6 +15,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public class FaceInstance implements INBTSerializable<CompoundNBT> {
     private final SocketContext socketContext;
@@ -69,6 +69,7 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
 
     }
 
+    @ParametersAreNonnullByDefault
     public boolean onActivated(ISocketTile tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         return false;
     }
@@ -92,12 +93,12 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
         return 0;
     }
 
-    public int getStrongPower(@Nullable Direction side) {
+    public int getStrongPower(@Nonnull ISocketTile socketTile, @Nullable SocketContext callerContext) {
         return 0;
     }
 
-    public int getWeakPower(@Nullable Direction side) {
-        return 0;
+    public boolean canConnectRedstone(ISocketTile socketTile, SocketContext socketContext) {
+        return false;
     }
 
     public void markDirty() {

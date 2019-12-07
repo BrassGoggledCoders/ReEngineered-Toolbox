@@ -28,17 +28,18 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.block.SocketFaceContainerProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
+import xyz.brassgoggledcoders.reengineeredtoolbox.function.TriFunction;
 import xyz.brassgoggledcoders.reengineeredtoolbox.model.FaceProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.ToIntBiFunction;
 
 public class SocketTileEntity extends TileEntity implements ISocketTile, ITickableTileEntity {
     private EnumMap<Direction, IFaceHolder> faceHolders;
@@ -243,18 +244,23 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     }
 
     public int getStrongPower(Direction side) {
-        return getIntValue(side, FaceInstance::getStrongPower);
+        return getValue(side, FaceInstance::getStrongPower, 0);
     }
 
-    public int getWeakPower(Direction side) {
-        return getIntValue(side, FaceInstance::getWeakPower);
+    public boolean canConnectRedstone(@Nullable Direction side) {
+        if (side != null) {
+            return getValue(side, FaceInstance::canConnectRedstone, false);
+        } else {
+            return Arrays.stream(Direction.values())
+                    .anyMatch(direction -> getValue(direction, FaceInstance::canConnectRedstone, false));
+        }
     }
 
-    private int getIntValue(Direction side, ToIntBiFunction<FaceInstance, Direction> function) {
+    private <W> W getValue(Direction side, TriFunction<FaceInstance, ISocketTile, SocketContext, W> function, W value) {
         FaceInstance faceInstance = faceInstances.get(side);
         if (faceInstance != null) {
-            return function.applyAsInt(faceInstance, null);
+            return function.apply(faceInstance, this, null);
         }
-        return 0;
+        return value;
     }
 }

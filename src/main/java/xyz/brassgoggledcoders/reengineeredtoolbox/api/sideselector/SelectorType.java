@@ -3,7 +3,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.api.sideselector;
 public enum SelectorType {
     ALL(true, true),
     ACTIVE(true, false),
-    PASSIVE(false, false),
+    PASSIVE(false, true),
     NONE(false, false);
 
     private final boolean internal;

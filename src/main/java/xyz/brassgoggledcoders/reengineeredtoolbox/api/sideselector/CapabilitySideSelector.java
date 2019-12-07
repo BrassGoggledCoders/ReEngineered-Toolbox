@@ -8,6 +8,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.net.Socket;
 
 public abstract class CapabilitySideSelector<T> extends SideSelector<LazyOptional<T>> {
     private final Capability<T> capability;
@@ -30,19 +31,19 @@ public abstract class CapabilitySideSelector<T> extends SideSelector<LazyOptiona
     }
 
     @Override
-    protected LazyOptional<T> passivePull(ISocketTile socketTile, Direction callerSide) {
+    protected LazyOptional<T> passivePull(ISocketTile socketTile, SocketContext callerContext) {
         return this.getCapabilityForPull();
     }
 
     @Override
-    protected LazyOptional<T> passivePush(ISocketTile socketTile, Direction callerSide) {
+    protected LazyOptional<T> passivePush(ISocketTile socketTile, SocketContext callerContext) {
         return this.getCapabilityForPush();
     }
 
     @Nonnull
-    public <U> LazyOptional<U> getCapability(ISocketTile socketTile, @Nonnull Capability<U> cap, @Nullable Direction side) {
+    public <U> LazyOptional<U> getCapability(ISocketTile socketTile, @Nonnull Capability<U> cap, @Nullable SocketContext socketContext) {
         if (cap == this.capability) {
-            LazyOptional<T> optional = this.getPassive(socketTile, side);
+            LazyOptional<T> optional = this.getPassive(socketTile, socketContext);
             if (optional != null) {
                 return optional.cast();
             }
