@@ -52,6 +52,12 @@ public class SocketBlock extends Block {
 
     @Override
     @SuppressWarnings("deprecation")
+    public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+        return this.getStrongPower(blockState, blockAccess, pos, side);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
     public int getStrongPower(BlockState blockState, IBlockReader blockReader, BlockPos pos, Direction side) {
         return handleTile(blockReader, pos, tile -> tile.getStrongPower(side), 0);
     }
@@ -59,6 +65,17 @@ public class SocketBlock extends Block {
     @Override
     public boolean canConnectRedstone(BlockState state, IBlockReader blockReader, BlockPos pos, @Nullable Direction side) {
         return handleTile(blockReader, pos, tile -> tile.canConnectRedstone(side), false);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean canProvidePower(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public boolean shouldCheckWeakPower(BlockState state, IWorldReader worldReader, BlockPos pos, Direction side) {
+        return false;
     }
 
     private <T> T handleTile(IBlockReader reader, BlockPos blockPos, Function<SocketTileEntity, T> handleTile, T value) {

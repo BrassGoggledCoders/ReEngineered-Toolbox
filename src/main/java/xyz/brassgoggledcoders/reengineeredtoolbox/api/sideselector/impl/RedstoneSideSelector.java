@@ -18,7 +18,7 @@ public class RedstoneSideSelector extends SideSelector<Integer> {
 
     @Override
     public Integer getValue(ISocketTile socketTile, boolean simulate) {
-        if (this.getPush().isInternal()) {
+        if (this.getPull().isInternal()) {
             return this.getSelectorStates()
                     .entrySet()
                     .stream()

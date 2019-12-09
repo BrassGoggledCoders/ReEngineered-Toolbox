@@ -46,7 +46,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     private EnumMap<Direction, FaceInstance> faceInstances;
     private EnumMap<Direction, LazyOptional<IFaceHolder>> faceHolderOptionals;
 
-    private boolean updateRequested = true;
+    private boolean updateRequested = false;
 
     public SocketTileEntity() {
         super(Objects.requireNonNull(Blocks.SOCKET_TYPE.get()));
@@ -97,6 +97,11 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
                     });
         }
 
+    }
+
+    @Override
+    public void onLoad() {
+        this.updateRequested = true;
     }
 
     @Override
@@ -244,12 +249,12 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     }
 
     public int getStrongPower(Direction side) {
-        return getValue(side, FaceInstance::getStrongPower, 0);
+        return getValue(side.getOpposite(), FaceInstance::getStrongPower, 0);
     }
 
     public boolean canConnectRedstone(@Nullable Direction side) {
         if (side != null) {
-            return getValue(side, FaceInstance::canConnectRedstone, false);
+            return getValue(side.getOpposite(), FaceInstance::canConnectRedstone, false);
         } else {
             return Arrays.stream(Direction.values())
                     .anyMatch(direction -> getValue(direction, FaceInstance::canConnectRedstone, false));

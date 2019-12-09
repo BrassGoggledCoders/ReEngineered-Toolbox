@@ -8,6 +8,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
+import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -49,6 +50,7 @@ public abstract class SideSelector<T> implements INBTSerializable<CompoundNBT> {
         }
     }
 
+    @Nullable
     public T getPassive(ISocketTile socketTile, SocketContext callerContext) {
         if (callerContext != null) {
             SelectorState state = this.getSelectorStates().get(callerContext.getSide());
