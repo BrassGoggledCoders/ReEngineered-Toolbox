@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.content;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -29,9 +30,11 @@ public class Faces {
             () -> new Face(ItemOutputFaceInstance::new));
 
     public static final RegistryObject<Face> REDSTONE_INPUT = FACES.register("redstone_input",
-            () -> new Face(RedstoneInputFaceInstance::new));
+            () -> new Face(RedstoneInputFaceInstance::new,
+                    new ResourceLocation(ReEngineeredToolbox.ID, "faces/redstone_input_off")));
     public static final RegistryObject<Face> REDSTONE_OUTPUT = FACES.register("redstone_output",
-            () -> new Face(RedstoneOutputFaceInstance::new));
+            () -> new Face(RedstoneOutputFaceInstance::new,
+                    new ResourceLocation(ReEngineeredToolbox.ID, "faces/redstone_output_off")));
 
     public static void register(IEventBus eventBus) {
         FACES.register(eventBus);

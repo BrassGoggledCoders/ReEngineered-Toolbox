@@ -58,7 +58,7 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
     }
 
     public ResourceLocation getSpriteLocation() {
-        return this.getFace().getSpriteLocation();
+        return this.getFace().getDefaultSpriteLocation();
     }
 
     public CompoundNBT getUpdateTag() {

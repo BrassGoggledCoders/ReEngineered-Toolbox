@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETRegistries;
@@ -61,7 +60,7 @@ public class SocketModel implements IUnbakedModel {
     private static List<ResourceLocation> getAllTextures() {
         List<ResourceLocation> textures = RETRegistries.FACES.getValues()
                 .stream()
-                .map(Face::getAllSprites)
+                .map(Face::getAllSpriteLocations)
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
         textures.add(new ResourceLocation(ReEngineeredToolbox.ID, "faces/empty"));
