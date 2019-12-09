@@ -12,10 +12,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.CapabilityFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.FaceHolderProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,7 +41,7 @@ public class FaceItem extends Item {
                     heldStack.getCapability(CapabilityFaceHolder.FACE_HOLDER)
                             .ifPresent(stackFaceHolder -> {
                                 Face face = stackFaceHolder.getFace();
-                                if (face.isValidForSide(context.getFace())) {
+                                if (face != null && face.isValidForSide(context.getFace())) {
                                     socketFaceHolderValue.setFace(stackFaceHolder.getFace());
                                     heldStack.shrink(1);
                                     BlockState blockState = context.getWorld().getBlockState(context.getPos());

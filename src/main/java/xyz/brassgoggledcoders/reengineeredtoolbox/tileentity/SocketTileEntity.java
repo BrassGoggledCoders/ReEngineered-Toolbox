@@ -54,7 +54,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
         faceHolderOptionals = Maps.newEnumMap(Direction.class);
         faceInstances = Maps.newEnumMap(Direction.class);
         for (Direction direction : Direction.values()) {
-            FaceHolder faceHolder = new SocketFaceHolder(new WeakReference<>(this));
+            FaceHolder faceHolder = new SocketFaceHolder(new WeakReference<>(this), direction);
             faceHolders.put(direction, faceHolder);
             faceHolderOptionals.put(direction, LazyOptional.of(() -> faceHolder));
         }
@@ -262,5 +262,13 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
             return function.apply(faceInstance, this, null);
         }
         return value;
+    }
+
+    public void updateFaceInstance(Face face, Direction side) {
+        if (face != null) {
+            faceInstances.put(side, face.createInstance(new SocketContext(face, side)));
+        } else {
+            faceInstances.put(side, null);
+        }
     }
 }
