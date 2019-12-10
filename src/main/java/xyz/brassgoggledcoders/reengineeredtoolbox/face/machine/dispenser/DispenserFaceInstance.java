@@ -34,9 +34,9 @@ public class DispenserFaceInstance extends FaceInstance {
 
     public DispenserFaceInstance(SocketContext socketContext) {
         super(socketContext);
-        this.inventory = new PosInvHandler("Dispenser", 62, 26, 9)
+        this.inventory = new PosInvHandler("Dispenser", 71, 35, 4)
                 .setOnSlotChanged((itemStack, slot) -> this.markDirty())
-                .setSlotPosition((index) -> Pair.of((index % 3) * 18, (index / 3) * 18));
+                .setSlotPosition((index) -> Pair.of((index % 2) * 18, (index / 2) * 18));
         this.blockSource = new FakeDispenserBlockSource(socketContext);
     }
 
