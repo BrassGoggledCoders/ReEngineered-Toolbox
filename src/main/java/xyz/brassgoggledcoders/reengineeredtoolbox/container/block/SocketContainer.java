@@ -1,8 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.container.block;
 
 import com.hrznstudio.titanium.api.client.AssetTypes;
-import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
-import com.hrznstudio.titanium.client.gui.asset.DefaultAssetProvider;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.impl.ContainerInventoryBase;
 import net.minecraft.entity.player.PlayerEntity;
@@ -49,13 +47,6 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
         this.addHotBar();
     }
 
-    private void addHotBar() {
-        Point hotBarPoint = IAssetProvider.getAsset(this.getAssetProvider(), AssetTypes.BACKGROUND).getHotbarPosition();
-        for(int k = 0; k < 9; ++k) {
-            this.addSlot(new Slot(this.getPlayerInventory(), k, hotBarPoint.x + k * 18, hotBarPoint.y));
-        }
-    }
-
     @Nullable
     public static SocketContainer create(int id, PlayerInventory inventory, PacketBuffer packetBuffer) {
         TileEntity tileEntity = inventory.player.getEntityWorld().getTileEntity(packetBuffer.readBlockPos());
@@ -65,6 +56,13 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
         }
         ReEngineeredToolbox.LOGGER.warn("Failed to find TileEntity for Container");
         return null;
+    }
+
+    private void addHotBar() {
+        Point hotBarPoint = IAssetProvider.getAsset(this.getAssetProvider(), AssetTypes.BACKGROUND).getHotbarPosition();
+        for (int k = 0; k < 9; ++k) {
+            this.addSlot(new Slot(this.getPlayerInventory(), k, hotBarPoint.x + k * 18, hotBarPoint.y));
+        }
     }
 
     @Override

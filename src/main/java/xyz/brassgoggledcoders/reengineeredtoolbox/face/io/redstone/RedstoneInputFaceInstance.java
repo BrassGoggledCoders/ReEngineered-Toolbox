@@ -1,9 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.face.io.redstone;
 
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.sideselector.SelectorState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.sideselector.SelectorType;

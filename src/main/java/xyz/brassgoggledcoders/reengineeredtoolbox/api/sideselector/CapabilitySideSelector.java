@@ -8,7 +8,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.net.Socket;
 
 public abstract class CapabilitySideSelector<T> extends SideSelector<LazyOptional<T>> {
     private final Capability<T> capability;

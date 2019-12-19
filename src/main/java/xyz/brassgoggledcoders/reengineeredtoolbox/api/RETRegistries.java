@@ -7,11 +7,11 @@ import net.minecraftforge.registries.RegistryManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 
 public class RETRegistries {
+    public static IForgeRegistry<Face> FACES = RegistryManager.ACTIVE.getRegistry(Face.class);
+
     static {
         init();
     }
-
-    public static IForgeRegistry<Face> FACES = RegistryManager.ACTIVE.getRegistry(Face.class);
 
     private static void init() {
         new RegistryBuilder<Face>()

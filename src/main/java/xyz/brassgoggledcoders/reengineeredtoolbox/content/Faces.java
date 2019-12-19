@@ -11,8 +11,8 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item.ItemInputFaceInst
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item.ItemOutputFaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.redstone.RedstoneInputFaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.io.redstone.RedstoneOutputFaceInstance;
-import xyz.brassgoggledcoders.reengineeredtoolbox.face.machine.dispenser.DispenserFaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.face.machine.FurnaceFaceInstance;
+import xyz.brassgoggledcoders.reengineeredtoolbox.face.machine.dispenser.DispenserFaceInstance;
 
 public class Faces {
     private static final DeferredRegister<Face> FACES = new DeferredRegister<>(RETRegistries.FACES, ReEngineeredToolbox.ID);

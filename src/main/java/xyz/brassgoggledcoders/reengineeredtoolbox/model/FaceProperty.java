@@ -26,7 +26,7 @@ public enum FaceProperty {
 
     @Nullable
     public static ModelProperty<FaceInstance> getModelForSide(Direction side) {
-        for (FaceProperty faceProperty: VALUES) {
+        for (FaceProperty faceProperty : VALUES) {
             if (side == faceProperty.getDirection()) {
                 return faceProperty.getModelProperty();
             }

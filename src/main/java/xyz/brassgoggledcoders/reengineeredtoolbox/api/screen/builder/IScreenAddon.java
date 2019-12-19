@@ -1,7 +1,5 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.builder;
 
-import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
-import net.minecraft.client.gui.screen.Screen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.ISocketScreen;
 
 import java.util.Collections;

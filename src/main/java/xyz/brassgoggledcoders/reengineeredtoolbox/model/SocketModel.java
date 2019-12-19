@@ -31,6 +31,17 @@ public class SocketModel implements IUnbakedModel {
         this.socketModel = socketModel;
     }
 
+    private static List<ResourceLocation> getAllTextures() {
+        List<ResourceLocation> textures = RETRegistries.FACES.getValues()
+                .stream()
+                .map(Face::getAllSpriteLocations)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+        textures.add(new ResourceLocation(ReEngineeredToolbox.ID, "faces/empty"));
+        textures.add(new ResourceLocation(ReEngineeredToolbox.ID, "blocks/frame"));
+        return textures;
+    }
+
     @Nullable
     @Override
     public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> spriteGetter, ISprite sprite, VertexFormat format) {
@@ -55,16 +66,5 @@ public class SocketModel implements IUnbakedModel {
     @Override
     public Collection<ResourceLocation> getTextures(Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors) {
         return ALL_TEXTURES;
-    }
-
-    private static List<ResourceLocation> getAllTextures() {
-        List<ResourceLocation> textures = RETRegistries.FACES.getValues()
-                .stream()
-                .map(Face::getAllSpriteLocations)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-        textures.add(new ResourceLocation(ReEngineeredToolbox.ID, "faces/empty"));
-        textures.add(new ResourceLocation(ReEngineeredToolbox.ID, "blocks/frame"));
-        return textures;
     }
 }

@@ -1,8 +1,8 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.tileentity;
 
 import net.minecraft.util.Direction;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.FaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 
 import java.lang.ref.WeakReference;
 

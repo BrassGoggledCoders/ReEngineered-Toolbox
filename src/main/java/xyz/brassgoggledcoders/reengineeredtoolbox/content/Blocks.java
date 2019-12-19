@@ -21,26 +21,23 @@ import java.util.Objects;
 
 public class Blocks {
     private static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, ReEngineeredToolbox.ID);
-    private static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, ReEngineeredToolbox.ID);
-    private static final DeferredRegister<TileEntityType<?>> TILE_TYPE =
-            new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, ReEngineeredToolbox.ID);
-    private static final DeferredRegister<ContainerType<?>> CONTAINER_TYPE =
-            new DeferredRegister<>(ForgeRegistries.CONTAINERS, ReEngineeredToolbox.ID);
-
     public static final RegistryObject<Block> SOCKET = BLOCKS.register("socket", () -> new SocketBlock(Block.Properties.create(Material.IRON)
             .harvestLevel(2)
             .sound(SoundType.METAL)
             .hardnessAndResistance(5.0F, 6.0F)
     ));
-
+    private static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, ReEngineeredToolbox.ID);
     public static final RegistryObject<Item> SOCKET_ITEM = ITEMS.register("socket",
             () -> new BlockItem(Objects.requireNonNull(SOCKET.get()), new Item.Properties()
                     .group(ReEngineeredToolbox.instance.itemGroup))
     );
-
+    private static final DeferredRegister<TileEntityType<?>> TILE_TYPE =
+            new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, ReEngineeredToolbox.ID);
+    @SuppressWarnings("ConstantConditions")
     public static final RegistryObject<TileEntityType<?>> SOCKET_TYPE = TILE_TYPE.register("socket",
             () -> TileEntityType.Builder.create(SocketTileEntity::new, SOCKET.get()).build(null));
-
+    private static final DeferredRegister<ContainerType<?>> CONTAINER_TYPE =
+            new DeferredRegister<>(ForgeRegistries.CONTAINERS, ReEngineeredToolbox.ID);
     public static final RegistryObject<ContainerType<?>> SOCKET_CONTAINER = CONTAINER_TYPE.register("socket",
             () -> IForgeContainerType.create(SocketContainer::create));
 

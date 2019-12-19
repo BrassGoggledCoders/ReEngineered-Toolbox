@@ -105,11 +105,11 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
         this.setDirty(true);
     }
 
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
-    }
-
     public boolean isDirty() {
         return this.dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
 }
