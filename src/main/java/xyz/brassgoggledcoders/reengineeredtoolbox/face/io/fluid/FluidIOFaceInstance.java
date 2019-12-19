@@ -1,23 +1,23 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item;
+package xyz.brassgoggledcoders.reengineeredtoolbox.face.io.fluid;
 
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
+import com.hrznstudio.titanium.block.tile.fluid.PosFluidTank;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.inventory.SingleInventoryFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BlankFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
 
 import javax.annotation.Nonnull;
@@ -25,20 +25,20 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-public class ItemIOFaceInstance extends FaceInstance implements IGuiAddonProvider {
-    private final PosInvHandler inventory;
-    private final LazyOptional<IItemHandler> itemHandlerLazyOptional;
+public class FluidIOFaceInstance extends FaceInstance implements IGuiAddonProvider {
+    private final PosFluidTank fluidTank;
+    private final LazyOptional<IFluidHandler> fluidHandlerLazyOptional;
 
-    public ItemIOFaceInstance(SocketContext context, PosInvHandler itemStackHandler) {
+    public FluidIOFaceInstance(SocketContext context, PosFluidTank posFluidTank) {
         super(context);
-        this.inventory = itemStackHandler;
-        this.itemHandlerLazyOptional = LazyOptional.of(() -> inventory);
+        this.fluidTank = posFluidTank;
+        this.fluidHandlerLazyOptional = LazyOptional.of(() -> fluidTank);
     }
 
     @Override
     @Nonnull
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability) {
-        return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability ? itemHandlerLazyOptional.cast() : LazyOptional.empty();
+        return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY == capability ? fluidHandlerLazyOptional.cast() : LazyOptional.empty();
     }
 
     @Override
@@ -53,19 +53,19 @@ public class ItemIOFaceInstance extends FaceInstance implements IGuiAddonProvide
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT tagCompound = new CompoundNBT();
-        tagCompound.put("inventory", inventory.serializeNBT());
+        tagCompound.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         return tagCompound;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        inventory.deserializeNBT(nbt.getCompound("inventory"));
+        fluidTank.readFromNBT(nbt.getCompound("fluidTank"));
     }
 
     @Nullable
     @Override
     public IFaceContainer getContainer() {
-        return new SingleInventoryFaceContainer<>(this, this.inventory);
+        return new BlankFaceContainer();
     }
 
     @Nullable
@@ -74,12 +74,8 @@ public class ItemIOFaceInstance extends FaceInstance implements IGuiAddonProvide
         return new GuiAddonFaceScreen(this);
     }
 
-    public PosInvHandler getInventory() {
-        return this.inventory;
-    }
-
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        return this.inventory.getGuiAddons();
+        return this.fluidTank.getGuiAddons();
     }
 }
