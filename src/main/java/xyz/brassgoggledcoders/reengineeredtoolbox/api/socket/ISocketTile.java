@@ -24,11 +24,6 @@ public interface ISocketTile extends ICapabilityProvider {
      */
     void markDirty();
 
-    /**
-     * Requests an update to be sent to the front end
-     */
-    void requestUpdate();
-
     void openGui(PlayerEntity playerEntity, SocketContext context);
 
     <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side, SocketContext context);

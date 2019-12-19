@@ -46,8 +46,6 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     private EnumMap<Direction, FaceInstance> faceInstances;
     private EnumMap<Direction, LazyOptional<IFaceHolder>> faceHolderOptionals;
 
-    private boolean updateRequested = false;
-
     public SocketTileEntity() {
         super(Objects.requireNonNull(Blocks.SOCKET_TYPE.get()));
         faceHolders = Maps.newEnumMap(Direction.class);
@@ -83,11 +81,6 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
     }
 
     @Override
-    public void requestUpdate() {
-        updateRequested = true;
-    }
-
-    @Override
     public void openGui(PlayerEntity playerEntity, SocketContext context) {
         if (playerEntity instanceof ServerPlayerEntity) {
             NetworkHooks.openGui((ServerPlayerEntity) playerEntity, new SocketFaceContainerProvider(this, context),
@@ -96,12 +89,6 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
                         packetBuffer.writeString(context.getSide().getName());
                     });
         }
-
-    }
-
-    @Override
-    public void onLoad() {
-        this.updateRequested = true;
     }
 
     @Override
@@ -120,15 +107,19 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
 
     @Override
     public void tick() {
+        boolean updateRequested = false;
         for (Direction facing : Direction.values()) {
             FaceInstance faceInstance = this.faceInstances.get(facing);
             if (faceInstance != null) {
                 faceInstance.onTick(this);
+                if (faceInstance.isDirty()) {
+                    updateRequested = true;
+                }
             }
         }
         if (updateRequested) {
-            updateFaces();
-            updateRequested = false;
+            this.markDirty();
+            this.updateFaces();
         }
     }
 
