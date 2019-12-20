@@ -19,6 +19,7 @@ public class FreezerRecipe extends SerializableRecipe {
     public ItemStack output;
     public Ingredient inputIngredient;
     public FluidStack inputFluidStack;
+    public int time;
 
     public FreezerRecipe(ResourceLocation resourceLocation) {
         super(resourceLocation);

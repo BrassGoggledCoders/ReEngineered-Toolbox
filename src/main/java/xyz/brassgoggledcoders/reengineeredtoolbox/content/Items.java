@@ -8,6 +8,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.item.FaceItem;
 
+@SuppressWarnings("unused") //Most the Items don't actually get used
 public class Items {
     private static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, ReEngineeredToolbox.ID);
 
