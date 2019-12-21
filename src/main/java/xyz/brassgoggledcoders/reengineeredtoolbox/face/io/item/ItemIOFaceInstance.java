@@ -17,7 +17,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.inventory.SingleInventoryFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.inventory.InventoryFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
 
 import javax.annotation.Nonnull;
@@ -65,7 +65,7 @@ public class ItemIOFaceInstance extends FaceInstance implements IGuiAddonProvide
     @Nullable
     @Override
     public IFaceContainer getContainer() {
-        return new SingleInventoryFaceContainer<>(this, this.inventory);
+        return new InventoryFaceContainer<>(this, this.inventory);
     }
 
     @Nullable

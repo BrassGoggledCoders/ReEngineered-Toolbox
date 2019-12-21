@@ -16,10 +16,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class FreezerRecipe extends SerializableRecipe {
-    public ItemStack output;
-    public Ingredient inputIngredient;
-    public FluidStack inputFluidStack;
-    public int time;
+    public ItemStack output = ItemStack.EMPTY;
+    public Ingredient inputIngredient = Ingredient.EMPTY;
+    public FluidStack inputFluidStack = FluidStack.EMPTY;
+    public int time = 200;
 
     public FreezerRecipe(ResourceLocation resourceLocation) {
         super(resourceLocation);

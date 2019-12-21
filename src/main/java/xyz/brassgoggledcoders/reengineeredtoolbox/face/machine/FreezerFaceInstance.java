@@ -1,23 +1,40 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.face.machine;
 
+import com.google.common.collect.Lists;
+import com.hrznstudio.titanium.api.IFactory;
+import com.hrznstudio.titanium.api.client.IGuiAddon;
+import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.tile.fluid.PosFluidTank;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
 import com.hrznstudio.titanium.util.RecipeUtil;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.energy.EnergyStorage;
-import net.minecraftforge.energy.IEnergyStorage;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.World;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
+import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BlankFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.inventory.InventoryFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Recipes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.energy.PosEnergyStorage;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.freezer.FreezerRecipe;
+import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
 
-public class FreezerFaceInstance extends FaceInstance {
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class FreezerFaceInstance extends FaceInstance implements IGuiAddonProvider {
     private final PosInvHandler inputInventory;
     private final PosInvHandler outputInventory;
     private final PosFluidTank fluidTank;
@@ -29,16 +46,26 @@ public class FreezerFaceInstance extends FaceInstance {
 
     public FreezerFaceInstance(SocketContext socketContext) {
         super(socketContext);
-        inputInventory = new PosInvHandler("Input", 56, 17, 1)
+        inputInventory = new PosInvHandler("Input", 56, 44, 1)
                 .setInputFilter(((itemStack, slot) -> slot == 0))
                 .setOnSlotChanged(((itemStack, slot) -> this.markDirty()));
-        outputInventory = new PosInvHandler("Output", 56, 53, 1)
+        outputInventory = new PosInvHandler("Output", 116, 44, 1)
                 .setInputFilter(((itemStack, slot) -> false))
                 .setOnSlotChanged(((itemStack, slot) -> this.markDirty()));
-        fluidTank = new PosFluidTank("Freezer Tank", 4000, 12, 12)
+        fluidTank = new PosFluidTank("Freezer Tank", 4000, 32, 24)
                 .setOnContentChange(this::markDirty);
-        energyStorage = new PosEnergyStorage(10000, 5, 10);
-        progressBar = new PosProgressBar(12, 12, 100);
+        energyStorage = new PosEnergyStorage(10000, 10, 24);
+        progressBar = new PosProgressBar(84, 44, 100)
+                .setBarDirection(PosProgressBar.BarDirection.HORIZONTAL_RIGHT);
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public boolean onActivated(ISocketTile tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        if (!player.isSneaking()) {
+            tile.openGui(player, this.getSocketContext());
+        }
+        return super.onActivated(tile, player, hand, hit);
     }
 
     @Override
@@ -47,11 +74,11 @@ public class FreezerFaceInstance extends FaceInstance {
         if (currentRecipe == null) {
             handleNoRecipe(tile);
         } else {
-            handleRecipe(tile);
+            handleRecipe();
         }
     }
 
-    private void handleRecipe(ISocketTile tile) {
+    private void handleRecipe() {
         if (matches(currentRecipe)) {
             progressBar.setProgress(progressBar.getProgress() + 1);
             if (progressBar.getProgress() >= progressBar.getProgress()) {
@@ -61,7 +88,7 @@ public class FreezerFaceInstance extends FaceInstance {
                 } else {
                     inputStack.shrink(1);
                 }
-                outputInventory.insertItem(0, currentRecipe.getRecipeOutput(), true);
+                outputInventory.insertItem(0, currentRecipe.getRecipeOutput(), false);
             }
         } else {
             currentRecipe = null;
@@ -71,23 +98,28 @@ public class FreezerFaceInstance extends FaceInstance {
     }
 
     private void handleNoRecipe(ISocketTile tile) {
-        if (tile.getWorld().getGameTime() - lastRecipeCheck > 10) {
+        if (tile.getWorld().getGameTime() - lastRecipeCheck > 20) {
             lastRecipeCheck = tile.getWorld().getGameTime();
             if (!(inputInventory.getStackInSlot(0).isEmpty() && fluidTank.getFluid().isEmpty())) {
-                currentRecipe = RecipeUtil.getRecipes(tile.getWorld(), Recipes.FREEZER_TYPE)
+                currentRecipe = tile.getWorld().getRecipeManager()
+                        .getRecipes()
                         .stream()
+                        .filter(recipe -> recipe.getType() == Recipes.FREEZER_TYPE)
+                        .map(recipe -> (FreezerRecipe)recipe)
                         .filter(this::matches)
                         .findFirst()
                         .orElse(null);
                 progressBar.setProgress(0);
-                progressBar.setMaxProgress(currentRecipe.time);
+                if (currentRecipe != null) {
+                    progressBar.setMaxProgress(currentRecipe.time);
+                }
             }
         }
     }
 
     private boolean matches(FreezerRecipe freezerRecipe) {
         return freezerRecipe.matches(inputInventory.getStackInSlot(0), fluidTank.getFluid()) &&
-                outputInventory.insertItem(0, freezerRecipe.getRecipeOutput(), false).isEmpty();
+                outputInventory.insertItem(0, freezerRecipe.getRecipeOutput(), true).isEmpty();
     }
 
     @Override
@@ -109,5 +141,26 @@ public class FreezerFaceInstance extends FaceInstance {
         fluidTank.readFromNBT(nbt.getCompound("fluidTank"));
         energyStorage.deserializeNBT(nbt.getCompound("energyStorage"));
         progressBar.deserializeNBT(nbt.getCompound("progressBar"));
+    }
+
+    @Override
+    public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
+        return Lists.newArrayList(inputInventory, outputInventory, fluidTank, energyStorage, progressBar)
+                .stream()
+                .map(IGuiAddonProvider::getGuiAddons)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    @Nullable
+    @Override
+    public IFaceScreen getScreen() {
+        return new GuiAddonFaceScreen(this);
+    }
+
+    @Nullable
+    @Override
+    public IFaceContainer getContainer() {
+        return new InventoryFaceContainer<>(this, inputInventory, outputInventory);
     }
 }
