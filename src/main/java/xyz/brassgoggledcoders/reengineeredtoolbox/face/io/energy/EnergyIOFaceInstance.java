@@ -10,11 +10,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BlankFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.energy.PosEnergyStorage;
@@ -23,7 +22,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -39,7 +37,7 @@ public class EnergyIOFaceInstance extends FaceInstance implements IGuiAddonProvi
 
     @Override
     @ParametersAreNonnullByDefault
-    public boolean onActivated(ISocketTile tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public boolean onActivated(ISocket tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!player.isSneaking()) {
             tile.openGui(player, this.getSocketContext());
         }

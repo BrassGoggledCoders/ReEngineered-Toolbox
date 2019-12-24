@@ -7,22 +7,16 @@ import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.block.tile.fluid.PosFluidTank;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import com.hrznstudio.titanium.block.tile.progress.PosProgressBar;
-import com.hrznstudio.titanium.util.RecipeUtil;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BlankFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.inventory.InventoryFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Recipes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.energy.PosEnergyStorage;
@@ -61,7 +55,7 @@ public class FreezerFaceInstance extends FaceInstance implements IGuiAddonProvid
 
     @Override
     @ParametersAreNonnullByDefault
-    public boolean onActivated(ISocketTile tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public boolean onActivated(ISocket tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!player.isSneaking()) {
             tile.openGui(player, this.getSocketContext());
         }
@@ -69,7 +63,7 @@ public class FreezerFaceInstance extends FaceInstance implements IGuiAddonProvid
     }
 
     @Override
-    public void onTick(ISocketTile tile) {
+    public void onTick(ISocket tile) {
         super.onTick(tile);
         if (currentRecipe == null) {
             handleNoRecipe(tile);
@@ -97,7 +91,7 @@ public class FreezerFaceInstance extends FaceInstance implements IGuiAddonProvid
         this.markDirty();
     }
 
-    private void handleNoRecipe(ISocketTile tile) {
+    private void handleNoRecipe(ISocket tile) {
         if (tile.getWorld().getGameTime() - lastRecipeCheck > 20) {
             lastRecipeCheck = tile.getWorld().getGameTime();
             if (!(inputInventory.getStackInSlot(0).isEmpty() && fluidTank.getFluid().isEmpty())) {

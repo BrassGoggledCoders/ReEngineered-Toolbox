@@ -15,7 +15,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BlankFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
@@ -43,7 +43,7 @@ public class FluidIOFaceInstance extends FaceInstance implements IGuiAddonProvid
 
     @Override
     @ParametersAreNonnullByDefault
-    public boolean onActivated(ISocketTile tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public boolean onActivated(ISocket tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!player.isSneaking()) {
             tile.openGui(player, this.getSocketContext());
         }

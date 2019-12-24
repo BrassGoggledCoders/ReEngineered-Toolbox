@@ -10,7 +10,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
 import javax.annotation.Nonnull;
@@ -25,13 +25,8 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
         this.socketContext = socketContext;
     }
 
-    public void onTick(ISocketTile tile) {
+    public void onTick(ISocket tile) {
 
-    }
-
-    @Nonnull
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, SocketContext callerContext) {
-        return LazyOptional.empty();
     }
 
     @Nonnull
@@ -70,7 +65,7 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
     }
 
     @ParametersAreNonnullByDefault
-    public boolean onActivated(ISocketTile tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public boolean onActivated(ISocket tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         return false;
     }
 
@@ -93,11 +88,11 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
         return 0;
     }
 
-    public int getStrongPower(@Nonnull ISocketTile socketTile, @Nullable SocketContext callerContext) {
+    public int getStrongPower(@Nonnull ISocket socketTile, @Nullable SocketContext callerContext) {
         return 0;
     }
 
-    public boolean canConnectRedstone(ISocketTile socketTile, SocketContext socketContext) {
+    public boolean canConnectRedstone(ISocket socketTile, SocketContext socketContext) {
         return false;
     }
 

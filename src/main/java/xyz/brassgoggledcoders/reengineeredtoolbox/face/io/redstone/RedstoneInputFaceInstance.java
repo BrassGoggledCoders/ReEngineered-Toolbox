@@ -5,7 +5,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.sideselector.SelectorState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.sideselector.SelectorType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.sideselector.impl.RedstoneSideSelector;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
 import javax.annotation.Nonnull;
@@ -23,12 +23,12 @@ public class RedstoneInputFaceInstance extends FaceInstance {
     }
 
     @Override
-    public boolean canConnectRedstone(ISocketTile socketTile, SocketContext socketContext) {
+    public boolean canConnectRedstone(ISocket socketTile, SocketContext socketContext) {
         return true;
     }
 
     @Override
-    public int getStrongPower(@Nonnull ISocketTile socketTile, @Nullable SocketContext callerContext) {
+    public int getStrongPower(@Nonnull ISocket socketTile, @Nullable SocketContext callerContext) {
         if (callerContext != null) {
             return socketTile.getWorld().getRedstonePower(socketTile.getBlockPos().offset(this.getSocketContext().getSide()),
                     this.getSocketContext().getSide());

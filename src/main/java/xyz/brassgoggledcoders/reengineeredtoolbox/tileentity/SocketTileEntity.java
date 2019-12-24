@@ -24,7 +24,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.FaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.block.SocketFaceContainerProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
@@ -41,7 +41,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class SocketTileEntity extends TileEntity implements ISocketTile, ITickableTileEntity {
+public class SocketTileEntity extends TileEntity implements ISocket, ITickableTileEntity {
     private EnumMap<Direction, IFaceHolder> faceHolders;
     private EnumMap<Direction, FaceInstance> faceInstances;
     private EnumMap<Direction, LazyOptional<IFaceHolder>> faceHolderOptionals;
@@ -89,15 +89,6 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
                         packetBuffer.writeString(context.getSide().getName());
                     });
         }
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side, SocketContext context) {
-        FaceInstance faceInstance = faceInstances.get(side);
-        if (faceInstance != null) {
-            return faceInstance.getCapability(capability, context);
-        }
-        return LazyOptional.empty();
     }
 
     @Override
@@ -252,7 +243,7 @@ public class SocketTileEntity extends TileEntity implements ISocketTile, ITickab
         }
     }
 
-    private <W> W getValue(Direction side, TriFunction<FaceInstance, ISocketTile, SocketContext, W> function, W value) {
+    private <W> W getValue(Direction side, TriFunction<FaceInstance, ISocket, SocketContext, W> function, W value) {
         FaceInstance faceInstance = faceInstances.get(side);
         if (faceInstance != null) {
             return function.apply(faceInstance, this, null);

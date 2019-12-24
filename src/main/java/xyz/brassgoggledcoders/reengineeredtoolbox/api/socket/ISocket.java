@@ -12,7 +12,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 
 import java.util.Optional;
 
-public interface ISocketTile extends ICapabilityProvider {
+public interface ISocket extends ICapabilityProvider {
     World getWorld();
 
     BlockPos getBlockPos();
@@ -25,8 +25,6 @@ public interface ISocketTile extends ICapabilityProvider {
     void markDirty();
 
     void openGui(PlayerEntity playerEntity, SocketContext context);
-
-    <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side, SocketContext context);
 
     Optional<FaceInstance> getFaceInstanceOnSide(Direction side);
 }

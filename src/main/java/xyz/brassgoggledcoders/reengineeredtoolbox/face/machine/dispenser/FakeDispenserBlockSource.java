@@ -8,7 +8,7 @@ import net.minecraft.tileentity.DispenserTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
 import javax.annotation.Nonnull;
@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 public class FakeDispenserBlockSource implements IBlockSource {
     private final BlockState dispenserBlockState;
     private final DispenserTileEntity dispenserTileEntity;
-    private ISocketTile socketTile;
+    private ISocket socketTile;
 
     public FakeDispenserBlockSource(SocketContext socketContext) {
         this.dispenserBlockState = Blocks.DISPENSER.getDefaultState()
@@ -64,7 +64,7 @@ public class FakeDispenserBlockSource implements IBlockSource {
         return socketTile.getWorld();
     }
 
-    public void setSocketTile(ISocketTile socketTile) {
+    public void setSocketTile(ISocket socketTile) {
         this.socketTile = socketTile;
         if (socketTile != null) {
             dispenserTileEntity.setWorld(socketTile.getWorld());

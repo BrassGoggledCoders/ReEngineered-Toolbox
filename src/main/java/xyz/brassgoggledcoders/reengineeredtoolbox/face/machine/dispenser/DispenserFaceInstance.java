@@ -12,7 +12,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocketTile;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.inventory.InventoryFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
@@ -42,7 +42,7 @@ public class DispenserFaceInstance extends FaceInstance {
 
     @Override
     @ParametersAreNonnullByDefault
-    public boolean onActivated(ISocketTile tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public boolean onActivated(ISocket tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!player.isSneaking()) {
             tile.openGui(player, this.getSocketContext());
         }
@@ -50,7 +50,7 @@ public class DispenserFaceInstance extends FaceInstance {
     }
 
     @Override
-    public void onTick(@Nonnull ISocketTile tile) {
+    public void onTick(@Nonnull ISocket tile) {
         if (!tile.getWorld().isRemote) {
             boolean currentPowerState = Arrays.stream(Direction.values())
                     .map(tile::getFaceInstanceOnSide)
