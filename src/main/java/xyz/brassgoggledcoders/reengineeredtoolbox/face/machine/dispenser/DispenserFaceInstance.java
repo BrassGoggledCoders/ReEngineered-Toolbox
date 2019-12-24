@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.face.machine.dispenser;
 
+import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
@@ -8,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import org.apache.commons.lang3.tuple.Pair;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.Conduits;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone.RedstoneConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone.RedstoneContext;
@@ -21,6 +23,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 import java.util.Random;
 
 public class DispenserFaceInstance extends FaceInstance {
@@ -103,5 +106,10 @@ public class DispenserFaceInstance extends FaceInstance {
     @Nullable
     public IFaceScreen getScreen() {
         return new GuiAddonFaceScreen(this.inventory);
+    }
+
+    @Override
+    public List<ConduitClient<?, ?, ?>> getConduitClients() {
+        return Lists.newArrayList(redstoneConduitClient);
     }
 }

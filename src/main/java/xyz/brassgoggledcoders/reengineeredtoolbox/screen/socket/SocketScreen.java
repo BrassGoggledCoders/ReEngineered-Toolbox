@@ -7,10 +7,13 @@ import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.ISocketScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.builder.IScreenBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.block.SocketContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.screen.addon.ConduitCoreSelectorGuiAddon;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.builder.ScreenBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.BlankFaceScreen;
 
@@ -26,7 +29,8 @@ public class SocketScreen extends GuiContainerBase<SocketContainer> implements I
         super(container, playerInventory, name);
         this.container = container;
         this.screenBuilder = new ScreenBuilder();
-        this.faceScreen = Optional.ofNullable(container.getFaceInstance().getScreen())
+        FaceInstance faceInstance = container.getFaceInstance();
+        this.faceScreen = Optional.ofNullable(faceInstance.getScreen())
                 .orElseGet(BlankFaceScreen::new);
         faceScreen.setup(this);
         if (faceScreen instanceof IGuiAddonProvider) {
@@ -39,6 +43,12 @@ public class SocketScreen extends GuiContainerBase<SocketContainer> implements I
                 .stream()
                 .map(IFactory::create)
                 .forEach(this.getAddons()::add);
+
+        int conduitSelectX = 8;
+        for (ConduitClient<?, ?, ?> conduitClient: faceInstance.getConduitClients()) {
+            this.getAddons().add(new ConduitCoreSelectorGuiAddon(conduitClient, conduitSelectX, 80));
+            conduitSelectX += 16;
+        }
     }
 
     public static SocketScreen create(SocketContainer container, PlayerInventory playerInventory, ITextComponent name) {

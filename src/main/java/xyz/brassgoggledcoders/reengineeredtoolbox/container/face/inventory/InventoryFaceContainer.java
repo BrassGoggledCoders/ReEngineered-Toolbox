@@ -22,9 +22,9 @@ public class InventoryFaceContainer<T extends FaceInstance> implements IFaceCont
             int i = 0;
             for (int y = 0; y < handler.getYSize(); ++y) {
                 for (int x = 0; x < handler.getXSize(); ++x) {
-                    container.addSlot(new SlotItemHandler(handler, i, handler.getXPos() +
+                    container.addSlot(handler, i, handler.getXPos() +
                             handler.getSlotPosition().apply(i).getLeft(), handler.getYPos() +
-                            handler.getSlotPosition().apply(i).getRight()));
+                            handler.getSlotPosition().apply(i).getRight());
                     ++i;
                 }
             }

@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.container.block;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.impl.ContainerInventoryBase;
+import com.hrznstudio.titanium.container.impl.DisableableItemHandlerSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -11,6 +12,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ObjectHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
@@ -82,6 +84,11 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
     @Nonnull
     public Slot addSlot(@Nonnull Slot slot) {
         return super.addSlot(slot);
+    }
+
+    @Override
+    public Slot addSlot(IItemHandler handler, int index, int xPos, int yPos) {
+        return new DisableableItemHandlerSlot(handler, index, xPos, yPos, this);
     }
 
     @Override
