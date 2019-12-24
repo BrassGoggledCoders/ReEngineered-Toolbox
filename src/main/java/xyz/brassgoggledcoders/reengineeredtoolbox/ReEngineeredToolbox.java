@@ -13,6 +13,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.CapabilityFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.Conduits;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.block.SocketContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Faces;
@@ -39,6 +40,7 @@ public class ReEngineeredToolbox {
         Blocks.register(modBus);
         Items.register(modBus);
         Recipes.register(modBus);
+        Conduits.register(modBus);
 
         modBus.addListener(this::commonSetup);
         modBus.addListener(this::clientSetup);
