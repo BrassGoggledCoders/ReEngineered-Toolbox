@@ -9,6 +9,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import org.apache.commons.lang3.tuple.Pair;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.Conduits;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone.RedstoneConduitClient;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone.RedstoneContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
@@ -29,15 +32,22 @@ public class DispenserFaceInstance extends FaceInstance {
 
     private final FakeDispenserBlockSource blockSource;
     private final PosInvHandler inventory;
-
+    private final RedstoneConduitClient redstoneConduitClient;
     private boolean powered = false;
 
     public DispenserFaceInstance(SocketContext socketContext) {
         super(socketContext);
         this.inventory = new PosInvHandler("Dispenser", 71, 35, 4)
-                .setOnSlotChanged((itemStack, slot) -> this.markDirty())
+                .setOnSlotChanged((itemStack, slot) -> this.getSocket().markDirty())
                 .setSlotPosition((index) -> Pair.of((index % 2) * 18, (index / 2) * 18));
         this.blockSource = new FakeDispenserBlockSource(socketContext);
+        this.redstoneConduitClient = RedstoneConduitClient.createConsumer();
+        socketContext.getSocket()
+                .getConduitManager()
+                .getCoresFor(Conduits.REDSTONE.get())
+                .stream()
+                .findFirst()
+                .ifPresent(redstoneConduitClient::setConnectedCore);
     }
 
     @Override
@@ -50,20 +60,15 @@ public class DispenserFaceInstance extends FaceInstance {
     }
 
     @Override
-    public void onTick(@Nonnull ISocket tile) {
-        if (!tile.getWorld().isRemote) {
-            boolean currentPowerState = Arrays.stream(Direction.values())
-                    .map(tile::getFaceInstanceOnSide)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .map(faceInstance -> faceInstance.getStrongPower(tile, this.getSocketContext()))
-                    .anyMatch(power -> power > 0);
+    public void onTick() {
+        if (!this.getWorld().isRemote) {
+            boolean currentPowerState = redstoneConduitClient.request(new RedstoneContext(true))
+                    .orElse(0) > 0;
             if (currentPowerState != powered) {
                 if (currentPowerState) {
-                    blockSource.setSocketTile(tile);
                     int i = this.getDispenseSlot();
                     if (i < 0) {
-                        tile.getWorld().playEvent(1001, tile.getBlockPos(), 0);
+                        this.getWorld().playEvent(1001, this.getSocket().getBlockPos(), 0);
                     } else {
                         ItemStack itemstack = inventory.getStackInSlot(i);
                         IDispenseItemBehavior idispenseitembehavior = DispenserBlock.DISPENSE_BEHAVIOR_REGISTRY.get(itemstack.getItem());
@@ -72,7 +77,6 @@ public class DispenserFaceInstance extends FaceInstance {
                         }
 
                     }
-                    blockSource.setSocketTile(null);
                 }
 
                 powered = currentPowerState;

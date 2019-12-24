@@ -1,7 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.face.io.item;
 
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
 public class ItemInputFaceInstance extends ItemIOFaceInstance {
@@ -10,7 +9,7 @@ public class ItemInputFaceInstance extends ItemIOFaceInstance {
     }
 
     @Override
-    public void onTick(ISocket tile) {
+    public void onTick() {
 
     }
 }

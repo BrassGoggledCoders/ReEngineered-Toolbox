@@ -37,9 +37,11 @@ public abstract class ConduitClient<CONTENT, CONTEXT, TYPE extends ConduitType<C
 
     public void setConnectedCore(@Nonnull ConduitCore<CONTENT, CONTEXT, TYPE> connectedCore) {
         this.connectedCore = connectedCore;
+        connectedCore.addClient(this);
     }
 
     public void disconnectFromCore() {
+        this.connectedCore.removeClient(this);
         this.connectedCore = new EmptyCore<>(conduitType, this.emptySupplier());
     }
 

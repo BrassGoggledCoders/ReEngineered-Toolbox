@@ -10,7 +10,7 @@ public class ItemOutputFaceInstance extends ItemIOFaceInstance {
     }
 
     @Override
-    public void onTick(ISocket tile) {
+    public void onTick() {
 
     }
 }

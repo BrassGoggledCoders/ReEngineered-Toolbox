@@ -22,13 +22,15 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETRegistries;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.CapabilityFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.FaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitManager;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.IConduitManager;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone.RedstoneConduitCore;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.block.SocketFaceContainerProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
-import xyz.brassgoggledcoders.reengineeredtoolbox.function.TriFunction;
 import xyz.brassgoggledcoders.reengineeredtoolbox.model.FaceProperty;
 
 import javax.annotation.Nonnull;
@@ -42,9 +44,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class SocketTileEntity extends TileEntity implements ISocket, ITickableTileEntity {
-    private EnumMap<Direction, IFaceHolder> faceHolders;
-    private EnumMap<Direction, FaceInstance> faceInstances;
-    private EnumMap<Direction, LazyOptional<IFaceHolder>> faceHolderOptionals;
+    private final EnumMap<Direction, IFaceHolder> faceHolders;
+    private final EnumMap<Direction, FaceInstance> faceInstances;
+    private final EnumMap<Direction, LazyOptional<IFaceHolder>> faceHolderOptionals;
+    private final ConduitManager conduitManager;
 
     public SocketTileEntity() {
         super(Objects.requireNonNull(Blocks.SOCKET_TYPE.get()));
@@ -56,6 +59,8 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
             faceHolders.put(direction, faceHolder);
             faceHolderOptionals.put(direction, LazyOptional.of(() -> faceHolder));
         }
+        this.conduitManager = new ConduitManager(9);
+        this.conduitManager.addCore(new RedstoneConduitCore());
     }
 
     @Override
@@ -81,6 +86,11 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
     }
 
     @Override
+    public void updateClient() {
+        this.updateFaces();
+    }
+
+    @Override
     public void openGui(PlayerEntity playerEntity, SocketContext context) {
         if (playerEntity instanceof ServerPlayerEntity) {
             NetworkHooks.openGui((ServerPlayerEntity) playerEntity, new SocketFaceContainerProvider(this, context),
@@ -92,25 +102,17 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
     }
 
     @Override
-    public Optional<FaceInstance> getFaceInstanceOnSide(Direction side) {
-        return Optional.ofNullable(this.faceInstances.get(side));
+    public IConduitManager getConduitManager() {
+        return conduitManager;
     }
 
     @Override
     public void tick() {
-        boolean updateRequested = false;
         for (Direction facing : Direction.values()) {
             FaceInstance faceInstance = this.faceInstances.get(facing);
             if (faceInstance != null) {
-                faceInstance.onTick(this);
-                if (faceInstance.isDirty()) {
-                    updateRequested = true;
-                }
+                faceInstance.onTick();
             }
-        }
-        if (updateRequested) {
-            this.markDirty();
-            this.updateFaces();
         }
     }
 
@@ -183,7 +185,7 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
                 if (face != null) {
                     IFaceHolder faceHolder = faceHolders.get(direction);
                     faceHolder.setFace(face);
-                    FaceInstance faceInstance = face.createInstance(new SocketContext(face, direction));
+                    FaceInstance faceInstance = face.createInstance(new SocketContext(face, direction, this));
                     if (faceNBT.contains("instance")) {
                         handleInstanceNBT.accept(faceInstance, faceNBT.getCompound("instance"));
                     }
@@ -243,17 +245,17 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
         }
     }
 
-    private <W> W getValue(Direction side, TriFunction<FaceInstance, ISocket, SocketContext, W> function, W value) {
+    private <W> W getValue(Direction side, Function<FaceInstance, W> function, W value) {
         FaceInstance faceInstance = faceInstances.get(side);
         if (faceInstance != null) {
-            return function.apply(faceInstance, this, null);
+            return function.apply(faceInstance);
         }
         return value;
     }
 
     public void updateFaceInstance(Face face, Direction side) {
         if (face != null) {
-            faceInstances.put(side, face.createInstance(new SocketContext(face, side)));
+            faceInstances.put(side, face.createInstance(new SocketContext(face, side, this)));
         } else {
             faceInstances.put(side, null);
         }

@@ -40,4 +40,12 @@ public abstract class ConduitCore<CONTENT, CONTEXT, TYPE extends ConduitType<CON
 
     @Nonnull
     public abstract CONTENT offer(CONTEXT context);
+
+    public void addClient(ConduitClient<CONTENT, CONTEXT, TYPE> conduitClient) {
+        this.connectedClients.add(conduitClient);
+    }
+
+    public void removeClient(ConduitClient<CONTENT, CONTEXT, TYPE> conduitClient) {
+        this.connectedClients.remove(conduitClient);
+    }
 }

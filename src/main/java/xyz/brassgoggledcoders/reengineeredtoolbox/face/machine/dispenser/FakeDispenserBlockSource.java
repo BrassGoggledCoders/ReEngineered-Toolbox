@@ -16,33 +16,34 @@ import javax.annotation.Nonnull;
 public class FakeDispenserBlockSource implements IBlockSource {
     private final BlockState dispenserBlockState;
     private final DispenserTileEntity dispenserTileEntity;
-    private ISocket socketTile;
+    private final ISocket socket;
 
     public FakeDispenserBlockSource(SocketContext socketContext) {
         this.dispenserBlockState = Blocks.DISPENSER.getDefaultState()
                 .with(DispenserBlock.FACING, socketContext.getSide());
         this.dispenserTileEntity = new DispenserTileEntity();
+        this.socket = socketContext.getSocket();
     }
 
     @Override
     public double getX() {
-        return socketTile.getBlockPos().getX() + 0.5D;
+        return socket.getBlockPos().getX() + 0.5D;
     }
 
     @Override
     public double getY() {
-        return socketTile.getBlockPos().getY() + 0.5D;
+        return socket.getBlockPos().getY() + 0.5D;
     }
 
     @Override
     public double getZ() {
-        return socketTile.getBlockPos().getZ() + 0.5D;
+        return socket.getBlockPos().getZ() + 0.5D;
     }
 
     @Override
     @Nonnull
     public BlockPos getBlockPos() {
-        return socketTile.getBlockPos();
+        return socket.getBlockPos();
     }
 
     @Override
@@ -61,14 +62,6 @@ public class FakeDispenserBlockSource implements IBlockSource {
     @Override
     @Nonnull
     public World getWorld() {
-        return socketTile.getWorld();
-    }
-
-    public void setSocketTile(ISocket socketTile) {
-        this.socketTile = socketTile;
-        if (socketTile != null) {
-            dispenserTileEntity.setWorld(socketTile.getWorld());
-            dispenserTileEntity.setPos(socketTile.getBlockPos());
-        }
+        return socket.getWorld();
     }
 }

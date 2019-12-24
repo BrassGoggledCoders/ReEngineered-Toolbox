@@ -42,12 +42,12 @@ public class FreezerFaceInstance extends FaceInstance implements IGuiAddonProvid
         super(socketContext);
         inputInventory = new PosInvHandler("Input", 56, 44, 1)
                 .setInputFilter(((itemStack, slot) -> slot == 0))
-                .setOnSlotChanged(((itemStack, slot) -> this.markDirty()));
+                .setOnSlotChanged(((itemStack, slot) -> this.getSocket().markDirty()));
         outputInventory = new PosInvHandler("Output", 116, 44, 1)
                 .setInputFilter(((itemStack, slot) -> false))
-                .setOnSlotChanged(((itemStack, slot) -> this.markDirty()));
+                .setOnSlotChanged(((itemStack, slot) -> this.getSocket().markDirty()));
         fluidTank = new PosFluidTank("Freezer Tank", 4000, 32, 24)
-                .setOnContentChange(this::markDirty);
+                .setOnContentChange(this.getSocket()::markDirty);
         energyStorage = new PosEnergyStorage(10000, 10, 24);
         progressBar = new PosProgressBar(84, 44, 100)
                 .setBarDirection(PosProgressBar.BarDirection.HORIZONTAL_RIGHT);
@@ -63,10 +63,10 @@ public class FreezerFaceInstance extends FaceInstance implements IGuiAddonProvid
     }
 
     @Override
-    public void onTick(ISocket tile) {
-        super.onTick(tile);
+    public void onTick() {
+        super.onTick();
         if (currentRecipe == null) {
-            handleNoRecipe(tile);
+            handleNoRecipe();
         } else {
             handleRecipe();
         }
@@ -88,14 +88,14 @@ public class FreezerFaceInstance extends FaceInstance implements IGuiAddonProvid
             currentRecipe = null;
             progressBar.setProgress(0);
         }
-        this.markDirty();
+        this.getSocket().markDirty();
     }
 
-    private void handleNoRecipe(ISocket tile) {
-        if (tile.getWorld().getGameTime() - lastRecipeCheck > 20) {
-            lastRecipeCheck = tile.getWorld().getGameTime();
+    private void handleNoRecipe() {
+        if (this.getWorld().getGameTime() - lastRecipeCheck > 20) {
+            lastRecipeCheck = this.getWorld().getGameTime();
             if (!(inputInventory.getStackInSlot(0).isEmpty() && fluidTank.getFluid().isEmpty())) {
-                currentRecipe = tile.getWorld().getRecipeManager()
+                currentRecipe = this.getWorld().getRecipeManager()
                         .getRecipes()
                         .stream()
                         .filter(recipe -> recipe.getType() == Recipes.FREEZER_TYPE)

@@ -1,28 +1,36 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ConduitManager implements IConduitManager {
     private int maxCores;
-    private List<ConduitCore<?>> cores;
+    private Set<ConduitCore<?, ?, ?>> cores;
 
-    public List<ConduitCore<?>> getCores() {
+    public ConduitManager(int maxCores) {
+        this.cores = Sets.newHashSet();
+        this.maxCores = maxCores;
+    }
+
+    public Set<ConduitCore<?, ?, ?>> getCores() {
         return cores;
     }
 
-    public <CONTENT, CONTEXT, TYPE extends ConduitType<CONTENT, CONTEXT, TYPE, CORE, CLIENT>,
-            CORE extends ConduitCore<TYPE>, CLIENT extends ConduitClient<TYPE>> List<CORE> getCoresFor(
-                    ConduitType<CONTENT, CONTEXT, TYPE, CORE, CLIENT> conduitType) {
+    public <CONTENT, CONTEXT, TYPE extends ConduitType<CONTENT, CONTEXT, TYPE>> Set<ConduitCore<CONTENT, CONTEXT, TYPE>> getCoresFor(
+                    ConduitType<CONTENT, CONTEXT, TYPE> conduitType) {
         return cores.stream()
                 .map(conduitType::cast)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    public boolean addCore(ConduitCore<?> conduitCore) {
+    public boolean addCore(ConduitCore<?, ?, ?> conduitCore) {
         if (cores.size() < maxCores) {
             return cores.add(conduitCore);
         } else {

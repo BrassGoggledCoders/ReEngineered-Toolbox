@@ -13,8 +13,8 @@ public class RETRegistries {
         init();
     }
 
-    public final static IForgeRegistry<Face> FACES = RegistryManager.ACTIVE.getRegistry(Face.class);
-    public static final IForgeRegistry<ConduitType<?, ?, ?, ?, ?>> CONDUITS = RegistryManager.ACTIVE.getRegistry(ConduitType.class);
+    public static final IForgeRegistry<Face> FACES = RegistryManager.ACTIVE.getRegistry(Face.class);
+    public static final IForgeRegistry<ConduitType<?, ?, ?>> CONDUITS = RegistryManager.ACTIVE.getRegistry(ConduitType.class);
 
     @SuppressWarnings("unchecked")
     private static void init() {
