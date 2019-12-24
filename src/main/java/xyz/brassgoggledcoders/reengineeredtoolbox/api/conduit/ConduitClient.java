@@ -1,7 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public abstract class ConduitClient<CONTENT, CONTEXT, TYPE extends ConduitType<CONTENT, CONTEXT, TYPE>> {
@@ -25,9 +24,9 @@ public abstract class ConduitClient<CONTENT, CONTEXT, TYPE extends ConduitType<C
     public CONTENT offer(CONTEXT context) {
         return this.getConnectedCore().offer(context);
     }
-    
+
     public abstract CONTENT extractFrom(CONTEXT context);
-    
+
     public abstract CONTENT insertInto(CONTEXT context);
 
     @Nonnull

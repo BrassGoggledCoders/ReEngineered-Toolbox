@@ -1,9 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,7 +20,7 @@ public class ConduitManager implements IConduitManager {
     }
 
     public <CONTENT, CONTEXT, TYPE extends ConduitType<CONTENT, CONTEXT, TYPE>> Set<ConduitCore<CONTENT, CONTEXT, TYPE>> getCoresFor(
-                    ConduitType<CONTENT, CONTEXT, TYPE> conduitType) {
+            ConduitType<CONTENT, CONTEXT, TYPE> conduitType) {
         return cores.stream()
                 .map(conduitType::cast)
                 .filter(Optional::isPresent)

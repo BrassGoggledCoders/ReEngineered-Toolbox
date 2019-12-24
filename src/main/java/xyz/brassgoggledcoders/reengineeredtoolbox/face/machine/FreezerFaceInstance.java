@@ -99,7 +99,7 @@ public class FreezerFaceInstance extends FaceInstance implements IGuiAddonProvid
                         .getRecipes()
                         .stream()
                         .filter(recipe -> recipe.getType() == Recipes.FREEZER_TYPE)
-                        .map(recipe -> (FreezerRecipe)recipe)
+                        .map(recipe -> (FreezerRecipe) recipe)
                         .filter(this::matches)
                         .findFirst()
                         .orElse(null);

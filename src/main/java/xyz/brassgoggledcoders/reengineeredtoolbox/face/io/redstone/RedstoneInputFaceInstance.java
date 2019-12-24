@@ -13,8 +13,8 @@ public class RedstoneInputFaceInstance extends FaceInstance {
     public RedstoneInputFaceInstance(SocketContext socketContext) {
         super(socketContext);
         this.redstoneConduitClient = RedstoneConduitClient.createSupplier(
-            redstoneContext -> OptionalInt.of(this.getSocket().getWorld()
-                .getRedstonePower(this.getSocket().getBlockPos().offset(this.getSocketContext().getSide()), this.getSocketContext().getSide()))
+                redstoneContext -> OptionalInt.of(this.getSocket().getWorld()
+                        .getRedstonePower(this.getSocket().getBlockPos().offset(this.getSocketContext().getSide()), this.getSocketContext().getSide()))
         );
         socketContext.getSocket()
                 .getConduitManager()

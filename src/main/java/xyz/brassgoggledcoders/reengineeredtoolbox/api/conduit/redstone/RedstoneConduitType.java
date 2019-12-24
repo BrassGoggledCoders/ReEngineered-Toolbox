@@ -1,6 +1,8 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone;
 
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.*;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitCore;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitType;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.IOType;
 
 import java.util.OptionalInt;
 

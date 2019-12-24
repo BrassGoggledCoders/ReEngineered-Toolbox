@@ -16,6 +16,14 @@ public class RedstoneConduitClient extends ConduitClient<OptionalInt, RedstoneCo
         this.getPower = getPower;
     }
 
+    public static RedstoneConduitClient createSupplier(Function<RedstoneContext, OptionalInt> getPower) {
+        return new RedstoneConduitClient(getPower);
+    }
+
+    public static RedstoneConduitClient createConsumer() {
+        return new RedstoneConduitClient(power -> OptionalInt.empty());
+    }
+
     @Override
     @Nonnull
     public OptionalInt extractFrom(RedstoneContext redstoneContext) {
@@ -31,13 +39,5 @@ public class RedstoneConduitClient extends ConduitClient<OptionalInt, RedstoneCo
     @Override
     protected Supplier<OptionalInt> emptySupplier() {
         return OptionalInt::empty;
-    }
-
-    public static RedstoneConduitClient createSupplier(Function<RedstoneContext, OptionalInt> getPower) {
-        return new RedstoneConduitClient(getPower);
-    }
-
-    public static RedstoneConduitClient createConsumer() {
-        return new RedstoneConduitClient(power -> OptionalInt.empty());
     }
 }
