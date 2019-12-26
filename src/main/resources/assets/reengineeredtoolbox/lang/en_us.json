@@ -18,5 +18,9 @@
   "face.reengineeredtoolbox.fluid_input": "Fluid Input Face",
   "face.reengineeredtoolbox.fluid_output": "Fluid Output Face",
   "face.reengineeredtoolbox.redstone_input": "Redstone Input Face",
-  "face.reengineeredtoolbox.redstone_output": "Redstone Output Face"
+  "face.reengineeredtoolbox.redstone_output": "Redstone Output Face",
+
+  "conduit_core.reengineeredtoolbox.redstone": "Redstone Conduit Core",
+
+  "tooltip.reengineeredtoolbox.connected_clients": "Connected Clients:"
 }

@@ -1,16 +1,20 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit;
 
+import net.minecraft.util.text.ITextComponent;
+
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
 public abstract class ConduitClient<CONTENT, CONTEXT, TYPE extends ConduitType<CONTENT, CONTEXT, TYPE>> {
     private final TYPE conduitType;
+    private final ITextComponent name;
 
     private ConduitCore<CONTENT, CONTEXT, TYPE> connectedCore;
 
-    protected ConduitClient(TYPE conduitType) {
+    protected ConduitClient(TYPE conduitType, ITextComponent name) {
         this.conduitType = conduitType;
         this.connectedCore = new EmptyCore<>(conduitType, this.emptySupplier());
+        this.name = name;
     }
 
     public TYPE getConduitType() {
@@ -45,4 +49,8 @@ public abstract class ConduitClient<CONTENT, CONTEXT, TYPE extends ConduitType<C
     }
 
     protected abstract Supplier<CONTENT> emptySupplier();
+
+    public ITextComponent getName() {
+        return name;
+    }
 }

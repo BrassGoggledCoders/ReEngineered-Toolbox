@@ -13,7 +13,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.ISocketScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.builder.IScreenBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.block.SocketContainer;
-import xyz.brassgoggledcoders.reengineeredtoolbox.screen.addon.ConduitCoreSelectorGuiAddon;
+import xyz.brassgoggledcoders.reengineeredtoolbox.screen.addon.coreselector.ConduitCoreSelectorGuiAddon;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.builder.ScreenBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.BlankFaceScreen;
 
@@ -46,7 +46,8 @@ public class SocketScreen extends GuiContainerBase<SocketContainer> implements I
 
         int conduitSelectX = 8;
         for (ConduitClient<?, ?, ?> conduitClient: faceInstance.getConduitClients()) {
-            this.getAddons().add(new ConduitCoreSelectorGuiAddon(conduitClient, conduitSelectX, 80));
+            this.getAddons().add(new ConduitCoreSelectorGuiAddon<>(container.getSocket().getConduitManager(),
+                    conduitClient, conduitSelectX, 80));
             conduitSelectX += 16;
         }
     }

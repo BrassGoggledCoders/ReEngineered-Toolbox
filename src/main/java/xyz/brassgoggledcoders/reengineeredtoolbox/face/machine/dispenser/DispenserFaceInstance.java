@@ -6,6 +6,7 @@ import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import org.apache.commons.lang3.tuple.Pair;
@@ -40,7 +41,7 @@ public class DispenserFaceInstance extends FaceInstance {
                 .setOnSlotChanged((itemStack, slot) -> this.getSocket().markDirty())
                 .setSlotPosition((index) -> Pair.of((index % 2) * 18, (index / 2) * 18));
         this.blockSource = new FakeDispenserBlockSource(socketContext);
-        this.redstoneConduitClient = RedstoneConduitClient.createConsumer();
+        this.redstoneConduitClient = RedstoneConduitClient.createConsumer(socketContext.getFace().getName());
         socketContext.getSocket()
                 .getConduitManager()
                 .getCoresFor(Conduits.REDSTONE.get())

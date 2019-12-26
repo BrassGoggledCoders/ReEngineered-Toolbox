@@ -11,7 +11,7 @@ public class RedstoneOutputFaceInstance extends FaceInstance {
 
     public RedstoneOutputFaceInstance(SocketContext socketContext) {
         super(socketContext);
-        this.redstoneConduitClient = RedstoneConduitClient.createConsumer();
+        this.redstoneConduitClient = RedstoneConduitClient.createConsumer(socketContext.getFace().getName());
         socketContext.getSocket()
                 .getConduitManager()
                 .getCoresFor(Conduits.REDSTONE.get())

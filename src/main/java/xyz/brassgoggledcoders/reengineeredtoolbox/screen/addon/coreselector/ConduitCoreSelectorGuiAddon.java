@@ -1,12 +1,10 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.screen.addon;
+package xyz.brassgoggledcoders.reengineeredtoolbox.screen.addon.coreselector;
 
 import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.api.client.IAsset;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.assets.types.IBackgroundAsset;
-import com.hrznstudio.titanium.block.tile.button.PosButton;
-import com.hrznstudio.titanium.block.tile.sideness.IFacingHandler.FaceMode;
 import com.hrznstudio.titanium.client.gui.IGuiAddonConsumer;
 import com.hrznstudio.titanium.client.gui.addon.BasicGuiAddon;
 import com.hrznstudio.titanium.client.gui.addon.StateButtonAddon;
@@ -16,14 +14,18 @@ import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
-import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitCore;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitType;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.IConduitManager;
 
 import java.awt.*;
 import java.util.List;
 
-public class ConduitCoreSelectorGuiAddon extends BasicGuiAddon implements IClickable {
-    private final ConduitClient<?, ?, ?> conduitClient;
+public class ConduitCoreSelectorGuiAddon<CONTENT, CONTEXT, TYPE extends ConduitType<CONTENT, CONTEXT, TYPE>>
+        extends BasicGuiAddon implements IClickable {
+    private final IConduitManager conduitManager;
+    private final ConduitClient<CONTENT, CONTEXT, TYPE> conduitClient;
     private final List<IGuiAddon> buttons;
 
     private int xSize;
@@ -31,8 +33,10 @@ public class ConduitCoreSelectorGuiAddon extends BasicGuiAddon implements IClick
     private boolean clicked;
     private Point inventoryPosition;
 
-    public ConduitCoreSelectorGuiAddon(ConduitClient<?, ?, ?> conduitClient, int posX, int posY) {
+    public ConduitCoreSelectorGuiAddon(IConduitManager conduitManager, ConduitClient<CONTENT, CONTEXT, TYPE> conduitClient,
+                                       int posX, int posY) {
         super(posX, posY);
+        this.conduitManager = conduitManager;
         this.conduitClient = conduitClient;
         this.buttons = Lists.newArrayList();
     }
@@ -78,31 +82,19 @@ public class ConduitCoreSelectorGuiAddon extends BasicGuiAddon implements IClick
             IGuiAddonConsumer guiAddonConsumer = (IGuiAddonConsumer) screen;
             for (IGuiAddon addon : guiAddonConsumer.getAddons()) {
                 if (addon instanceof ConduitCoreSelectorGuiAddon && addon != this) {
-                    ((ConduitCoreSelectorGuiAddon) addon).setClicked(guiAddonConsumer, false);
+                    ((ConduitCoreSelectorGuiAddon<?, ?, ?>) addon).setClicked(guiAddonConsumer, false);
                 }
             }
             this.setClicked(guiAddonConsumer, !clicked);
             if (clicked) {
-                StateButtonAddon addon = new StateButtonAddon(new PosButton(inventoryPosition.x + 73,
-                        inventoryPosition.y + 19, 14, 14), FaceMode.NONE.getInfo(),
-                        FaceMode.ENABLED.getInfo()) {
-                    @Override
-                    public int getState() {
-                        return 0;
-                    }
+                int xPos = inventoryPosition.x + 55;
+                for (ConduitCore<CONTENT, CONTEXT, TYPE> conduitCore : conduitManager.getCoresFor(conduitClient.getConduitType())) {
+                    StateButtonAddon addon = new ConduitCoreSelectorButtonStateGuiAddon<>(conduitClient, conduitCore,
+                            xPos += 18, inventoryPosition.y + 19);
+                    buttons.add(addon);
+                    guiAddonConsumer.getAddons().add(addon);
+                }
 
-                    @Override
-                    public void handleClick(Screen gui, int guiX, int guiY, double mouseX, double mouseY, int mouse) {
-
-                    }
-
-                    @Override
-                    public List<String> getTooltipLines() {
-                        return Lists.newArrayList();
-                    }
-                };
-                buttons.add(addon);
-                guiAddonConsumer.getAddons().add(addon);
             }
         }
     }
