@@ -29,17 +29,14 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.block.SocketFaceContainerProvider;
+import xyz.brassgoggledcoders.reengineeredtoolbox.container.block.SocketContainerProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
 import xyz.brassgoggledcoders.reengineeredtoolbox.model.FaceProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -48,6 +45,7 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
     private final EnumMap<Direction, FaceInstance> faceInstances;
     private final EnumMap<Direction, LazyOptional<IFaceHolder>> faceHolderOptionals;
     private final ConduitManager conduitManager;
+    private int reload = 20;
 
     public SocketTileEntity() {
         super(Objects.requireNonNull(Blocks.SOCKET_TYPE.get()));
@@ -60,6 +58,7 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
             faceHolderOptionals.put(direction, LazyOptional.of(() -> faceHolder));
         }
         this.conduitManager = new ConduitManager(9);
+        this.conduitManager.addCore(new RedstoneConduitCore());
         this.conduitManager.addCore(new RedstoneConduitCore());
     }
 
@@ -91,12 +90,12 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
     }
 
     @Override
-    public void openGui(PlayerEntity playerEntity, SocketContext context) {
+    public void openScreen(PlayerEntity playerEntity, FaceInstance faceInstance) {
         if (playerEntity instanceof ServerPlayerEntity) {
-            NetworkHooks.openGui((ServerPlayerEntity) playerEntity, new SocketFaceContainerProvider(this, context),
+            NetworkHooks.openGui((ServerPlayerEntity) playerEntity, new SocketContainerProvider(this, faceInstance),
                     packetBuffer -> {
                         packetBuffer.writeBlockPos(this.getBlockPos());
-                        packetBuffer.writeString(context.getSide().getName());
+                        packetBuffer.writeUniqueId(faceInstance.getUuid());
                     });
         }
     }
@@ -107,7 +106,22 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
     }
 
     @Override
+    public FaceInstance getFaceInstance(UUID identifier) {
+        return faceInstances.values()
+                .parallelStream()
+                .filter(faceInstance -> identifier.equals(faceInstance.getUuid()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No FaceInstance found for UUID: " + identifier.toString()));
+    }
+
+    @Override
     public void tick() {
+        if (reload > 0) {
+            reload--;
+        } else {
+            this.updateFaces();
+        }
+
         for (Direction facing : Direction.values()) {
             FaceInstance faceInstance = this.faceInstances.get(facing);
             if (faceInstance != null) {
@@ -166,6 +180,13 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
     public CompoundNBT getUpdateTag() {
         CompoundNBT updateTag = new CompoundNBT();
         updateTag.put("faceHolders", this.createFaceNBT(FaceInstance::getUpdateTag));
+        CompoundNBT uuidsTag = new CompoundNBT();
+        for (Map.Entry<Direction, FaceInstance> entry : faceInstances.entrySet()) {
+            if (entry.getValue() != null) {
+                uuidsTag.putUniqueId(entry.getKey().getName(), entry.getValue().getUuid());
+            }
+        }
+        updateTag.put("uuids", uuidsTag);
         return updateTag;
     }
 
@@ -173,6 +194,19 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
     public void handleUpdateTag(CompoundNBT tag) {
         if (tag.contains("faceHolders")) {
             handleFaceHolderNBT(tag.getCompound("faceHolders"), FaceInstance::handleUpdateTag);
+        }
+        if (tag.contains("uuids")) {
+            CompoundNBT uuidsNbt = tag.getCompound("uuids");
+            for (Direction direction : Direction.values()) {
+                FaceInstance faceInstance = faceInstances.get(direction);
+                UUID uuid = null;
+                if (uuidsNbt.contains(direction.getName() + "Most")) {
+                    uuid = uuidsNbt.getUniqueId(direction.getName());
+                }
+                if (faceInstance != null && uuid != null) {
+                    faceInstance.setUuid(uuid);
+                }
+            }
         }
         updateFaces();
     }

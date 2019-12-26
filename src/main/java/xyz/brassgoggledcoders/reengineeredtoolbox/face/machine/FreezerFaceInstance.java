@@ -57,7 +57,7 @@ public class FreezerFaceInstance extends FaceInstance implements IGuiAddonProvid
     @ParametersAreNonnullByDefault
     public boolean onActivated(ISocket tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!player.isSneaking()) {
-            tile.openGui(player, this.getSocketContext());
+            this.openScreen(player);
         }
         return super.onActivated(tile, player, hand, hit);
     }

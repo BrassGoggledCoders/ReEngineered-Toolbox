@@ -45,20 +45,21 @@ public class FluidIOFaceInstance extends FaceInstance implements IGuiAddonProvid
     @ParametersAreNonnullByDefault
     public boolean onActivated(ISocket tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!player.isSneaking()) {
-            tile.openGui(player, this.getSocketContext());
+            this.openScreen(player);
         }
         return super.onActivated(tile, player, hand, hit);
     }
 
     @Override
     public CompoundNBT serializeNBT() {
-        CompoundNBT tagCompound = new CompoundNBT();
+        CompoundNBT tagCompound = super.serializeNBT();
         tagCompound.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         return tagCompound;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
+        super.deserializeNBT(nbt);
         fluidTank.readFromNBT(nbt.getCompound("fluidTank"));
     }
 

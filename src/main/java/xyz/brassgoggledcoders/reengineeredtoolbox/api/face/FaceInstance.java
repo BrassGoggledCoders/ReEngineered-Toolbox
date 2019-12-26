@@ -17,15 +17,19 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class FaceInstance implements INBTSerializable<CompoundNBT> {
     private final SocketContext socketContext;
+    private UUID uuid;
 
     public FaceInstance(SocketContext socketContext) {
         this.socketContext = socketContext;
+        this.uuid = UUID.randomUUID();
     }
 
     public void onTick() {
@@ -38,13 +42,18 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public CompoundNBT serializeNBT() {
-        return new CompoundNBT();
+        CompoundNBT nbt = new CompoundNBT();
+        nbt.putUniqueId("uuid", this.uuid);
+        return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-
+        if (nbt.contains("uuid")) {
+            this.uuid = nbt.getUniqueId("uuid");
+        }
     }
 
     public SocketContext getSocketContext() {
@@ -109,5 +118,17 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
 
     public List<ConduitClient<?, ?, ?>> getConduitClients() {
         return Collections.emptyList();
+    }
+
+    protected void openScreen(PlayerEntity playerEntity) {
+        this.getSocket().openScreen(playerEntity, this);
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 }

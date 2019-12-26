@@ -53,9 +53,22 @@ public class DispenserFaceInstance extends FaceInstance {
     @ParametersAreNonnullByDefault
     public boolean onActivated(ISocket tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!player.isSneaking()) {
-            tile.openGui(player, this.getSocketContext());
+            this.openScreen(player);
         }
         return super.onActivated(tile, player, hand, hit);
+    }
+
+    @Override
+    public CompoundNBT serializeNBT() {
+        CompoundNBT nbt = super.serializeNBT();
+        nbt.put("inventory", this.inventory.serializeNBT());
+        return nbt;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundNBT nbt) {
+        super.deserializeNBT(nbt);
+        this.inventory.deserializeNBT(nbt.getCompound("inventory"));
     }
 
     @Override

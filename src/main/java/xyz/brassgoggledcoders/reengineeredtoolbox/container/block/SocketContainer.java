@@ -11,36 +11,36 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ObjectHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.ISocketContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BlankFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
-import xyz.brassgoggledcoders.reengineeredtoolbox.tileentity.SocketTileEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 public class SocketContainer extends ContainerInventoryBase implements ISocketContainer {
     @ObjectHolder(ReEngineeredToolbox.ID + ":socket")
     public static ContainerType<SocketContainer> type;
 
-    private final SocketTileEntity socketTileEntity;
     private final FaceInstance faceInstance;
     private final IFaceContainer faceContainer;
     private final PlayerInventory playerInventory;
+    private final ISocket socket;
 
-    public SocketContainer(int id, PlayerInventory inventory, SocketTileEntity socketTileEntity, Direction sideOpened) {
+    public SocketContainer(int id, PlayerInventory inventory, ISocket socket, UUID faceIdentifier) {
         super(Objects.requireNonNull(Blocks.SOCKET_CONTAINER.get()), inventory, id);
-        this.socketTileEntity = socketTileEntity;
-        this.faceInstance = socketTileEntity.getFaceInstance(sideOpened);
+        this.socket = socket;
+        this.faceInstance = socket.getFaceInstance(faceIdentifier);
         this.faceContainer = Optional.ofNullable(faceInstance.getContainer())
                 .orElseGet(BlankFaceContainer::new);
         this.playerInventory = inventory;
@@ -52,9 +52,8 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
     @Nullable
     public static SocketContainer create(int id, PlayerInventory inventory, PacketBuffer packetBuffer) {
         TileEntity tileEntity = inventory.player.getEntityWorld().getTileEntity(packetBuffer.readBlockPos());
-        if (tileEntity instanceof SocketTileEntity) {
-            return new SocketContainer(id, inventory, (SocketTileEntity) tileEntity,
-                    Direction.byName(packetBuffer.readString()));
+        if (tileEntity instanceof ISocket) {
+            return new SocketContainer(id, inventory, (ISocket) tileEntity, packetBuffer.readUniqueId());
         }
         ReEngineeredToolbox.LOGGER.warn("Failed to find TileEntity for Container");
         return null;
@@ -70,10 +69,6 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
     @Override
     public boolean canInteractWith(@Nonnull PlayerEntity player) {
         return faceContainer.canInteractWith(player);
-    }
-
-    public SocketTileEntity getSocketTileEntity() {
-        return socketTileEntity;
     }
 
     public FaceInstance getFaceInstance() {
@@ -99,5 +94,9 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
     @Override
     public PlayerInventory getPlayerInventory() {
         return this.playerInventory;
+    }
+
+    public ISocket getSocket() {
+        return socket;
     }
 }

@@ -6,6 +6,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.IConduitManager;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
+
+import java.util.UUID;
 
 public interface ISocket extends ICapabilityProvider {
     World getWorld();
@@ -18,7 +21,9 @@ public interface ISocket extends ICapabilityProvider {
 
     void updateClient();
 
-    void openGui(PlayerEntity playerEntity, SocketContext context);
+    void openScreen(PlayerEntity playerEntity, FaceInstance faceInstance);
 
     IConduitManager getConduitManager();
+
+    FaceInstance getFaceInstance(UUID identifier);
 }
