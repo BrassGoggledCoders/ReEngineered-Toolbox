@@ -15,24 +15,13 @@ public class ConduitManager implements IConduitManager {
         this.maxCores = maxCores;
     }
 
-    public Set<ConduitCore<?, ?, ?>> getCores() {
-        return cores;
+    @Override
+    public int getMaxCores() {
+        return maxCores;
     }
 
-    public <CONTENT, CONTEXT, TYPE extends ConduitType<CONTENT, CONTEXT, TYPE>> Set<ConduitCore<CONTENT, CONTEXT, TYPE>> getCoresFor(
-            ConduitType<CONTENT, CONTEXT, TYPE> conduitType) {
-        return cores.stream()
-                .map(conduitType::cast)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toSet());
-    }
-
-    public boolean addCore(ConduitCore<?, ?, ?> conduitCore) {
-        if (cores.size() < maxCores) {
-            return cores.add(conduitCore);
-        } else {
-            return false;
-        }
+    @Override
+    public Set<ConduitCore<?, ?, ?>> getAllCores() {
+        return this.cores;
     }
 }

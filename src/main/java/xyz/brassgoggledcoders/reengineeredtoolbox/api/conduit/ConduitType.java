@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit;
 
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.empty.EmptyConduitCore;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -24,7 +25,7 @@ public abstract class ConduitType<CONTENT, CONTEXT, TYPE extends ConduitType<CON
         }
     }
 
-    protected ConduitCoreType<?, TYPE> getDefaultCoreType() {
+    public ConduitCoreType<?, TYPE> getDefaultCoreType() {
         return defaultCoreTypeSupplier.get();
     }
 
@@ -33,7 +34,7 @@ public abstract class ConduitType<CONTENT, CONTEXT, TYPE extends ConduitType<CON
     }
 
     public ConduitCore<CONTENT, CONTEXT, TYPE> createEmptyCore() {
-        return new EmptyCore<>(this.getDefaultCoreType().getConduitType(), this.emptySupplier());
+        return new EmptyConduitCore<>(this.getDefaultCoreType().getConduitType(), this.emptySupplier());
     }
 
     @Override
