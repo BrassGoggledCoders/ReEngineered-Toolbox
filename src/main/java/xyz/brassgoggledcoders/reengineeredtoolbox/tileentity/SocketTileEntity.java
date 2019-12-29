@@ -154,6 +154,9 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
         if (compound.contains("faceHolders")) {
             handleFaceHolderNBT(compound.getCompound("faceHolders"), FaceInstance::deserializeNBT);
         }
+        if (compound.contains("conduitManager")) {
+            conduitManager.deserializeNBT(compound.getCompound("conduitManager"));
+        }
     }
 
     @Override
@@ -161,6 +164,7 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
     public CompoundNBT write(CompoundNBT compound) {
         super.write(compound);
         compound.put("faceHolders", createFaceNBT(FaceInstance::serializeNBT));
+        compound.put("conduitManager", conduitManager.serializeNBT());
         return compound;
     }
 
@@ -187,6 +191,7 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
             }
         }
         updateTag.put("uuids", uuidsTag);
+        updateTag.put("conduitManager", conduitManager.serializeNBT());
         return updateTag;
     }
 
@@ -207,6 +212,9 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
                     faceInstance.setUuid(uuid);
                 }
             }
+        }
+        if (tag.contains("conduitManager")) {
+            conduitManager.deserializeNBT(tag.getCompound("conduitManager"));
         }
         updateFaces();
     }

@@ -26,6 +26,7 @@ public abstract class ConduitCore<CONTENT, CONTEXT, TYPE extends ConduitType<CON
         this.conduitType = conduitType;
         this.conduitCoreType = conduitCoreType;
         this.connectedClients = Sets.newHashSet();
+        this.uuid = UUID.randomUUID();
     }
 
     public TYPE getConduitType() {
@@ -34,18 +35,12 @@ public abstract class ConduitCore<CONTENT, CONTEXT, TYPE extends ConduitType<CON
 
     @Override
     public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.putUniqueId("uuid", this.getUuid());
-        return nbt;
+        return new CompoundNBT();
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        if (nbt.contains("uuid")) {
-            this.setUuid(nbt.getUniqueId("uuid"));
-        } else {
-            this.setUuid(UUID.randomUUID());
-        }
+
     }
 
     public Set<ConduitClient<CONTENT, CONTEXT, TYPE>> getClients() {
@@ -66,11 +61,12 @@ public abstract class ConduitCore<CONTENT, CONTEXT, TYPE extends ConduitType<CON
         this.connectedClients.remove(conduitClient);
     }
 
+    @Nonnull
     public UUID getUuid() {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUuid(@Nonnull UUID uuid) {
         this.uuid = uuid;
     }
 
