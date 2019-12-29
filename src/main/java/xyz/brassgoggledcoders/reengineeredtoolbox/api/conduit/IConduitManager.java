@@ -1,6 +1,8 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit;
 
 import com.google.common.collect.Sets;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -8,7 +10,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public interface IConduitManager {
+public interface IConduitManager extends INBTSerializable<CompoundNBT> {
     default <CONTENT, CONTEXT, TYPE extends ConduitType<CONTENT, CONTEXT, TYPE>> Set<ConduitCore<CONTENT, CONTEXT, TYPE>> getCoresFor(
             Supplier<? extends ConduitType<CONTENT, CONTEXT, TYPE>> conduitType) {
         return getCoresFor(conduitType.get());
@@ -37,4 +39,16 @@ public interface IConduitManager {
     int getMaxCores();
 
     Set<ConduitCore<?, ?, ?>> getAllCores();
+
+    @Override
+    default void deserializeNBT(CompoundNBT nbt) {
+
+    }
+
+    @Override
+    default CompoundNBT serializeNBT() {
+        CompoundNBT compoundNBT = new CompoundNBT();
+
+        return compoundNBT;
+    }
 }
