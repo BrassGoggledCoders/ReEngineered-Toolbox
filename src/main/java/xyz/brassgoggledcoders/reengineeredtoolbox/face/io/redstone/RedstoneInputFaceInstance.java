@@ -24,7 +24,7 @@ public class RedstoneInputFaceInstance extends FaceInstance {
         );
         socketContext.getSocket()
                 .getConduitManager()
-                .getCoresFor(Conduits.REDSTONE.get())
+                .getCoresFor(Conduits.REDSTONE_TYPE)
                 .stream()
                 .findFirst()
                 .ifPresent(redstoneConduitClient::setConnectedCore);

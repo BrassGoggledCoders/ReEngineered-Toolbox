@@ -5,6 +5,8 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryManager;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitCore;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitCoreType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 
@@ -14,14 +16,18 @@ public class RETRegistries {
     }
 
     public static final IForgeRegistry<Face> FACES = RegistryManager.ACTIVE.getRegistry(Face.class);
-    public static final IForgeRegistry<ConduitType<?, ?, ?>> CONDUITS = RegistryManager.ACTIVE.getRegistry(ConduitType.class);
+    public static final IForgeRegistry<ConduitType<?, ?, ?>> CONDUIT_TYPES =
+            RegistryManager.ACTIVE.getRegistry(ConduitType.class);
+    public static final IForgeRegistry<ConduitCoreType<?, ?>> CONDUIT_CORE_TYPES =
+            RegistryManager.ACTIVE.getRegistry(ConduitCoreType.class);
 
     @SuppressWarnings("unchecked")
     private static void init() {
         makeRegistry(new ResourceLocation("reengineeredtoolbox", "faces"), Face.class)
-                .setDefaultKey(new ResourceLocation("reengineeredtoolbox", "empty"))
                 .create();
-        makeRegistry(new ResourceLocation("reengineeredtoolbox", "conduits"), ConduitType.class)
+        makeRegistry(new ResourceLocation("reengineeredtoolbox", "conduit_types"), ConduitType.class)
+                .create();
+        makeRegistry(new ResourceLocation("reengineeredtoolbox", "conduit_core_types"), ConduitCoreType.class)
                 .create();
     }
 

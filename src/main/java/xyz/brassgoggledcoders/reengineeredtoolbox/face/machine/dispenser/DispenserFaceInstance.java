@@ -44,7 +44,7 @@ public class DispenserFaceInstance extends FaceInstance {
         this.redstoneConduitClient = RedstoneConduitClient.createConsumer(socketContext.getFace().getName());
         socketContext.getSocket()
                 .getConduitManager()
-                .getCoresFor(Conduits.REDSTONE.get())
+                .getCoresFor(Conduits.REDSTONE_TYPE)
                 .stream()
                 .findFirst()
                 .ifPresent(redstoneConduitClient::setConnectedCore);

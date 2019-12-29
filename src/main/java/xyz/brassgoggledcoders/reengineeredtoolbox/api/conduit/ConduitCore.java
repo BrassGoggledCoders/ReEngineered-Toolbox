@@ -2,25 +2,30 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit;
 
 import com.google.common.collect.Sets;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
 import java.util.UUID;
 
-public abstract class ConduitCore<CONTENT, CONTEXT, TYPE extends ConduitType<CONTENT, CONTEXT, TYPE>> implements INBTSerializable<CompoundNBT> {
-    private final TYPE conduitType;
-    private final ITextComponent name;
+public abstract class ConduitCore<CONTENT, CONTEXT, TYPE extends ConduitType<CONTENT, CONTEXT, TYPE>>
+        implements INBTSerializable<CompoundNBT> {
 
+    private final TYPE conduitType;
+    private final ConduitCoreType<?, TYPE> conduitCoreType;
     private final Set<ConduitClient<CONTENT, CONTEXT, TYPE>> connectedClients;
 
+    private ITextComponent name;
+    private String translationKey;
     private UUID uuid;
 
-    protected ConduitCore(TYPE conduitType, ITextComponent name) {
+    protected ConduitCore(TYPE conduitType, ConduitCoreType<?, TYPE> conduitCoreType) {
         this.conduitType = conduitType;
+        this.conduitCoreType = conduitCoreType;
         this.connectedClients = Sets.newHashSet();
-        this.name = name;
     }
 
     public TYPE getConduitType() {
@@ -30,16 +35,16 @@ public abstract class ConduitCore<CONTENT, CONTEXT, TYPE extends ConduitType<CON
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
-        nbt.putUniqueId("uuid", this.uuid);
+        nbt.putUniqueId("uuid", this.getUuid());
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         if (nbt.contains("uuid")) {
-            this.uuid = nbt.getUniqueId("uuid");
+            this.setUuid(nbt.getUniqueId("uuid"));
         } else {
-            this.uuid = UUID.randomUUID();
+            this.setUuid(UUID.randomUUID());
         }
     }
 
@@ -61,11 +66,33 @@ public abstract class ConduitCore<CONTENT, CONTEXT, TYPE extends ConduitType<CON
         this.connectedClients.remove(conduitClient);
     }
 
-    public ITextComponent getName() {
-        return name;
-    }
-
     public UUID getUuid() {
         return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public ITextComponent getName() {
+        if (this.name == null) {
+            this.name = new TranslationTextComponent(this.getTranslationKey());
+        }
+        return this.name;
+    }
+
+    public String getTranslationKey() {
+        if (this.translationKey == null) {
+            this.translationKey = Util.makeTranslationKey("conduit_core", this.getConduitCoreType().getRegistryName());
+        }
+        return this.translationKey;
+    }
+
+    public ConduitCoreType<?, TYPE> getConduitCoreType() {
+        return conduitCoreType;
+    }
+
+    public boolean isEmpty() {
+        return false;
     }
 }

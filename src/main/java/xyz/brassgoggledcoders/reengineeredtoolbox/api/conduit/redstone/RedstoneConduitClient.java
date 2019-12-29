@@ -13,7 +13,7 @@ public class RedstoneConduitClient extends ConduitClient<OptionalInt, RedstoneCo
     private final Function<RedstoneContext, OptionalInt> getPower;
 
     private RedstoneConduitClient(ITextComponent name, Function<RedstoneContext, OptionalInt> getPower) {
-        super(Conduits.REDSTONE.get(), name);
+        super(Conduits.REDSTONE_TYPE.get(), name);
         this.getPower = getPower;
     }
 

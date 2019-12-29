@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone;
 
-import net.minecraft.util.text.TranslationTextComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitCore;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.Conduits;
 
@@ -10,7 +9,7 @@ import java.util.stream.IntStream;
 
 public class RedstoneConduitCore extends ConduitCore<OptionalInt, RedstoneContext, RedstoneConduitType> {
     public RedstoneConduitCore() {
-        super(Conduits.REDSTONE.get(), new TranslationTextComponent("conduit_core.reengineeredtoolbox.redstone"));
+        super(Conduits.REDSTONE_TYPE.get(), Conduits.REDSTONE_CORE_TYPE.get());
     }
 
     @Override

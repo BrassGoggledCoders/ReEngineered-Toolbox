@@ -1,7 +1,5 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit;
 
-import net.minecraft.util.text.StringTextComponent;
-
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
@@ -11,7 +9,7 @@ public class EmptyCore<CONTENT, CONTEXT, TYPE extends ConduitType<CONTENT, CONTE
     private final Supplier<CONTENT> emptySupplier;
 
     public EmptyCore(TYPE conduitType, Supplier<CONTENT> emptySupplier) {
-        super(conduitType, new StringTextComponent("EMPTY"));
+        super(() -> conduitType, conduitType.getDefaultCoreType());
         this.emptySupplier = emptySupplier;
     }
 
@@ -25,5 +23,10 @@ public class EmptyCore<CONTENT, CONTEXT, TYPE extends ConduitType<CONTENT, CONTE
     @Override
     public CONTENT offer(CONTEXT context) {
         return emptySupplier.get();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return true;
     }
 }
