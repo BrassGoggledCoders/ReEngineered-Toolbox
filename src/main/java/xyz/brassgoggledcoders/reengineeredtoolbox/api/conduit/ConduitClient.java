@@ -11,9 +11,9 @@ public abstract class ConduitClient<CONTENT, CONTEXT, TYPE extends ConduitType<C
 
     private ConduitCore<CONTENT, CONTEXT, TYPE> connectedCore;
 
-    protected ConduitClient(TYPE conduitType, ITextComponent name) {
+    protected ConduitClient(TYPE conduitType, @Nonnull ITextComponent name) {
         this.conduitType = conduitType;
-        this.connectedCore = new EmptyCore<>(conduitType, this.emptySupplier());
+        this.connectedCore = conduitType.createEmptyCore();
         this.name = name;
     }
 
@@ -45,10 +45,8 @@ public abstract class ConduitClient<CONTENT, CONTEXT, TYPE extends ConduitType<C
 
     public void disconnectFromCore() {
         this.connectedCore.removeClient(this);
-        this.connectedCore = new EmptyCore<>(conduitType, this.emptySupplier());
+        this.connectedCore = this.getConduitType().createEmptyCore();
     }
-
-    protected abstract Supplier<CONTENT> emptySupplier();
 
     public ITextComponent getName() {
         return name;

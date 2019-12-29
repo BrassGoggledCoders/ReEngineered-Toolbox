@@ -1,8 +1,10 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone;
 
 import net.minecraft.util.text.ITextComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETObjects;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.Conduits;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitType;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.Conduits;
 
 import javax.annotation.Nonnull;
 import java.util.OptionalInt;
@@ -13,7 +15,7 @@ public class RedstoneConduitClient extends ConduitClient<OptionalInt, RedstoneCo
     private final Function<RedstoneContext, OptionalInt> getPower;
 
     private RedstoneConduitClient(ITextComponent name, Function<RedstoneContext, OptionalInt> getPower) {
-        super(Conduits.REDSTONE_TYPE.get(), name);
+        super(RETObjects.REDSTONE_TYPE.get(), name);
         this.getPower = getPower;
     }
 
@@ -35,10 +37,5 @@ public class RedstoneConduitClient extends ConduitClient<OptionalInt, RedstoneCo
     @Nonnull
     public OptionalInt insertInto(RedstoneContext redstoneContext) {
         return OptionalInt.empty();
-    }
-
-    @Override
-    protected Supplier<OptionalInt> emptySupplier() {
-        return OptionalInt::empty;
     }
 }

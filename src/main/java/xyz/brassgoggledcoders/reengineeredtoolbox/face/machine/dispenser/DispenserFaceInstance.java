@@ -10,8 +10,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import org.apache.commons.lang3.tuple.Pair;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETObjects;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.Conduits;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone.RedstoneConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone.RedstoneContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
@@ -44,7 +44,7 @@ public class DispenserFaceInstance extends FaceInstance {
         this.redstoneConduitClient = RedstoneConduitClient.createConsumer(socketContext.getFace().getName());
         socketContext.getSocket()
                 .getConduitManager()
-                .getCoresFor(Conduits.REDSTONE_TYPE)
+                .getCoresFor(RETObjects.REDSTONE_TYPE)
                 .stream()
                 .findFirst()
                 .ifPresent(redstoneConduitClient::setConnectedCore);

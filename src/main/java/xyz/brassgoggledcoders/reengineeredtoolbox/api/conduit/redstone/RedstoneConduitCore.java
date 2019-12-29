@@ -1,7 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone;
 
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETObjects;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitCore;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.Conduits;
 
 import javax.annotation.Nonnull;
 import java.util.OptionalInt;
@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 
 public class RedstoneConduitCore extends ConduitCore<OptionalInt, RedstoneContext, RedstoneConduitType> {
     public RedstoneConduitCore() {
-        super(Conduits.REDSTONE_TYPE.get(), Conduits.REDSTONE_CORE_TYPE.get());
+        super(RETObjects.REDSTONE_TYPE.get(), RETObjects.REDSTONE_CORE_TYPE.get());
     }
 
     @Override

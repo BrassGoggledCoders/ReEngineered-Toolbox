@@ -1,6 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.face.io.redstone;
 
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.Conduits;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETObjects;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone.RedstoneConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone.RedstoneContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
@@ -14,7 +14,7 @@ public class RedstoneOutputFaceInstance extends FaceInstance {
         this.redstoneConduitClient = RedstoneConduitClient.createConsumer(socketContext.getFace().getName());
         socketContext.getSocket()
                 .getConduitManager()
-                .getCoresFor(Conduits.REDSTONE_TYPE.get())
+                .getCoresFor(RETObjects.REDSTONE_TYPE.get())
                 .stream()
                 .findFirst()
                 .ifPresent(redstoneConduitClient::setConnectedCore);
