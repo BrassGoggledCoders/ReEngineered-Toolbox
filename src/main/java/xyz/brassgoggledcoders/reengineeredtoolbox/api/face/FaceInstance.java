@@ -19,6 +19,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -116,8 +117,8 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
         return false;
     }
 
-    public List<ConduitClient<?, ?, ?>> getConduitClients() {
-        return Collections.emptyList();
+    public Collection<ConduitClient<?, ?, ?>> getConduitClients() {
+        return Collections.emptySet();
     }
 
     protected void openScreen(PlayerEntity playerEntity) {

@@ -9,7 +9,10 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.energy.EnergyConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
@@ -22,18 +25,25 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-public class EnergyIOFaceInstance extends FaceInstance implements IGuiAddonProvider {
+public abstract class EnergyIOFaceInstance extends FaceInstance implements IGuiAddonProvider {
     private final PosEnergyStorage posEnergyStorage;
     private final LazyOptional<IEnergyStorage> externalOptional;
+    private final EnergyConduitClient energyConduitClient;
 
     public EnergyIOFaceInstance(SocketContext socketContext, Function<IEnergyStorage, IEnergyStorage> externalLayer) {
         super(socketContext);
         this.posEnergyStorage = new PosEnergyStorage(10000, 79, 24);
+        this.energyConduitClient = createEnergyConduitClient(posEnergyStorage);
         this.externalOptional = LazyOptional.of(() -> externalLayer.apply(posEnergyStorage));
     }
+
+    @Nonnull
+    protected abstract EnergyConduitClient createEnergyConduitClient(IEnergyStorage energyStorage);
 
     @Override
     @ParametersAreNonnullByDefault
@@ -68,5 +78,10 @@ public class EnergyIOFaceInstance extends FaceInstance implements IGuiAddonProvi
     @Override
     public IFaceContainer getContainer() {
         return new BlankFaceContainer();
+    }
+
+    @Override
+    public Collection<ConduitClient<?, ?, ?>> getConduitClients() {
+        return Collections.singleton(energyConduitClient);
     }
 }
