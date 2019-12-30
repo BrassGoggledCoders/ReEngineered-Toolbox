@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.tileentity;
 
 import com.google.common.collect.Maps;
+import com.hrznstudio.titanium.network.IButtonHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -24,7 +25,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.FaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.IConduitManager;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone.RedstoneConduitCore;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
@@ -40,7 +40,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class SocketTileEntity extends TileEntity implements ISocket, ITickableTileEntity {
+public class SocketTileEntity extends TileEntity implements ISocket, ITickableTileEntity, IButtonHandler {
     private final EnumMap<Direction, IFaceHolder> faceHolders;
     private final EnumMap<Direction, FaceInstance> faceInstances;
     private final EnumMap<Direction, LazyOptional<IFaceHolder>> faceHolderOptionals;
@@ -58,8 +58,6 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
             faceHolderOptionals.put(direction, LazyOptional.of(() -> faceHolder));
         }
         this.conduitManager = new ConduitManager(9);
-        this.conduitManager.addCore(new RedstoneConduitCore());
-        this.conduitManager.addCore(new RedstoneConduitCore());
     }
 
     @Override
@@ -151,11 +149,14 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
     @Override
     public void read(CompoundNBT compound) {
         super.read(compound);
+        if (compound.contains("conduitManager")) {
+            conduitManager.deserializeNBT(compound.getCompound("conduitManager"));
+        }
         if (compound.contains("faceHolders")) {
             handleFaceHolderNBT(compound.getCompound("faceHolders"), FaceInstance::deserializeNBT);
         }
-        if (compound.contains("conduitManager")) {
-            conduitManager.deserializeNBT(compound.getCompound("conduitManager"));
+        if (compound.contains("uuids")) {
+            this.handleUUIDTag(compound.getCompound("uuids"));
         }
     }
 
@@ -163,8 +164,9 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
     @Nonnull
     public CompoundNBT write(CompoundNBT compound) {
         super.write(compound);
-        compound.put("faceHolders", createFaceNBT(FaceInstance::serializeNBT));
+        compound.put("faceHolders", this.createFaceNBT(FaceInstance::serializeNBT));
         compound.put("conduitManager", conduitManager.serializeNBT());
+        compound.put("uuids", this.createUUIDTag());
         return compound;
     }
 
@@ -184,38 +186,46 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
     public CompoundNBT getUpdateTag() {
         CompoundNBT updateTag = new CompoundNBT();
         updateTag.put("faceHolders", this.createFaceNBT(FaceInstance::getUpdateTag));
+        updateTag.put("uuids", this.createUUIDTag());
+        updateTag.put("conduitManager", conduitManager.serializeNBT());
+        return updateTag;
+    }
+
+    private CompoundNBT createUUIDTag() {
         CompoundNBT uuidsTag = new CompoundNBT();
         for (Map.Entry<Direction, FaceInstance> entry : faceInstances.entrySet()) {
             if (entry.getValue() != null) {
                 uuidsTag.putUniqueId(entry.getKey().getName(), entry.getValue().getUuid());
             }
         }
-        updateTag.put("uuids", uuidsTag);
-        updateTag.put("conduitManager", conduitManager.serializeNBT());
-        return updateTag;
+        return uuidsTag;
+    }
+
+    private void handleUUIDTag(CompoundNBT uuidTag) {
+        for (Direction direction : Direction.values()) {
+            FaceInstance faceInstance = faceInstances.get(direction);
+            UUID uuid = null;
+            if (uuidTag.hasUniqueId(direction.getName())) {
+                uuid = uuidTag.getUniqueId(direction.getName());
+            }
+            if (faceInstance != null && uuid != null) {
+                faceInstance.setUuid(uuid);
+            }
+        }
     }
 
     @Override
     public void handleUpdateTag(CompoundNBT tag) {
-        if (tag.contains("faceHolders")) {
-            handleFaceHolderNBT(tag.getCompound("faceHolders"), FaceInstance::handleUpdateTag);
-        }
-        if (tag.contains("uuids")) {
-            CompoundNBT uuidsNbt = tag.getCompound("uuids");
-            for (Direction direction : Direction.values()) {
-                FaceInstance faceInstance = faceInstances.get(direction);
-                UUID uuid = null;
-                if (uuidsNbt.contains(direction.getName() + "Most")) {
-                    uuid = uuidsNbt.getUniqueId(direction.getName());
-                }
-                if (faceInstance != null && uuid != null) {
-                    faceInstance.setUuid(uuid);
-                }
-            }
-        }
         if (tag.contains("conduitManager")) {
             conduitManager.deserializeNBT(tag.getCompound("conduitManager"));
         }
+        if (tag.contains("faceHolders")) {
+            this.handleFaceHolderNBT(tag.getCompound("faceHolders"), FaceInstance::handleUpdateTag);
+        }
+        if (tag.contains("uuids")) {
+            this.handleUUIDTag(tag.getCompound("uuids"));
+        }
+
         updateFaces();
     }
 
@@ -261,10 +271,6 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
         return activated;
     }
 
-    public FaceInstance getFaceInstance(Direction side) {
-        return faceInstances.get(side);
-    }
-
     public int getComparatorSignal() {
         return this.faceInstances.values()
                 .stream()
@@ -300,6 +306,22 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
             faceInstances.put(side, face.createInstance(new SocketContext(face, side, this)));
         } else {
             faceInstances.put(side, null);
+        }
+    }
+
+    @Override
+    public void handleButtonMessage(int i, PlayerEntity playerEntity, CompoundNBT compoundNBT) {
+        if (compoundNBT.contains("conduitCoreChange")) {
+            CompoundNBT conduitCoreChange = compoundNBT.getCompound("conduitCoreChange");
+            UUID clientUUID = conduitCoreChange.getUniqueId("clientUUID");
+            UUID coreUUID = conduitCoreChange.getUniqueId("coreUUID");
+            faceInstances.values()
+                    .stream()
+                    .map(FaceInstance::getConduitClients)
+                    .flatMap(Collection::stream)
+                    .filter(conduitClient -> conduitClient.getUuid().equals(clientUUID))
+                    .forEach(client -> client.tryConnect(conduitManager, coreUUID));
+
         }
     }
 }

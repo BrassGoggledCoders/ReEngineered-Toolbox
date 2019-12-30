@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
@@ -47,8 +48,13 @@ public class ConduitCoreSelectorButtonStateGuiAddon<CONTENT, CONTEXT, TYPE exten
         Minecraft.getInstance().getSoundHandler().play(new SimpleSound(SoundEvents.UI_BUTTON_CLICK, SoundCategory.PLAYERS, 1.0F, 1.0F, Minecraft.getInstance().player.getPosition()));
         if (screen instanceof ContainerScreen && ((ContainerScreen<?>)screen).getContainer() instanceof ILocatable) {
             ILocatable locatable = (ILocatable)((ContainerScreen<?>)screen).getContainer();
+            CompoundNBT buttonInfo = new CompoundNBT();
+            CompoundNBT conduitCoreChange = new CompoundNBT();
+            conduitCoreChange.putUniqueId("clientUUID", conduitClient.getUuid());
+            conduitCoreChange.putUniqueId("coreUUID", conduitCore.getUuid());
+            buttonInfo.put("conduitCoreChange", conduitCoreChange);
             Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(locatable.getLocatorInstance(),
-                    this.getButton().getId(), new CompoundNBT()));
+                    this.getButton().getId(), buttonInfo));
         }
 
     }
@@ -62,6 +68,8 @@ public class ConduitCoreSelectorButtonStateGuiAddon<CONTENT, CONTEXT, TYPE exten
 
         toolTips.addAll(conduitCore.getClients().stream()
                 .map(ConduitClient::getName)
+                .map(name -> name.applyTextStyle(TextFormatting.WHITE))
+                .map(name -> new StringTextComponent(" * ").appendSibling(name))
                 .map(ITextComponent::getFormattedText)
                 .collect(Collectors.toSet())
         );

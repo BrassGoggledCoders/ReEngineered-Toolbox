@@ -11,6 +11,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETRegistries;
 import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -59,6 +60,15 @@ public interface IConduitManager extends INBTSerializable<CompoundNBT> {
                     });
         }
 
+        if (this.getAllCores().isEmpty()) {
+            RETObjects.REDSTONE_CORE_TYPE
+                    .map(ConduitCoreType::createCore)
+                    .ifPresent(this::addCore);
+            RETObjects.ENERGY_CORE_TYPE
+                    .map(ConduitCoreType::createCore)
+                    .ifPresent(this::addCore);
+        }
+
         RETObjects.EMPTY_TYPE.ifPresent(emptyConduitType -> {
             while (this.getAllCores().size() < this.getMaxCores()) {
                 this.addCore(emptyConduitType.createEmptyCore());
@@ -85,5 +95,12 @@ public interface IConduitManager extends INBTSerializable<CompoundNBT> {
         CompoundNBT compoundNBT = conduitCore.serializeNBT();
         compoundNBT.putUniqueId("uuid", conduitCore.getUuid());
         return Pair.of(conduitCore.getConduitCoreType().getRegistryName(), compoundNBT);
+    }
+
+    default Optional<ConduitCore<?, ?, ?>> getCoreByUUID(UUID uuid) {
+        return this.getAllCores()
+                .stream()
+                .filter(conduitCore -> conduitCore.getUuid().equals(uuid))
+                .findFirst();
     }
 }

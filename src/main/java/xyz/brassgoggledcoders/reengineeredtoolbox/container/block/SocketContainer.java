@@ -4,6 +4,9 @@ import com.hrznstudio.titanium.api.client.AssetTypes;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.impl.ContainerInventoryBase;
 import com.hrznstudio.titanium.container.impl.DisableableItemHandlerSlot;
+import com.hrznstudio.titanium.network.locator.ILocatable;
+import com.hrznstudio.titanium.network.locator.LocatorInstance;
+import com.hrznstudio.titanium.network.locator.instance.TileEntityLocatorInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -28,7 +31,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-public class SocketContainer extends ContainerInventoryBase implements ISocketContainer {
+public class SocketContainer extends ContainerInventoryBase implements ISocketContainer, ILocatable {
     @ObjectHolder(ReEngineeredToolbox.ID + ":socket")
     public static ContainerType<SocketContainer> type;
 
@@ -98,5 +101,10 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
 
     public ISocket getSocket() {
         return socket;
+    }
+
+    @Override
+    public LocatorInstance getLocatorInstance() {
+        return new TileEntityLocatorInstance(socket.getBlockPos());
     }
 }

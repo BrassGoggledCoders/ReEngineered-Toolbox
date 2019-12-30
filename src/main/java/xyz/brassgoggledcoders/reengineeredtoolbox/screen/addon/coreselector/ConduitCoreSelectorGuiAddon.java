@@ -10,9 +10,11 @@ import com.hrznstudio.titanium.client.gui.addon.BasicGuiAddon;
 import com.hrznstudio.titanium.client.gui.addon.StateButtonAddon;
 import com.hrznstudio.titanium.client.gui.addon.interfaces.IClickable;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
+import com.hrznstudio.titanium.container.impl.ContainerInventoryBase;
 import com.hrznstudio.titanium.util.AssetUtil;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.screen.Screen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitCore;
@@ -86,15 +88,21 @@ public class ConduitCoreSelectorGuiAddon<CONTENT, CONTEXT, TYPE extends ConduitT
                 }
             }
             this.setClicked(guiAddonConsumer, !clicked);
+            if (screen instanceof IHasContainer){
+                IHasContainer<?> guiContainer = (IHasContainer<?>) screen;
+                if (guiContainer.getContainer() instanceof ContainerInventoryBase) {
+                    ((ContainerInventoryBase) guiContainer.getContainer()).setDisabled(true);
+                }
+            }
             if (clicked) {
                 int xPos = inventoryPosition.x + 55;
                 for (ConduitCore<CONTENT, CONTEXT, TYPE> conduitCore : conduitManager.getCoresFor(conduitClient.getConduitType())) {
+                    xPos = xPos + 18;
                     StateButtonAddon addon = new ConduitCoreSelectorButtonStateGuiAddon<>(conduitClient, conduitCore,
-                            xPos += 18, inventoryPosition.y + 19);
+                            xPos, inventoryPosition.y + 19);
                     buttons.add(addon);
                     guiAddonConsumer.getAddons().add(addon);
                 }
-
             }
         }
     }
@@ -114,13 +122,17 @@ public class ConduitCoreSelectorGuiAddon<CONTENT, CONTEXT, TYPE extends ConduitT
         return clicked;
     }
 
-    public <T extends IGuiAddonConsumer> void setClicked(T gui, boolean clicked) {
+    public void setClicked(IGuiAddonConsumer gui, boolean clicked) {
         this.clicked = clicked;
         if (!clicked) {
             gui.getAddons().removeIf(buttons::contains);
             buttons.clear();
-            //TODO Handle Disable
-            // gui.getContainer().setDisabled(false);
+            if (gui instanceof IHasContainer){
+                IHasContainer<?> guiContainer = (IHasContainer<?>) gui;
+                if (guiContainer.getContainer() instanceof ContainerInventoryBase) {
+                    ((ContainerInventoryBase) guiContainer.getContainer()).setDisabled(false);
+                }
+            }
         }
     }
 }

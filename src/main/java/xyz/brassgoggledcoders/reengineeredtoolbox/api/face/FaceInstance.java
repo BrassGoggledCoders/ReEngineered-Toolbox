@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -131,5 +132,9 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    public ITextComponent getName() {
+        return this.getFace().getName();
     }
 }

@@ -4,6 +4,7 @@ import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
@@ -55,6 +56,18 @@ public abstract class EnergyIOFaceInstance extends FaceInstance implements IGuiA
             return super.onActivated(tile, player, hand, hit);
         }
     }
+
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT nbt = super.getUpdateTag();
+        nbt.put("energyStorage", posEnergyStorage.serializeNBT());
+        return nbt;
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundNBT updateNBT) {
+        super.handleUpdateTag(updateNBT);
+        posEnergyStorage.deserializeNBT(updateNBT.getCompound("energyStorage"));
     }
 
     @Nonnull

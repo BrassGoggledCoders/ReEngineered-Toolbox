@@ -21,6 +21,7 @@
   "face.reengineeredtoolbox.redstone_output": "Redstone Output Face",
 
   "conduit_core.reengineeredtoolbox.redstone": "Redstone Conduit Core",
+  "conduit_core.reengineeredtoolbox.energy": "Energy Conduit Core",
 
   "tooltip.reengineeredtoolbox.connected_clients": "Connected Clients:"
 }
