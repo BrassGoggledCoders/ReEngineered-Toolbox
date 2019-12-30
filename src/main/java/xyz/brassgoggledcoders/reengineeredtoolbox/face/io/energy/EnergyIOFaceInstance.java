@@ -50,8 +50,11 @@ public abstract class EnergyIOFaceInstance extends FaceInstance implements IGuiA
     public boolean onActivated(ISocket tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!player.isSneaking()) {
             this.openScreen(player);
+            return true;
+        } else {
+            return super.onActivated(tile, player, hand, hit);
         }
-        return super.onActivated(tile, player, hand, hit);
+    }
     }
 
     @Nonnull
