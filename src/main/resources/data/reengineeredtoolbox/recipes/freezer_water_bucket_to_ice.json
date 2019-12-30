@@ -5,6 +5,7 @@
     "item": "minecraft:water_bucket"
   },
   "output": {
-    "item": "minecraft:ice"
+    "item": "minecraft:ice",
+    "count": 1
   }
 }
