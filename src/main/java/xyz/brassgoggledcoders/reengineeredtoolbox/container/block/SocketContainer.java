@@ -83,7 +83,7 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
 
     @Override
     public Slot addSlot(IItemHandler handler, int index, int xPos, int yPos) {
-        return new DisableableItemHandlerSlot(handler, index, xPos, yPos, this);
+        return this.addSlot(new DisableableItemHandlerSlot(handler, index, xPos, yPos, this));
     }
 
     @Override

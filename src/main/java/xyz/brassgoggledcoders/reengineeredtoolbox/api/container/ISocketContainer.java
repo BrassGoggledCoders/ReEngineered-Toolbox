@@ -8,6 +8,8 @@ import net.minecraftforge.items.IItemHandler;
 public interface ISocketContainer {
     Slot addSlot(IItemHandler handler, int index, int xPos, int yPos);
 
+    Slot addSlot(Slot slot);
+
     Container getContainer();
 
     PlayerInventory getPlayerInventory();
