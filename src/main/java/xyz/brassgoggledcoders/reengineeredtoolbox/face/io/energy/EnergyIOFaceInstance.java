@@ -10,7 +10,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.energy.EnergyConduitClient;
@@ -20,7 +19,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BlankFaceContainer;
-import xyz.brassgoggledcoders.reengineeredtoolbox.energy.PosEnergyStorage;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capability.energy.PosEnergyStorage;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
 
 import javax.annotation.Nonnull;

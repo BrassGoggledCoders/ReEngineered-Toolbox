@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.energy;
+package xyz.brassgoggledcoders.reengineeredtoolbox.capability.energy;
 
 import net.minecraftforge.energy.IEnergyStorage;
 

@@ -19,7 +19,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.inventory.InventoryFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Recipes;
-import xyz.brassgoggledcoders.reengineeredtoolbox.energy.PosEnergyStorage;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capability.energy.PosEnergyStorage;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.freezer.FreezerRecipe;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
 
