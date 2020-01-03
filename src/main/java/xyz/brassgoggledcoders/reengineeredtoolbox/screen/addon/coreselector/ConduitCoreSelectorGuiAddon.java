@@ -88,13 +88,14 @@ public class ConduitCoreSelectorGuiAddon<CONTENT, CONTEXT, TYPE extends ConduitT
                 }
             }
             this.setClicked(guiAddonConsumer, !clicked);
-            if (screen instanceof IHasContainer){
-                IHasContainer<?> guiContainer = (IHasContainer<?>) screen;
-                if (guiContainer.getContainer() instanceof ContainerInventoryBase) {
-                    ((ContainerInventoryBase) guiContainer.getContainer()).setDisabled(true);
-                }
-            }
+
             if (clicked) {
+                if (screen instanceof IHasContainer) {
+                    IHasContainer<?> guiContainer = (IHasContainer<?>) screen;
+                    if (guiContainer.getContainer() instanceof ContainerInventoryBase) {
+                        ((ContainerInventoryBase) guiContainer.getContainer()).setDisabled(true);
+                    }
+                }
                 int xPos = inventoryPosition.x + 55;
                 for (ConduitCore<CONTENT, CONTEXT, TYPE> conduitCore : conduitManager.getCoresFor(conduitClient.getConduitType())) {
                     xPos = xPos + 18;
@@ -127,7 +128,7 @@ public class ConduitCoreSelectorGuiAddon<CONTENT, CONTEXT, TYPE extends ConduitT
         if (!clicked) {
             gui.getAddons().removeIf(buttons::contains);
             buttons.clear();
-            if (gui instanceof IHasContainer){
+            if (gui instanceof IHasContainer) {
                 IHasContainer<?> guiContainer = (IHasContainer<?>) gui;
                 if (guiContainer.getContainer() instanceof ContainerInventoryBase) {
                     ((ContainerInventoryBase) guiContainer.getContainer()).setDisabled(false);
