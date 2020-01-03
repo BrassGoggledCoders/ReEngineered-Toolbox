@@ -22,6 +22,8 @@ public class FakeDispenserBlockSource implements IBlockSource {
         this.dispenserBlockState = Blocks.DISPENSER.getDefaultState()
                 .with(DispenserBlock.FACING, socketContext.getSide());
         this.dispenserTileEntity = new DispenserTileEntity();
+        this.dispenserTileEntity.setPos(socketContext.getSocket().getBlockPos());
+        this.dispenserTileEntity.setWorld(socketContext.getSocket().getWorld());
         this.socket = socketContext.getSocket();
     }
 
