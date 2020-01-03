@@ -16,8 +16,8 @@ public class EnergyOutputFaceInstance extends EnergyIOFaceInstance {
     @Override
     @Nonnull
     protected EnergyConduitClient createEnergyConduitClient(IEnergyStorage energyStorage) {
-        return EnergyConduitClient.createConsumer(context ->
-                        OptionalInt.of(energyStorage.receiveEnergy(context.getAmount(), context.isSimulate())),
-                this.getName());
+        return EnergyConduitClient.createConsumer(this, this.getName(), context ->
+                        OptionalInt.of(energyStorage.receiveEnergy(context.getAmount(), context.isSimulate()))
+        );
     }
 }

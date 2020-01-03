@@ -41,13 +41,7 @@ public class DispenserFaceInstance extends FaceInstance {
                 .setOnSlotChanged((itemStack, slot) -> this.getSocket().markDirty())
                 .setSlotPosition((index) -> Pair.of((index % 2) * 18, (index / 2) * 18));
         this.blockSource = new FakeDispenserBlockSource(socketContext);
-        this.redstoneConduitClient = RedstoneConduitClient.createConsumer(socketContext.getFace().getName());
-        socketContext.getSocket()
-                .getConduitManager()
-                .getCoresFor(RETObjects.REDSTONE_TYPE)
-                .stream()
-                .findFirst()
-                .ifPresent(redstoneConduitClient::setConnectedCore);
+        this.redstoneConduitClient = RedstoneConduitClient.createConsumer(this, this.getName());
     }
 
     @Override

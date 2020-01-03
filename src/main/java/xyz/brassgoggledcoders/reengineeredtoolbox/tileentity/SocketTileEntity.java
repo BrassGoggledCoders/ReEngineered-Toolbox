@@ -320,7 +320,7 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
                     .map(FaceInstance::getConduitClients)
                     .flatMap(Collection::stream)
                     .filter(conduitClient -> conduitClient.getUuid().equals(clientUUID))
-                    .forEach(client -> client.tryConnect(conduitManager, coreUUID));
+                    .forEach(client -> client.tryConnect(coreUUID));
 
         }
     }

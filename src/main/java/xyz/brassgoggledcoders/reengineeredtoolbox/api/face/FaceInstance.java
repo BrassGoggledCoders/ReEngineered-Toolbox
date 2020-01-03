@@ -18,11 +18,9 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 public class FaceInstance implements INBTSerializable<CompoundNBT> {
@@ -44,10 +42,16 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putUniqueId("uuid", this.uuid);
+        if (!this.getConduitClients().isEmpty()) {
+            CompoundNBT conduitClientsNBT = new CompoundNBT();
+            for (ConduitClient<?, ?, ?> conduitClient : this.getConduitClients()) {
+                conduitClientsNBT.put(conduitClient.getUuid().toString(), conduitClient.serializeNBT());
+            }
+            nbt.put("conduitClients", conduitClientsNBT);
+        }
         return nbt;
     }
 
@@ -55,6 +59,14 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
     public void deserializeNBT(CompoundNBT nbt) {
         if (nbt.contains("uuid")) {
             this.uuid = nbt.getUniqueId("uuid");
+        }
+        if (nbt.contains("conduitClients")) {
+            CompoundNBT conduitClientsNBT = nbt.getCompound("conduitClients");
+            for (ConduitClient<?, ?, ?> conduitClient : this.getConduitClients()) {
+                if (conduitClientsNBT.contains(conduitClient.getUuid().toString())) {
+                    conduitClient.deserializeNBT(conduitClientsNBT.getCompound(conduitClient.getUuid().toString()));
+                }
+            }
         }
     }
 

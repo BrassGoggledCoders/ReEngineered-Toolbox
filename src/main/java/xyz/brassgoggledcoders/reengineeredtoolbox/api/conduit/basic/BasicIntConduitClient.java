@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.basic;
 import net.minecraft.util.text.ITextComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitType;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 
 import javax.annotation.Nonnull;
 import java.util.OptionalInt;
@@ -14,9 +15,10 @@ public abstract class BasicIntConduitClient<CONTEXT, TYPE extends ConduitType<Op
     private final Function<CONTEXT, OptionalInt> extractPower;
     private final Function<CONTEXT, OptionalInt> insertPower;
 
-    protected BasicIntConduitClient(Function<CONTEXT, OptionalInt> extractPower, Function<CONTEXT, OptionalInt> insertPower,
-                                    TYPE conduitType, ITextComponent name) {
-        super(conduitType, name);
+    protected BasicIntConduitClient(FaceInstance faceInstance, ITextComponent name, TYPE conduitType,
+                                    Function<CONTEXT, OptionalInt> extractPower,
+                                    Function<CONTEXT, OptionalInt> insertPower) {
+        super(conduitType, faceInstance, name);
         this.extractPower = extractPower;
         this.insertPower = insertPower;
     }
