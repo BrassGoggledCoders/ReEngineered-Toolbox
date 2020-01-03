@@ -23,15 +23,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.function.Function;
 
 public class FluidIOFaceInstance extends FaceInstance implements IGuiAddonProvider {
     private final PosFluidTank fluidTank;
     private final LazyOptional<IFluidHandler> fluidHandlerLazyOptional;
+    private final IFluidHandler fluidHandlerWrapper;
 
-    public FluidIOFaceInstance(SocketContext context, PosFluidTank posFluidTank) {
+    public FluidIOFaceInstance(SocketContext context, Function<IFluidHandler, IFluidHandler> createWrapper) {
         super(context);
-        this.fluidTank = posFluidTank;
-        this.fluidHandlerLazyOptional = LazyOptional.of(() -> fluidTank);
+        this.fluidTank = new PosFluidTank("Fluid Input", 4000, 80, 28);
+        this.fluidHandlerWrapper = createWrapper.apply(this.fluidTank);
+        this.fluidHandlerLazyOptional = LazyOptional.of(() -> fluidHandlerWrapper);
     }
 
     @Override
@@ -79,5 +82,9 @@ public class FluidIOFaceInstance extends FaceInstance implements IGuiAddonProvid
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         return this.fluidTank.getGuiAddons();
+    }
+
+    protected IFluidHandler getFluidHandlerWrapper() {
+        return this.fluidHandlerWrapper;
     }
 }
