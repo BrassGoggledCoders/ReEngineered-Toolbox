@@ -16,7 +16,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.energy.EnergyCondu
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BlankFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capability.energy.PosEnergyStorage;
@@ -47,12 +46,12 @@ public abstract class EnergyIOFaceInstance extends FaceInstance implements IGuiA
 
     @Override
     @ParametersAreNonnullByDefault
-    public boolean onActivated(ISocket tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public boolean onActivated(PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!player.isSneaking()) {
             this.openScreen(player);
             return true;
         } else {
-            return super.onActivated(tile, player, hand, hit);
+            return super.onActivated(player, hand, hit);
         }
     }
 

@@ -99,7 +99,7 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
     }
 
     @ParametersAreNonnullByDefault
-    public boolean onActivated(ISocket tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public boolean onActivated(PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         return false;
     }
 

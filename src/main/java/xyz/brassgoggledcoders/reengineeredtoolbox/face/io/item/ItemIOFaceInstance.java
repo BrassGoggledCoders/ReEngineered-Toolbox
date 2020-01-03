@@ -15,7 +15,6 @@ import net.minecraftforge.items.IItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.inventory.InventoryFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
@@ -43,12 +42,12 @@ public class ItemIOFaceInstance extends FaceInstance implements IGuiAddonProvide
 
     @Override
     @ParametersAreNonnullByDefault
-    public boolean onActivated(ISocket tile, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public boolean onActivated(PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!player.isSneaking()) {
             this.openScreen(player);
             return true;
         } else {
-            return super.onActivated(tile, player, hand, hit);
+            return super.onActivated(player, hand, hit);
         }
     }
 

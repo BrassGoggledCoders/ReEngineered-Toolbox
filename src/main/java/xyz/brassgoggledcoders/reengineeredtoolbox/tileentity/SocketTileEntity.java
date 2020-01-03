@@ -266,7 +266,7 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
 
     public boolean onBlockActivated(PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         FaceInstance faceInstance = faceInstances.get(hit.getFace());
-        boolean activated = faceInstance != null && faceInstance.onActivated(this, player, hand, hit);
+        boolean activated = faceInstance != null && faceInstance.onActivated(player, hand, hit);
         updateFaces();
         return activated;
     }
