@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.capability.fluid;
+package xyz.brassgoggledcoders.reengineeredtoolbox.component.fluid;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;

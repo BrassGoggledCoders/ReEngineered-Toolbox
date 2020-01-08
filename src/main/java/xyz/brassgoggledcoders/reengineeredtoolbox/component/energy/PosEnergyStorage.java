@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.capability.energy;
+package xyz.brassgoggledcoders.reengineeredtoolbox.component.energy;
 
 import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
@@ -6,6 +6,7 @@ import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
 import com.hrznstudio.titanium.client.gui.addon.EnergyBarGuiAddon;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.IntReferenceHolder;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.EnergyStorage;
 
@@ -36,6 +37,16 @@ public class PosEnergyStorage extends EnergyStorage implements INBTSerializable<
         return nbt;
     }
 
+    public void setEnergyStored(int energy) {
+        if (energy > this.getMaxEnergyStored()) {
+            this.energy = this.getMaxEnergyStored();
+        } else if (energy < 0) {
+            this.energy = 0;
+        } else {
+            this.energy = energy;
+        }
+    }
+
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         this.energy = nbt.getInt("energy");
@@ -44,5 +55,9 @@ public class PosEnergyStorage extends EnergyStorage implements INBTSerializable<
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
         return Lists.newArrayList(() -> new EnergyBarGuiAddon(xPos, yPos, this));
+    }
+
+    public IntReferenceHolder getIntReferenceHolder() {
+        return new EnergyStorageReferenceHolder(this);
     }
 }

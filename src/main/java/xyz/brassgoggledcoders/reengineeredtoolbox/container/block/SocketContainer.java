@@ -14,6 +14,8 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIntArray;
+import net.minecraft.util.IntReferenceHolder;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ObjectHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
@@ -21,7 +23,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.ISocketContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BlankFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BasicFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
 
 import javax.annotation.Nonnull;
@@ -45,7 +47,7 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
         this.socket = socket;
         this.faceInstance = socket.getFaceInstance(faceIdentifier);
         this.faceContainer = Optional.ofNullable(faceInstance.getContainer())
-                .orElseGet(BlankFaceContainer::new);
+                .orElseGet(() -> new BasicFaceContainer<>(faceInstance));
         this.playerInventory = inventory;
         this.faceContainer.setup(this);
 
@@ -85,16 +87,19 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
     }
 
     @Override
-    public Slot addSlot(IItemHandler handler, int index, int xPos, int yPos) {
+    @Nonnull
+    public Slot addSlot(@Nonnull IItemHandler handler, int index, int xPos, int yPos) {
         return this.addSlot(new DisableableItemHandlerSlot(handler, index, xPos, yPos, this));
     }
 
     @Override
+    @Nonnull
     public Container getContainer() {
         return this;
     }
 
     @Override
+    @Nonnull
     public PlayerInventory getPlayerInventory() {
         return this.playerInventory;
     }
@@ -106,5 +111,16 @@ public class SocketContainer extends ContainerInventoryBase implements ISocketCo
     @Override
     public LocatorInstance getLocatorInstance() {
         return new TileEntityLocatorInstance(socket.getBlockPos());
+    }
+
+    @Override
+    @Nonnull
+    public IntReferenceHolder trackInt(@Nonnull IntReferenceHolder holder) {
+        return super.trackInt(holder);
+    }
+
+    @Override
+    public void trackIntArray(@Nonnull IIntArray holders) {
+        super.trackIntArray(holders);
     }
 }

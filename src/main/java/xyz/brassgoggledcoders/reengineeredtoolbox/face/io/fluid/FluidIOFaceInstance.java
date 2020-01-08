@@ -16,7 +16,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BlankFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BasicFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
 
 import javax.annotation.Nonnull;
@@ -83,7 +83,7 @@ public class FluidIOFaceInstance extends FaceInstance implements IGuiAddonProvid
     @Nullable
     @Override
     public IFaceContainer getContainer() {
-        return new BlankFaceContainer();
+        return new BasicFaceContainer<>(this);
     }
 
     @Nullable

@@ -17,8 +17,9 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BlankFaceContainer;
-import xyz.brassgoggledcoders.reengineeredtoolbox.capability.energy.PosEnergyStorage;
+import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BasicFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.component.energy.PosEnergyStorage;
+import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.io.EnergyIOContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
 
 import javax.annotation.Nonnull;
@@ -30,15 +31,15 @@ import java.util.List;
 import java.util.function.Function;
 
 public abstract class EnergyIOFaceInstance extends FaceInstance implements IGuiAddonProvider {
-    private final PosEnergyStorage posEnergyStorage;
+    private final PosEnergyStorage energyStorage;
     private final LazyOptional<IEnergyStorage> externalOptional;
     private final EnergyConduitClient energyConduitClient;
 
     public EnergyIOFaceInstance(SocketContext socketContext, Function<IEnergyStorage, IEnergyStorage> externalLayer) {
         super(socketContext);
-        this.posEnergyStorage = new PosEnergyStorage(10000, 79, 24);
-        this.energyConduitClient = createEnergyConduitClient(posEnergyStorage);
-        this.externalOptional = LazyOptional.of(() -> externalLayer.apply(posEnergyStorage));
+        this.energyStorage = new PosEnergyStorage(10000, 79, 24);
+        this.energyConduitClient = createEnergyConduitClient(energyStorage);
+        this.externalOptional = LazyOptional.of(() -> externalLayer.apply(energyStorage));
     }
 
     @Nonnull
@@ -56,16 +57,16 @@ public abstract class EnergyIOFaceInstance extends FaceInstance implements IGuiA
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT nbt = super.getUpdateTag();
-        nbt.put("energyStorage", posEnergyStorage.serializeNBT());
-        return nbt;
+    public void deserializeNBT(CompoundNBT nbt) {
+        super.deserializeNBT(nbt);
+        energyStorage.deserializeNBT(nbt.getCompound("energyStorage"));
     }
 
     @Override
-    public void handleUpdateTag(CompoundNBT updateNBT) {
-        super.handleUpdateTag(updateNBT);
-        posEnergyStorage.deserializeNBT(updateNBT.getCompound("energyStorage"));
+    public CompoundNBT serializeNBT() {
+        CompoundNBT compoundNBT = super.serializeNBT();
+        compoundNBT.put("energyStorage", energyStorage.serializeNBT());
+        return compoundNBT;
     }
 
     @Nonnull
@@ -79,7 +80,7 @@ public abstract class EnergyIOFaceInstance extends FaceInstance implements IGuiA
 
     @Override
     public List<IFactory<? extends IGuiAddon>> getGuiAddons() {
-        return posEnergyStorage.getGuiAddons();
+        return energyStorage.getGuiAddons();
     }
 
     @Nullable
@@ -91,11 +92,15 @@ public abstract class EnergyIOFaceInstance extends FaceInstance implements IGuiA
     @Nullable
     @Override
     public IFaceContainer getContainer() {
-        return new BlankFaceContainer();
+        return new EnergyIOContainer(this);
     }
 
     @Override
     public Collection<ConduitClient<?, ?, ?>> getConduitClients() {
         return Collections.singleton(energyConduitClient);
+    }
+
+    public PosEnergyStorage getEnergyStorage() {
+        return this.energyStorage;
     }
 }

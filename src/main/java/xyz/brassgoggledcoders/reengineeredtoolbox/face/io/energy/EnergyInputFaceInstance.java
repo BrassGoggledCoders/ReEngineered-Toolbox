@@ -3,7 +3,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.face.io.energy;
 import net.minecraftforge.energy.IEnergyStorage;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.energy.EnergyConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
-import xyz.brassgoggledcoders.reengineeredtoolbox.capability.energy.EnergyStorageWrapper;
+import xyz.brassgoggledcoders.reengineeredtoolbox.component.energy.EnergyStorageWrapper;
 
 import javax.annotation.Nonnull;
 import java.util.OptionalInt;

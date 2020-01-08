@@ -5,7 +5,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.fluids.FluidUtil;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
-import xyz.brassgoggledcoders.reengineeredtoolbox.capability.fluid.FluidHandlerWrapper;
+import xyz.brassgoggledcoders.reengineeredtoolbox.component.fluid.FluidHandlerWrapper;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
