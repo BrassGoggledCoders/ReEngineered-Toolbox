@@ -12,10 +12,9 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.inventory.InventoryFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Recipes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.FreezerRecipe;
-import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
+import xyz.brassgoggledcoders.reengineeredtoolbox.util.Slots;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -111,13 +110,9 @@ public class FreezerFaceInstance extends BasicMachineFaceInstance<FreezerRecipe>
 
     @Nullable
     @Override
-    public IFaceScreen getScreen() {
-        return new GuiAddonFaceScreen(this);
-    }
-
-    @Nullable
-    @Override
     public IFaceContainer getContainer() {
-        return new InventoryFaceContainer<>(this, inputInventory, outputInventory);
+        return this.createBuilder()
+                .withSlots(Slots.getFromInventories(inputInventory, outputInventory))
+                .finish();
     }
 }

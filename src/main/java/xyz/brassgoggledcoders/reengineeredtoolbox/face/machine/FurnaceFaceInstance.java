@@ -13,7 +13,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.IFaceContai
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.inventory.InventoryFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Recipes;
-import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
+import xyz.brassgoggledcoders.reengineeredtoolbox.util.Slots;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -93,13 +93,9 @@ public class FurnaceFaceInstance extends BasicMachineFaceInstance<AbstractCookin
 
     @Nullable
     @Override
-    public IFaceScreen getScreen() {
-        return new GuiAddonFaceScreen(this);
-    }
-
-    @Nullable
-    @Override
     public IFaceContainer getContainer() {
-        return new InventoryFaceContainer<>(this, inputInventory, outputInventory);
+        return this.createBuilder()
+                .withSlots(Slots.getFromInventories(inputInventory, outputInventory))
+                .finish();
     }
 }

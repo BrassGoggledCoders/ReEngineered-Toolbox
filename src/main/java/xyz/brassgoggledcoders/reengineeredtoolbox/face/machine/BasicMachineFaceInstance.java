@@ -11,10 +11,17 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.FaceContainerBuilder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.face.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
-import xyz.brassgoggledcoders.reengineeredtoolbox.capability.energy.PosEnergyStorage;
+import xyz.brassgoggledcoders.reengineeredtoolbox.component.energy.PosEnergyStorage;
+import xyz.brassgoggledcoders.reengineeredtoolbox.component.progressbar.ProgressBarReferenceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.machine.BasicMachineContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,7 +78,6 @@ public abstract class BasicMachineFaceInstance<T extends IRecipe<IInventory>> ex
                 if (currentRecipe != null) {
                     progressBar.setMaxProgress(getTime(currentRecipe));
                 }
-                this.requestUpdate("progressBar", progressBar::serializeNBT);
             }
         }
     }
@@ -117,7 +123,6 @@ public abstract class BasicMachineFaceInstance<T extends IRecipe<IInventory>> ex
             currentRecipe = null;
             progressBar.setProgress(0);
         }
-        this.requestUpdate("progressBar", progressBar::serializeNBT);
         this.getSocket().markDirty();
     }
 
@@ -140,5 +145,31 @@ public abstract class BasicMachineFaceInstance<T extends IRecipe<IInventory>> ex
                 .stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
+    }
+
+    public PosEnergyStorage getEnergyStorage() {
+        return this.energyStorage;
+    }
+
+    public PosProgressBar getProgressBar() {
+        return this.progressBar;
+    }
+
+    @Nullable
+    @Override
+    public IFaceContainer getContainer() {
+        return new BasicMachineContainer<>(this);
+    }
+
+    @Nullable
+    @Override
+    public IFaceScreen getScreen() {
+        return new GuiAddonFaceScreen(this);
+    }
+
+    public FaceContainerBuilder createBuilder() {
+        return new FaceContainerBuilder()
+                .withReferenceHolder(this.getEnergyStorage().getIntReferenceHolder())
+                .withArrayReferenceHolder(new ProgressBarReferenceHolder(this.getProgressBar()));
     }
 }
