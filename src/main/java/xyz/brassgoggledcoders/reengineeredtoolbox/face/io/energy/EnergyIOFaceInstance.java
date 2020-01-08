@@ -13,6 +13,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.energy.EnergyConduitClient;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.FaceContainerBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.face.IFaceScreen;
@@ -90,7 +91,9 @@ public abstract class EnergyIOFaceInstance extends FaceInstance implements IGuiA
     @Nullable
     @Override
     public IFaceContainer getContainer() {
-        return new EnergyIOContainer(this);
+        return new FaceContainerBuilder()
+                .withReferenceHolder(this.getEnergyStorage().getIntReferenceHolder())
+                .finish();
     }
 
     @Override

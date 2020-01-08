@@ -18,7 +18,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.face.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.component.energy.PosEnergyStorage;
 import xyz.brassgoggledcoders.reengineeredtoolbox.component.progressbar.ProgressBarReferenceHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.machine.BasicMachineContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
 
 import javax.annotation.Nullable;
@@ -158,7 +157,7 @@ public abstract class BasicMachineFaceInstance<T extends IRecipe<IInventory>> ex
     @Nullable
     @Override
     public IFaceContainer getContainer() {
-        return new BasicMachineContainer<>(this);
+        return this.createBuilder().finish();
     }
 
     @Nullable

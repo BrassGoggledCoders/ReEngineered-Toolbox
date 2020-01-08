@@ -12,12 +12,13 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.FaceContainerBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.face.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.inventory.InventoryFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
+import xyz.brassgoggledcoders.reengineeredtoolbox.util.Slots;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -67,7 +68,9 @@ public class ItemIOFaceInstance extends FaceInstance implements IGuiAddonProvide
     @Nullable
     @Override
     public IFaceContainer getContainer() {
-        return new InventoryFaceContainer<>(this, this.inventory);
+        return new FaceContainerBuilder()
+                .withSlots(Slots.getFromInventories(inventory))
+                .finish();
     }
 
     @Nullable

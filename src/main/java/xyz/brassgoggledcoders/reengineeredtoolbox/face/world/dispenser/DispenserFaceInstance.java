@@ -13,12 +13,13 @@ import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone.RedstoneConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone.RedstoneContext;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.FaceContainerBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.face.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.inventory.InventoryFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
+import xyz.brassgoggledcoders.reengineeredtoolbox.util.Slots;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -107,7 +108,9 @@ public class DispenserFaceInstance extends FaceInstance {
     @Override
     @Nullable
     public IFaceContainer getContainer() {
-        return new InventoryFaceContainer<>(this, this.inventory);
+        return new FaceContainerBuilder()
+                .withSlots(Slots.getFromInventories(this.inventory))
+                .finish();
     }
 
     @Override
