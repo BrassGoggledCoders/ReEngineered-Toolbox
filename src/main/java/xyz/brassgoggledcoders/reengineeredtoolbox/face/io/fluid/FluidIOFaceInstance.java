@@ -12,11 +12,13 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.FaceContainerBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.face.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.BasicFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.component.fluid.ExtendedFluidTank;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
 
 import javax.annotation.Nonnull;
@@ -26,13 +28,13 @@ import java.util.List;
 import java.util.function.Function;
 
 public class FluidIOFaceInstance extends FaceInstance implements IGuiAddonProvider {
-    private final PosFluidTank fluidTank;
+    private final ExtendedFluidTank fluidTank;
     private final LazyOptional<IFluidHandler> fluidHandlerLazyOptional;
     private final IFluidHandler fluidHandlerWrapper;
 
     public FluidIOFaceInstance(SocketContext context, Function<IFluidHandler, IFluidHandler> createWrapper) {
         super(context);
-        this.fluidTank = new PosFluidTank("Fluid Input", 4000, 80, 28)
+        this.fluidTank = (ExtendedFluidTank) new ExtendedFluidTank("Fluid Input", 4000, 80, 28)
                 .setOnContentChange(this::requestUpdate);
         this.fluidHandlerWrapper = createWrapper.apply(this.fluidTank);
         this.fluidHandlerLazyOptional = LazyOptional.of(() -> fluidHandlerWrapper);
@@ -83,7 +85,9 @@ public class FluidIOFaceInstance extends FaceInstance implements IGuiAddonProvid
     @Nullable
     @Override
     public IFaceContainer getContainer() {
-        return new BasicFaceContainer<>(this);
+        return new FaceContainerBuilder()
+                .withArrayReferenceHolder(this.fluidTank.getReferenceHolder())
+                .finish();
     }
 
     @Nullable

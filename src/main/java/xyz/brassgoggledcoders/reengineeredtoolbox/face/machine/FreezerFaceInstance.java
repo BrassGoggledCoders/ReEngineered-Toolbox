@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import com.hrznstudio.titanium.block.tile.fluid.PosFluidTank;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -12,6 +11,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
+import xyz.brassgoggledcoders.reengineeredtoolbox.component.fluid.ExtendedFluidTank;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Recipes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.FreezerRecipe;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.Slots;
@@ -24,7 +24,7 @@ public class FreezerFaceInstance extends BasicMachineFaceInstance<FreezerRecipe>
         implements IGuiAddonProvider {
     private final PosInvHandler inputInventory;
     private final PosInvHandler outputInventory;
-    private final PosFluidTank fluidTank;
+    private final ExtendedFluidTank fluidTank;
 
     public FreezerFaceInstance(SocketContext socketContext) {
         super(socketContext);
@@ -34,7 +34,7 @@ public class FreezerFaceInstance extends BasicMachineFaceInstance<FreezerRecipe>
         outputInventory = new PosInvHandler("Output", 116, 44, 1)
                 .setInputFilter(((itemStack, slot) -> false))
                 .setOnSlotChanged(((itemStack, slot) -> this.getSocket().markDirty()));
-        fluidTank = new PosFluidTank("Freezer Tank", 4000, 32, 24)
+        fluidTank = (ExtendedFluidTank) new ExtendedFluidTank("Freezer Tank", 4000, 32, 24)
                 .setOnContentChange(this.getSocket()::markDirty);
     }
 
@@ -112,6 +112,7 @@ public class FreezerFaceInstance extends BasicMachineFaceInstance<FreezerRecipe>
     @Override
     public IFaceContainer getContainer() {
         return this.createBuilder()
+                .withArrayReferenceHolder(fluidTank.getReferenceHolder())
                 .withSlots(Slots.getFromInventories(inputInventory, outputInventory))
                 .finish();
     }
