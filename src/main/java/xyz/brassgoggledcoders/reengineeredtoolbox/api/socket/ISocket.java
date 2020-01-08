@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.api.socket;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -26,4 +27,6 @@ public interface ISocket extends ICapabilityProvider {
     IConduitManager getConduitManager();
 
     FaceInstance getFaceInstance(UUID identifier);
+
+    void requestClientUpdate(UUID identifier, String name, CompoundNBT updateInfo);
 }

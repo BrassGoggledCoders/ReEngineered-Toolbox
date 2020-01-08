@@ -22,6 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class FaceInstance implements INBTSerializable<CompoundNBT> {
     private final SocketContext socketContext;
@@ -148,5 +149,11 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
 
     public ITextComponent getName() {
         return this.getFace().getName();
+    }
+
+    public void requestUpdate(String name, Supplier<CompoundNBT> compoundNBT) {
+        if (!this.getWorld().isRemote) {
+            this.getSocket().requestClientUpdate(this.getUuid(), name, compoundNBT.get());
+        }
     }
 }
