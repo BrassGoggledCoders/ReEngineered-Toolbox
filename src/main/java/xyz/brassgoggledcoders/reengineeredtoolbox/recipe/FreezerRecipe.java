@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.recipe.freezer;
+package xyz.brassgoggledcoders.reengineeredtoolbox.recipe;
 
 import com.hrznstudio.titanium.recipe.serializer.GenericSerializer;
 import com.hrznstudio.titanium.recipe.serializer.SerializableRecipe;
@@ -15,9 +15,10 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.content.Recipes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Objects;
 
 @ParametersAreNonnullByDefault
-public class FreezerRecipe extends SerializableRecipe {
+public class FreezerRecipe extends SerializableRecipe implements IMachineRecipe {
     public ItemStack output = ItemStack.EMPTY;
     public Ingredient inputIngredient = Ingredient.EMPTY;
     public FluidStack inputFluidStack = FluidStack.EMPTY;
@@ -44,7 +45,7 @@ public class FreezerRecipe extends SerializableRecipe {
 
     @Override
     public boolean canFit(int width, int height) {
-        return inputFluidStack.isEmpty();
+        return false;
     }
 
     @Override
@@ -72,7 +73,13 @@ public class FreezerRecipe extends SerializableRecipe {
     }
 
     @Override
+    @Nonnull
     public GenericSerializer<? extends SerializableRecipe> getSerializer() {
-        return Recipes.FREEZER_SERIALIZER.get();
+        return Objects.requireNonNull(Recipes.FREEZER_SERIALIZER.get());
+    }
+
+    @Override
+    public int getTime() {
+        return this.time;
     }
 }
