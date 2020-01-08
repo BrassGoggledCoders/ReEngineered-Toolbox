@@ -35,13 +35,9 @@ public class FluidIOFaceInstance extends FaceInstance implements IGuiAddonProvid
     public FluidIOFaceInstance(SocketContext context, Function<IFluidHandler, IFluidHandler> createWrapper) {
         super(context);
         this.fluidTank = (ExtendedFluidTank) new ExtendedFluidTank("Fluid Input", 4000, 80, 28)
-                .setOnContentChange(this::requestUpdate);
+                .setOnContentChange(this.getSocket()::markDirty);
         this.fluidHandlerWrapper = createWrapper.apply(this.fluidTank);
         this.fluidHandlerLazyOptional = LazyOptional.of(() -> fluidHandlerWrapper);
-    }
-
-    private void requestUpdate() {
-        this.requestUpdate("fluidTank", () -> fluidTank.writeToNBT(new CompoundNBT()));
     }
 
     @Override

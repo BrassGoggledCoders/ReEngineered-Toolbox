@@ -27,6 +27,4 @@ public interface ISocket extends ICapabilityProvider {
     IConduitManager getConduitManager();
 
     FaceInstance getFaceInstance(UUID identifier);
-
-    void requestClientUpdate(UUID identifier, String name, CompoundNBT updateInfo);
 }

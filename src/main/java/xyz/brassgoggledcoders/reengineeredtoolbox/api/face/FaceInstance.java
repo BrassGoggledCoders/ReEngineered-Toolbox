@@ -150,10 +150,4 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
     public ITextComponent getName() {
         return this.getFace().getName();
     }
-
-    public void requestUpdate(String name, Supplier<CompoundNBT> compoundNBT) {
-        if (!this.getWorld().isRemote) {
-            this.getSocket().requestClientUpdate(this.getUuid(), name, compoundNBT.get());
-        }
-    }
 }

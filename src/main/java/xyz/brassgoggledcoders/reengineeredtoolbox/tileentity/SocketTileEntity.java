@@ -46,8 +46,7 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
     private final EnumMap<Direction, LazyOptional<IFaceHolder>> faceHolderOptionals;
     private final ConduitManager conduitManager;
 
-    private int timeSinceLastUpdate = 20;
-    private CompoundNBT requestedUpdate = null;
+    private int reload = 20;
 
     public SocketTileEntity() {
         super(Objects.requireNonNull(Blocks.SOCKET_TYPE.get()));
@@ -115,24 +114,9 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
     }
 
     @Override
-    public void requestClientUpdate(UUID identifier, String name, CompoundNBT updateInfo) {
-        if (requestedUpdate == null) {
-            requestedUpdate = new CompoundNBT();
-        }
-        CompoundNBT faceInstance;
-        if (requestedUpdate.contains(identifier.toString())) {
-            faceInstance = requestedUpdate.getCompound(identifier.toString());
-        } else {
-            faceInstance = new CompoundNBT();
-            requestedUpdate.put(identifier.toString(), faceInstance);
-        }
-        faceInstance.put(name, updateInfo);
-    }
-
-    @Override
     public void tick() {
-        if (timeSinceLastUpdate > 0) {
-            timeSinceLastUpdate--;
+        if (reload > 0) {
+            reload--;
         } else {
             this.updateFaces();
         }
@@ -202,25 +186,10 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
     @Nonnull
     public CompoundNBT getUpdateTag() {
         CompoundNBT updateTag = new CompoundNBT();
-        updateTag.put("faceHolders", this.createFaceNBT(createUpdateComboTag(requestedUpdate)));
+        updateTag.put("faceHolders", this.createFaceNBT(FaceInstance::getUpdateTag));
         updateTag.put("uuids", this.createUUIDTag());
         updateTag.put("conduitManager", conduitManager.serializeNBT());
         return updateTag;
-    }
-
-    private Function<FaceInstance, CompoundNBT> createUpdateComboTag(CompoundNBT requestedUpdate) {
-        return faceInstance -> {
-            CompoundNBT currentRequest = Optional.ofNullable(requestedUpdate)
-                    .map(tag -> tag.getCompound(faceInstance.getUuid().toString()))
-                    .orElse(new CompoundNBT());
-            CompoundNBT newestRequest = faceInstance.getUpdateTag();
-            for (String tag: newestRequest.keySet()) {
-                if (newestRequest.contains(tag)) {
-                    currentRequest.put(tag, newestRequest.getCompound(tag));
-                }
-            }
-            return currentRequest;
-        };
     }
 
     private CompoundNBT createUUIDTag() {
