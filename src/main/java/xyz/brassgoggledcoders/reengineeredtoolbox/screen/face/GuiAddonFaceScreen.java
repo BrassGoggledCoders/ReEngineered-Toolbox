@@ -3,7 +3,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.screen.face;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.api.client.IGuiAddonProvider;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.face.IFaceScreen;
 
 import java.util.List;
 

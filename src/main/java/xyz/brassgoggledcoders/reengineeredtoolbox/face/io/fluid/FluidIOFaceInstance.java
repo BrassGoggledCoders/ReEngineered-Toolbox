@@ -12,11 +12,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.IFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.face.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BasicFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.BasicFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.GuiAddonFaceScreen;
 
 import javax.annotation.Nonnull;

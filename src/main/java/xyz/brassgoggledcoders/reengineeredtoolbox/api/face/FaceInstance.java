@@ -11,8 +11,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.IFaceScreen;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.IFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.face.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 

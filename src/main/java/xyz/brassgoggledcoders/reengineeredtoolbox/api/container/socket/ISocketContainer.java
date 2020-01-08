@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.api.container;
+package xyz.brassgoggledcoders.reengineeredtoolbox.api.container.socket;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;

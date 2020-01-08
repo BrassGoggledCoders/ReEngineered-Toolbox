@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.api.screen;
+package xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.socket;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.inventory.container.Container;

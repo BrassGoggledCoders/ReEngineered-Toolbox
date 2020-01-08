@@ -1,4 +1,6 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.api.screen;
+package xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.face;
+
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.socket.ISocketScreen;
 
 import javax.annotation.Nonnull;
 

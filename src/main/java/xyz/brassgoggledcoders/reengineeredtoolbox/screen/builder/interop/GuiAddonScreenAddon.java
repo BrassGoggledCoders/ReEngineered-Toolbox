@@ -2,7 +2,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.screen.builder.interop;
 
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.client.gui.asset.IAssetProvider;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.ISocketScreen;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.socket.ISocketScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.builder.IScreenAddon;
 
 import java.util.List;

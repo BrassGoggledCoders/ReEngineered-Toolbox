@@ -1,6 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.builder;
 
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.ISocketScreen;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.socket.ISocketScreen;
 
 import java.util.Collections;
 import java.util.List;

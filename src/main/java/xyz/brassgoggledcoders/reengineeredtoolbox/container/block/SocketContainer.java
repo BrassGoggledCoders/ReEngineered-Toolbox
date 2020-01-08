@@ -19,11 +19,11 @@ import net.minecraft.util.IntReferenceHolder;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ObjectHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.IFaceContainer;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.ISocketContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.IFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.socket.ISocketContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
-import xyz.brassgoggledcoders.reengineeredtoolbox.container.face.BasicFaceContainer;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.BasicFaceContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.Blocks;
 
 import javax.annotation.Nonnull;
