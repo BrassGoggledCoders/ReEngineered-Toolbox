@@ -9,13 +9,13 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.face.BasicFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.face.IFaceScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.socket.ISocketScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.screen.builder.IScreenBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.container.block.SocketContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.addon.coreselector.ConduitCoreSelectorGuiAddon;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.builder.ScreenBuilder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.screen.face.BlankFaceScreen;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -31,7 +31,7 @@ public class SocketScreen extends GuiContainerBase<SocketContainer> implements I
         this.screenBuilder = new ScreenBuilder();
         FaceInstance faceInstance = container.getFaceInstance();
         this.faceScreen = Optional.ofNullable(faceInstance.getScreen())
-                .orElseGet(BlankFaceScreen::new);
+                .orElseGet(() -> new BasicFaceScreen<>(faceInstance));
         faceScreen.setup(this);
         if (faceScreen instanceof IGuiAddonProvider) {
             ((IGuiAddonProvider) faceScreen).getGuiAddons()
