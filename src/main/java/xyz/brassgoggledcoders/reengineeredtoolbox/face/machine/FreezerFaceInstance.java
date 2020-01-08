@@ -31,7 +31,7 @@ public class FreezerFaceInstance extends BasicMachineFaceInstance<FreezerRecipe>
     public FreezerFaceInstance(SocketContext socketContext) {
         super(socketContext);
         inputInventory = new PosInvHandler("Input", 56, 44, 1)
-                .setInputFilter(((itemStack, slot) -> slot == 0))
+                .setOutputFilter(((itemStack, slot) -> false))
                 .setOnSlotChanged(((itemStack, slot) -> this.getSocket().markDirty()));
         outputInventory = new PosInvHandler("Output", 116, 44, 1)
                 .setInputFilter(((itemStack, slot) -> false))
