@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.face.machine.dispenser;
+package xyz.brassgoggledcoders.reengineeredtoolbox.face.world.dispenser;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.face.machine.dispenser;
+package xyz.brassgoggledcoders.reengineeredtoolbox.face.world.dispenser;
 
 import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
