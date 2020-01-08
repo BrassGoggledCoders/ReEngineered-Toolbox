@@ -117,6 +117,7 @@ public abstract class BasicMachineFaceInstance<T extends IRecipe<IInventory>> ex
             progressBar.setProgress(progressBar.getProgress() + 1);
             if (progressBar.getProgress() >= progressBar.getMaxProgress()) {
                 handleCompletedRecipe(currentRecipe);
+                progressBar.setProgress(0);
             }
         } else {
             currentRecipe = null;

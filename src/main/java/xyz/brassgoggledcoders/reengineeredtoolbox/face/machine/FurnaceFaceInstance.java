@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.api.IFactory;
 import com.hrznstudio.titanium.api.client.IGuiAddon;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.AbstractCookingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -73,7 +74,14 @@ public class FurnaceFaceInstance extends BasicMachineFaceInstance<AbstractCookin
 
     @Override
     protected void handleCompletedRecipe(AbstractCookingRecipe currentRecipe) {
+        ItemStack input = inputInventory.getStackInSlot(0);
+        if (input.hasContainerItem()) {
+            inputInventory.setStackInSlot(0, input.getContainerItem());
+        } else {
+            input.shrink(1);
+        }
 
+        outputInventory.insertItem(0, currentRecipe.getCraftingResult(recipeWrapper), false);
     }
 
     @Override
