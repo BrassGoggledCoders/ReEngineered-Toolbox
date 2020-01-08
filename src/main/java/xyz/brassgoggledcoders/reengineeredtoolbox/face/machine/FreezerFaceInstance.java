@@ -65,7 +65,7 @@ public class FreezerFaceInstance extends BasicMachineFaceInstance<FreezerRecipe>
 
     @Override
     public int getTime(FreezerRecipe currentRecipe) {
-        return currentRecipe.getTime();
+        return currentRecipe.getProcessingTime();
     }
 
     @Override

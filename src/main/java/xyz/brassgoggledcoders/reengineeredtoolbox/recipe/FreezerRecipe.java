@@ -22,7 +22,7 @@ public class FreezerRecipe extends SerializableRecipe implements IMachineRecipe 
     public ItemStack output = ItemStack.EMPTY;
     public Ingredient inputIngredient = Ingredient.EMPTY;
     public FluidStack inputFluidStack = FluidStack.EMPTY;
-    public int time = 200;
+    public int processingTime = 200;
 
     public FreezerRecipe(ResourceLocation resourceLocation) {
         super(resourceLocation);
@@ -79,7 +79,7 @@ public class FreezerRecipe extends SerializableRecipe implements IMachineRecipe 
     }
 
     @Override
-    public int getTime() {
-        return this.time;
+    public int getProcessingTime() {
+        return this.processingTime;
     }
 }
