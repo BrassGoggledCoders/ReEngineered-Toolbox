@@ -8,6 +8,6 @@ import java.util.OptionalInt;
 
 public class RedstoneConduitType extends ConduitType<OptionalInt, RedstoneContext, RedstoneConduitType> {
     public RedstoneConduitType() {
-        super(RETObjects.REDSTONE_CORE_TYPE, OptionalInt::empty);
+        super("redstone", RETObjects.REDSTONE_CORE_TYPE, OptionalInt::empty);
     }
 }

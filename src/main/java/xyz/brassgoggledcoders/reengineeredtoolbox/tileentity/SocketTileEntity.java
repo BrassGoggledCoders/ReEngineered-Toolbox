@@ -198,6 +198,7 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
             if (entry.getValue() != null) {
                 uuidsTag.putUniqueId(entry.getKey().getName(), entry.getValue().getUuid());
             }
+
         }
         return uuidsTag;
     }
@@ -312,15 +313,16 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
     public void handleButtonMessage(int i, PlayerEntity playerEntity, CompoundNBT compoundNBT) {
         if (compoundNBT.contains("conduitCoreChange")) {
             CompoundNBT conduitCoreChange = compoundNBT.getCompound("conduitCoreChange");
-            UUID clientUUID = conduitCoreChange.getUniqueId("clientUUID");
+            String clientName = conduitCoreChange.getString("clientName");
             UUID coreUUID = conduitCoreChange.getUniqueId("coreUUID");
             faceInstances.values()
                     .stream()
                     .map(FaceInstance::getConduitClients)
+                    .map(Map::entrySet)
                     .flatMap(Collection::stream)
-                    .filter(conduitClient -> conduitClient.getUuid().equals(clientUUID))
+                    .filter(entry -> entry.getKey().equals(clientName))
+                    .map(Map.Entry::getValue)
                     .forEach(client -> client.tryConnect(coreUUID));
-
         }
     }
 }

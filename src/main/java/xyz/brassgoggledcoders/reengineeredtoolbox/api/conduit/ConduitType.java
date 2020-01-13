@@ -8,12 +8,19 @@ import java.util.function.Supplier;
 
 public abstract class ConduitType<CONTENT, CONTEXT, TYPE extends ConduitType<CONTENT, CONTEXT, TYPE>>
         extends ForgeRegistryEntry<ConduitType<?, ?, ?>> implements Supplier<ConduitType<CONTENT, CONTEXT, TYPE>> {
+    private final String defaultClientName;
     private final Supplier<? extends ConduitCoreType<?, TYPE>> defaultCoreTypeSupplier;
     private final Supplier<CONTENT> emptySupplier;
 
-    protected ConduitType(Supplier<? extends ConduitCoreType<?, TYPE>> defaultCoreTypeSupplier, Supplier<CONTENT> emptySupplier) {
+    protected ConduitType(String defaultClientName, Supplier<? extends ConduitCoreType<?, TYPE>> defaultCoreTypeSupplier,
+                          Supplier<CONTENT> emptySupplier) {
         this.defaultCoreTypeSupplier = defaultCoreTypeSupplier;
         this.emptySupplier = emptySupplier;
+        this.defaultClientName = defaultClientName;
+    }
+
+    public String getDefaultClientName() {
+        return this.defaultClientName;
     }
 
     @SuppressWarnings("unchecked")

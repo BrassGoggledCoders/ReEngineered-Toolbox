@@ -18,6 +18,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.screen.addon.coreselector.Cond
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.builder.ScreenBuilder;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
 import java.util.Optional;
 
 public class SocketScreen extends GuiContainerBase<SocketContainer> implements IHasContainer<SocketContainer>, ISocketScreen {
@@ -45,9 +46,9 @@ public class SocketScreen extends GuiContainerBase<SocketContainer> implements I
                 .forEach(this.getAddons()::add);
 
         int conduitSelectX = 8;
-        for (ConduitClient<?, ?, ?> conduitClient: faceInstance.getConduitClients()) {
+        for (Map.Entry<String, ConduitClient<?, ?, ?>> entry: faceInstance.getConduitClients().entrySet()) {
             this.getAddons().add(new ConduitCoreSelectorGuiAddon<>(container.getSocket().getConduitManager(),
-                    conduitClient, conduitSelectX, 80));
+                    entry.getValue(), entry.getKey(), conduitSelectX, 80));
             conduitSelectX += 16;
         }
     }

@@ -8,6 +8,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -90,5 +91,23 @@ public abstract class ConduitCore<CONTENT, CONTEXT, TYPE extends ConduitType<CON
 
     public boolean isEmpty() {
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()){
+            return false;
+        }
+        ConduitCore<?, ?, ?> that = (ConduitCore<?, ?, ?>) o;
+        return getConduitCoreType().equals(that.getConduitCoreType()) &&
+                getUuid().equals(that.getUuid());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getConduitCoreType(), getUuid());
     }
 }

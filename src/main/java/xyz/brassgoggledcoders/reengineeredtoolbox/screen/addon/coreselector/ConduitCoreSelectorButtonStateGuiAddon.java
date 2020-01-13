@@ -28,12 +28,14 @@ import java.util.stream.Collectors;
 
 public class ConduitCoreSelectorButtonStateGuiAddon<CONTENT, CONTEXT, TYPE extends ConduitType<CONTENT, CONTEXT, TYPE>>
         extends StateButtonAddon {
+    private final String clientName;
     private final ConduitCore<CONTENT, CONTEXT, TYPE> conduitCore;
     private final ConduitClient<CONTENT, CONTEXT, TYPE> conduitClient;
 
-    public ConduitCoreSelectorButtonStateGuiAddon(ConduitClient<CONTENT, CONTEXT, TYPE> conduitClient,
+    public ConduitCoreSelectorButtonStateGuiAddon(String clientName, ConduitClient<CONTENT, CONTEXT, TYPE> conduitClient,
                                                   ConduitCore<CONTENT, CONTEXT, TYPE> conduitCore, int xPos, int yPos) {
         super(new PosButton(xPos, yPos, 14, 14), FaceMode.NONE.getInfo(), FaceMode.ENABLED.getInfo());
+        this.clientName = clientName;
         this.conduitClient = conduitClient;
         this.conduitCore = conduitCore;
     }
@@ -50,7 +52,7 @@ public class ConduitCoreSelectorButtonStateGuiAddon<CONTENT, CONTEXT, TYPE exten
             ILocatable locatable = (ILocatable)((ContainerScreen<?>)screen).getContainer();
             CompoundNBT buttonInfo = new CompoundNBT();
             CompoundNBT conduitCoreChange = new CompoundNBT();
-            conduitCoreChange.putUniqueId("clientUUID", conduitClient.getUuid());
+            conduitCoreChange.putString("clientName", clientName);
             conduitCoreChange.putUniqueId("coreUUID", conduitCore.getUuid());
             buttonInfo.put("conduitCoreChange", conduitCoreChange);
             Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(locatable.getLocatorInstance(),

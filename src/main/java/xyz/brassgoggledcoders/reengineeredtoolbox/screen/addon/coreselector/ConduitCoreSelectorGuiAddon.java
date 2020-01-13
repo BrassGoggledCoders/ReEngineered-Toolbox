@@ -27,6 +27,7 @@ import java.util.List;
 public class ConduitCoreSelectorGuiAddon<CONTENT, CONTEXT, TYPE extends ConduitType<CONTENT, CONTEXT, TYPE>>
         extends BasicGuiAddon implements IClickable {
     private final IConduitManager conduitManager;
+    private final String clientName;
     private final ConduitClient<CONTENT, CONTEXT, TYPE> conduitClient;
     private final List<IGuiAddon> buttons;
 
@@ -36,9 +37,10 @@ public class ConduitCoreSelectorGuiAddon<CONTENT, CONTEXT, TYPE extends ConduitT
     private Point inventoryPosition;
 
     public ConduitCoreSelectorGuiAddon(IConduitManager conduitManager, ConduitClient<CONTENT, CONTEXT, TYPE> conduitClient,
-                                       int posX, int posY) {
+                                       String clientName, int posX, int posY) {
         super(posX, posY);
         this.conduitManager = conduitManager;
+        this.clientName = clientName;
         this.conduitClient = conduitClient;
         this.buttons = Lists.newArrayList();
     }
@@ -99,7 +101,7 @@ public class ConduitCoreSelectorGuiAddon<CONTENT, CONTEXT, TYPE extends ConduitT
                 int xPos = inventoryPosition.x + 55;
                 for (ConduitCore<CONTENT, CONTEXT, TYPE> conduitCore : conduitManager.getCoresFor(conduitClient.getConduitType())) {
                     xPos = xPos + 18;
-                    StateButtonAddon addon = new ConduitCoreSelectorButtonStateGuiAddon<>(conduitClient, conduitCore,
+                    StateButtonAddon addon = new ConduitCoreSelectorButtonStateGuiAddon<>(clientName, conduitClient, conduitCore,
                             xPos, inventoryPosition.y + 19);
                     buttons.add(addon);
                     guiAddonConsumer.getAddons().add(addon);

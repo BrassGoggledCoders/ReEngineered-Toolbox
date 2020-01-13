@@ -7,6 +7,6 @@ import java.util.OptionalInt;
 
 public class EnergyConduitType extends ConduitType<OptionalInt, EnergyContext, EnergyConduitType> {
     public EnergyConduitType() {
-        super(RETObjects.ENERGY_CORE_TYPE, OptionalInt::empty);
+        super("energy", RETObjects.ENERGY_CORE_TYPE, OptionalInt::empty);
     }
 }

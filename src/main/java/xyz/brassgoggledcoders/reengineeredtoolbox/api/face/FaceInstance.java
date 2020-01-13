@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.face;
 
+import com.google.common.collect.Maps;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
@@ -19,18 +20,18 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.SocketContext;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class FaceInstance implements INBTSerializable<CompoundNBT> {
     private final SocketContext socketContext;
+    private final Map<String, ConduitClient<?, ?, ?>> conduitClients;
     private UUID uuid;
 
     public FaceInstance(SocketContext socketContext) {
         this.socketContext = socketContext;
         this.uuid = UUID.randomUUID();
+        this.conduitClients = Maps.newHashMap();
     }
 
     public void onTick() {
@@ -48,8 +49,8 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
         nbt.putUniqueId("uuid", this.uuid);
         if (!this.getConduitClients().isEmpty()) {
             CompoundNBT conduitClientsNBT = new CompoundNBT();
-            for (ConduitClient<?, ?, ?> conduitClient : this.getConduitClients()) {
-                conduitClientsNBT.put(conduitClient.getUuid().toString(), conduitClient.serializeNBT());
+            for (Map.Entry<String, ConduitClient<?, ?, ?>> entry : this.getConduitClients().entrySet()) {
+                conduitClientsNBT.put(entry.getKey(), entry.getValue().serializeNBT());
             }
             nbt.put("conduitClients", conduitClientsNBT);
         }
@@ -63,9 +64,9 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
         }
         if (nbt.contains("conduitClients")) {
             CompoundNBT conduitClientsNBT = nbt.getCompound("conduitClients");
-            for (ConduitClient<?, ?, ?> conduitClient : this.getConduitClients()) {
-                if (conduitClientsNBT.contains(conduitClient.getUuid().toString())) {
-                    conduitClient.deserializeNBT(conduitClientsNBT.getCompound(conduitClient.getUuid().toString()));
+            for (Map.Entry<String, ConduitClient<?, ?, ?>> entry : this.getConduitClients().entrySet()) {
+                if (conduitClientsNBT.contains(entry.getKey())) {
+                    entry.getValue().deserializeNBT(conduitClientsNBT.getCompound(entry.getKey()));
                 }
             }
         }
@@ -131,8 +132,16 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
         return false;
     }
 
-    public Collection<ConduitClient<?, ?, ?>> getConduitClients() {
-        return Collections.emptySet();
+    public Map<String, ConduitClient<?, ?, ?>> getConduitClients() {
+        return conduitClients;
+    }
+
+    protected void registerClient(String name, ConduitClient<?, ?, ?> conduitClient) {
+        this.conduitClients.put(name, conduitClient);
+    }
+
+    protected void registerClient(ConduitClient<?, ?, ?> conduitClient) {
+        this.registerClient(conduitClient.getConduitType().getDefaultClientName(), conduitClient);
     }
 
     protected void openScreen(PlayerEntity playerEntity) {

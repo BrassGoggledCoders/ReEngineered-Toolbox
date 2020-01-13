@@ -16,14 +16,12 @@ public abstract class ConduitClient<CONTENT, CONTEXT, TYPE extends ConduitType<C
     private final FaceInstance faceInstance;
 
     private ConduitCore<CONTENT, CONTEXT, TYPE> connectedCore;
-    private UUID uuid;
 
     protected ConduitClient(TYPE conduitType, FaceInstance faceInstance, @Nonnull ITextComponent name) {
         this.conduitType = Optional.ofNullable(conduitType)
                 .orElseThrow(() -> new IllegalStateException("Cannot have null Conduit Type"));
         this.connectedCore = this.conduitType.createEmptyCore();
         this.name = name;
-        this.uuid = UUID.randomUUID();
         this.faceInstance = faceInstance;
     }
 
@@ -65,7 +63,6 @@ public abstract class ConduitClient<CONTENT, CONTEXT, TYPE extends ConduitType<C
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
-        nbt.putUniqueId("uuid", this.getUuid());
         if (!connectedCore.isEmpty()) {
             nbt.putUniqueId("coreUuid", connectedCore.getUuid());
         }
@@ -74,20 +71,9 @@ public abstract class ConduitClient<CONTENT, CONTEXT, TYPE extends ConduitType<C
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        if (nbt.hasUniqueId("uuid")) {
-            this.setUuid(nbt.getUniqueId("uuid"));
-        }
         if (nbt.hasUniqueId("coreUuid")) {
             this.tryConnect(nbt.getUniqueId("coreUuid"));
         }
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
     }
 
     public void tryConnect(UUID uuid) {

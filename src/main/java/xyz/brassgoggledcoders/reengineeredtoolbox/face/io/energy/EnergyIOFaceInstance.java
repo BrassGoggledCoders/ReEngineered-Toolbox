@@ -37,8 +37,12 @@ public abstract class EnergyIOFaceInstance extends FaceInstance implements IGuiA
     public EnergyIOFaceInstance(SocketContext socketContext, Function<IEnergyStorage, IEnergyStorage> externalLayer) {
         super(socketContext);
         this.energyStorage = new PosEnergyStorage(10000, 79, 24);
-        this.energyConduitClient = createEnergyConduitClient(energyStorage);
+        this.registerClient(energyConduitClient = createEnergyConduitClient(energyStorage));
         this.externalOptional = LazyOptional.of(() -> externalLayer.apply(energyStorage));
+    }
+
+    protected EnergyConduitClient getEnergyConduitClient() {
+        return this.energyConduitClient;
     }
 
     @Nonnull
@@ -94,11 +98,6 @@ public abstract class EnergyIOFaceInstance extends FaceInstance implements IGuiA
         return new FaceContainerBuilder()
                 .withReferenceHolder(this.getEnergyStorage().getIntReferenceHolder())
                 .finish();
-    }
-
-    @Override
-    public Collection<ConduitClient<?, ?, ?>> getConduitClients() {
-        return Collections.singleton(energyConduitClient);
     }
 
     public PosEnergyStorage getEnergyStorage() {

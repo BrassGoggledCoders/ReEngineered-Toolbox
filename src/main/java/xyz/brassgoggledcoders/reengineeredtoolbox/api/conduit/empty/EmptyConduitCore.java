@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.empty;
 
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETObjects;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitCore;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitType;
 

@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.face.world.dispenser;
 
-import com.google.common.collect.Lists;
 import com.hrznstudio.titanium.block.tile.inventory.PosInvHandler;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
@@ -10,7 +9,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import org.apache.commons.lang3.tuple.Pair;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone.RedstoneConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.redstone.RedstoneContext;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.container.face.FaceContainerBuilder;
@@ -23,7 +21,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.util.Slots;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
 import java.util.Random;
 
 public class DispenserFaceInstance extends FaceInstance {
@@ -41,6 +38,7 @@ public class DispenserFaceInstance extends FaceInstance {
                 .setSlotPosition((index) -> Pair.of((index % 2) * 18, (index / 2) * 18));
         this.blockSource = new FakeDispenserBlockSource(socketContext);
         this.redstoneConduitClient = RedstoneConduitClient.createConsumer(this, this.getName());
+        this.registerClient(redstoneConduitClient);
     }
 
     @Override
@@ -117,10 +115,5 @@ public class DispenserFaceInstance extends FaceInstance {
     @Nullable
     public IFaceScreen getScreen() {
         return new GuiAddonFaceScreen(this.inventory);
-    }
-
-    @Override
-    public List<ConduitClient<?, ?, ?>> getConduitClients() {
-        return Lists.newArrayList(redstoneConduitClient);
     }
 }

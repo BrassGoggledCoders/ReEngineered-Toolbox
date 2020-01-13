@@ -5,6 +5,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitType;
 
 public class EmptyConduitType extends ConduitType<Empty, Empty, EmptyConduitType> {
     public EmptyConduitType() {
-        super(RETObjects.EMPTY_CORE_TYPE, Empty::new);
+        super("empty", RETObjects.EMPTY_CORE_TYPE, Empty::new);
     }
 }
