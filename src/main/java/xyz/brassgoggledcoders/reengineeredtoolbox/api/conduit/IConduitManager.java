@@ -7,6 +7,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import org.apache.commons.lang3.tuple.Pair;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETObjects;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETRegistries;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.socket.ISocket;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -75,6 +76,8 @@ public interface IConduitManager extends INBTSerializable<CompoundNBT> {
             }
         });
 
+        this.getSocket().refreshConduitConnections();
+
     }
 
     @Override
@@ -103,4 +106,6 @@ public interface IConduitManager extends INBTSerializable<CompoundNBT> {
                 .filter(conduitCore -> conduitCore.getUuid().equals(uuid))
                 .findFirst();
     }
+
+    ISocket getSocket();
 }

@@ -6,6 +6,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.FaceInstance;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -47,6 +48,9 @@ public abstract class ConduitClient<CONTENT, CONTEXT, TYPE extends ConduitType<C
     }
 
     public void setConnectedCore(@Nonnull ConduitCore<CONTENT, CONTEXT, TYPE> connectedCore) {
+        if (!this.connectedCore.isEmpty()) {
+            this.disconnectFromCore();
+        }
         this.connectedCore = connectedCore;
         connectedCore.addClient(this);
     }
@@ -82,5 +86,9 @@ public abstract class ConduitClient<CONTENT, CONTEXT, TYPE extends ConduitType<C
                 .getCoreByUUID(uuid)
                 .flatMap(this.getConduitType()::cast)
                 .ifPresent(this::setConnectedCore);
+    }
+
+    public void refreshConnection() {
+        this.setConnectedCore(this.connectedCore);
     }
 }

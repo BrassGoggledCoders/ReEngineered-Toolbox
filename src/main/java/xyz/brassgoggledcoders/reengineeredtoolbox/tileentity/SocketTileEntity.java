@@ -23,6 +23,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.RETRegistries;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.CapabilityFaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.FaceHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFaceHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitClient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.ConduitManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.conduit.IConduitManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.face.Face;
@@ -35,6 +36,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.model.FaceProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.swing.*;
 import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -58,7 +60,7 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
             faceHolders.put(direction, faceHolder);
             faceHolderOptionals.put(direction, LazyOptional.of(() -> faceHolder));
         }
-        this.conduitManager = new ConduitManager(9);
+        this.conduitManager = new ConduitManager(this, 9);
     }
 
     @Override
@@ -111,6 +113,16 @@ public class SocketTileEntity extends TileEntity implements ISocket, ITickableTi
                 .filter(faceInstance -> identifier.equals(faceInstance.getUuid()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No FaceInstance found for UUID: " + identifier.toString()));
+    }
+
+    @Override
+    public void refreshConduitConnections() {
+        faceInstances.values().stream()
+                .map(FaceInstance::getConduitClients)
+                .map(Map::entrySet)
+                .flatMap(Collection::stream)
+                .map(Map.Entry::getValue)
+                .forEach(ConduitClient::refreshConnection);
     }
 
     @Override

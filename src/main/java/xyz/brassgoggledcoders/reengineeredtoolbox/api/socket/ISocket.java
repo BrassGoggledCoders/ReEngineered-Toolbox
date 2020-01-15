@@ -27,4 +27,6 @@ public interface ISocket extends ICapabilityProvider {
     IConduitManager getConduitManager();
 
     FaceInstance getFaceInstance(UUID identifier);
+
+    void refreshConduitConnections();
 }

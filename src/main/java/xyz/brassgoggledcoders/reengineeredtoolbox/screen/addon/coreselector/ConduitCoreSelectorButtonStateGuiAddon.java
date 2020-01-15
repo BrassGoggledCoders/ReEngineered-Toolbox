@@ -55,6 +55,7 @@ public class ConduitCoreSelectorButtonStateGuiAddon<CONTENT, CONTEXT, TYPE exten
             conduitCoreChange.putString("clientName", clientName);
             conduitCoreChange.putUniqueId("coreUUID", conduitCore.getUuid());
             buttonInfo.put("conduitCoreChange", conduitCoreChange);
+            conduitClient.setConnectedCore(conduitCore);
             Titanium.NETWORK.get().sendToServer(new ButtonClickNetworkMessage(locatable.getLocatorInstance(),
                     this.getButton().getId(), buttonInfo));
         }
