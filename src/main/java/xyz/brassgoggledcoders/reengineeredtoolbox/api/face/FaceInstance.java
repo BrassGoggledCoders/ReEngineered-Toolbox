@@ -47,13 +47,6 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putUniqueId("uuid", this.uuid);
-        if (!this.getConduitClients().isEmpty()) {
-            CompoundNBT conduitClientsNBT = new CompoundNBT();
-            for (Map.Entry<String, ConduitClient<?, ?, ?>> entry : this.getConduitClients().entrySet()) {
-                conduitClientsNBT.put(entry.getKey(), entry.getValue().serializeNBT());
-            }
-            nbt.put("conduitClients", conduitClientsNBT);
-        }
         return nbt;
     }
 
@@ -61,14 +54,6 @@ public class FaceInstance implements INBTSerializable<CompoundNBT> {
     public void deserializeNBT(CompoundNBT nbt) {
         if (nbt.contains("uuid")) {
             this.uuid = nbt.getUniqueId("uuid");
-        }
-        if (nbt.contains("conduitClients")) {
-            CompoundNBT conduitClientsNBT = nbt.getCompound("conduitClients");
-            for (Map.Entry<String, ConduitClient<?, ?, ?>> entry : this.getConduitClients().entrySet()) {
-                if (conduitClientsNBT.contains(entry.getKey())) {
-                    entry.getValue().deserializeNBT(conduitClientsNBT.getCompound(entry.getKey()));
-                }
-            }
         }
     }
 
