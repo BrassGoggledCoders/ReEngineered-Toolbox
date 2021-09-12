@@ -54,7 +54,7 @@ public class Face extends ForgeRegistryEntry<Face> {
 
     public String getTranslationKey() {
         if (this.translationKey == null) {
-            this.translationKey = Util.makeTranslationKey("face", this.getRegistryName());
+            this.translationKey = Util.makeDescriptionId("face", this.getRegistryName());
         }
         return this.translationKey;
     }
