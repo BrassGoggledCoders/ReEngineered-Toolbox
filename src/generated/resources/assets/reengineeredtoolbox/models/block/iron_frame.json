@@ -1,0 +1,9 @@
+{
+  "loader": "reengineeredtoolbox:frame",
+  "frame": {
+    "parent": "reengineeredtoolbox:block/frame",
+    "textures": {
+      "frame": "reengineeredtoolbox:block/iron_frame"
+    }
+  }
+}

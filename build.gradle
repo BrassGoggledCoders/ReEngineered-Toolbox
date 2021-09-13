@@ -14,6 +14,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
 apply plugin: "net.minecraftforge.gradle"
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'maven-publish'
@@ -21,13 +25,16 @@ apply plugin: "java"
 apply plugin: "idea"
 
 version = "${minecraft_version}-" + getVersion()
-group = "${group}"
 archivesBaseName = "${mod_id}"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 repositories {
     mavenLocal()
+    maven {
+        name = "Registrate"
+        url = "https://maven.tterrag.com/"
+    }
 }
 
 test {
@@ -90,16 +97,34 @@ minecraft {
     }
 }
 
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
+
+configurations {
+    shade
+}
+
+shadowJar {
+    configurations = [project.configurations.shade]
+    relocate 'com.tterrag.registrate', group + "." + mod_id + ".repack.registrate"
+    classifier ''
+}
+
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    def registrate = "com.tterrag.registrate:Registrate:MC1.16.5-${registrate_version}" as Object
+    implementation fg.deobf(registrate)
+    shade registrate
 }
 
 def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
 def intoTargets = ["$rootDir/out/production/resources/", "$rootDir/out/production/${project.name}.main/", "$rootDir/bin/main/"]
-def replaceProperties = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_version,
-                         mod_authors: mod_authors, mod_description: mod_description,
+def replaceProperties = [mod_id                 : mod_id, mod_name: mod_name, mod_version: mod_version,
+                         mod_authors            : mod_authors, mod_description: mod_description,
                          minecraft_version_range: minecraft_version_range, forge_version_range: forge_version_range,
-                         loader_version_range: loader_version_range]
+                         loader_version_range   : loader_version_range]
 processResources {
     inputs.properties replaceProperties
     replaceProperties.put 'project', project
@@ -122,23 +147,47 @@ processResources {
 }
 
 jar {
+    classifier = "nodep"
     manifest {
         attributes([
-                "Specification-Title": mod_id,
-                "Specification-Vendor": mod_authors,
-                "Specification-Version": "1", // We are version 1 of ourselves
-                "Implementation-Title": project.name,
-                "Implementation-Version": mod_version,
-                "Implementation-Vendor": mod_authors,
+                "Specification-Title"     : mod_id,
+                "Specification-Vendor"    : mod_authors,
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : mod_version,
+                "Implementation-Vendor"   : mod_authors,
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
 
+task srcJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = "sources"
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = "javadoc"
+    from javadoc.destinationDir
+}
+
+reobf {
+    shadowJar {}
+}
+
+reobf {
+    shadowJar {}
+}
+
+build.dependsOn shadowJar
+build.dependsOn reobfShadowJar
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact jar
+            artifact shadowJar
+            artifact javadocJar
+            artifact srcJar
         }
     }
     repositories {

@@ -35,3 +35,7 @@ hs_err_pid*
 .idea/modules/ReEngineered-Toolbox.main.iml
 
 .idea/gradle.xml
+
+.idea/misc.xml
+
+.idea/runConfigurations/
