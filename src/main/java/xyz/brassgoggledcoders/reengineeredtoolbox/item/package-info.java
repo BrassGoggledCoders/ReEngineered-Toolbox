@@ -1,7 +1,0 @@
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
-package xyz.brassgoggledcoders.reengineeredtoolbox.item;
-
-import mcp.MethodsReturnNonnullByDefault;
-
-import javax.annotation.ParametersAreNonnullByDefault;
