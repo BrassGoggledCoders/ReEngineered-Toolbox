@@ -1,8 +1,0 @@
-{
-  "type": "reengineeredtoolbox:freezer",
-  "inputFluidStack": "{Fluid: \"minecraft:water\", Amount: 100}",
-  "output": {
-    "item": "minecraft:ice",
-    "count": 1
-  }
-}

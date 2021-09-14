@@ -23,7 +23,7 @@ public class ReEngineeredToolbox {
                 @Override
                 @Nonnull
                 public ItemStack makeIcon() {
-                    return ItemStack.EMPTY;
+                    return RETBlocks.IRON_FRAME_BLOCK.asStack();
                 }
             })
     );
