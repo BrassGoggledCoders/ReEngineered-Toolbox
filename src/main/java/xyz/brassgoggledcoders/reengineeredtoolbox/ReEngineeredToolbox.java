@@ -10,6 +10,8 @@ import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.RETBlocks;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.RETPanels;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.RETRegistries;
 
 import javax.annotation.Nonnull;
 
@@ -29,6 +31,8 @@ public class ReEngineeredToolbox {
     );
 
     public ReEngineeredToolbox() {
+        RETRegistries.setup();
+        RETPanels.setup();
         RETBlocks.setup();
     }
 

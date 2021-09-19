@@ -3,12 +3,12 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.model.frame;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
-import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
+import xyz.brassgoggledcoders.reengineeredtoolbox.model.panel.PanelModelRegistry;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Function;
@@ -33,14 +33,15 @@ public class FrameModel implements IModelGeometry<FrameModel> {
     }
 
     @Override
+    @Nonnull
     public Collection<RenderMaterial> getTextures(IModelConfiguration owner,
                                                   Function<ResourceLocation, IUnbakedModel> modelGetter,
                                                   Set<Pair<String, String>> missingTextureErrors) {
         Collection<RenderMaterial> renderMaterials = frameModel.getMaterials(modelGetter, missingTextureErrors);
-        renderMaterials.add(new RenderMaterial(
-                PlayerContainer.BLOCK_ATLAS,
-                ReEngineeredToolbox.rl("face/empty")
-        ));
+        PanelModelRegistry.INSTANCE.getPanelsByState()
+                .stream()
+                .map(panelModel -> panelModel.getTextures(modelGetter, missingTextureErrors))
+                .forEach(renderMaterials::addAll);
         return renderMaterials;
     }
 }

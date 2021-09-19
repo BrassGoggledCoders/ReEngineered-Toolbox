@@ -1,0 +1,31 @@
+{
+  "textures": {
+    "0": "reengineeredtoolbox:face/open",
+    "particle": "reengineeredtoolbox:face/open"
+  },
+  "elements": [
+    {
+      "from": [
+        2,
+        2,
+        2
+      ],
+      "to": [
+        14,
+        14,
+        2
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
+}
