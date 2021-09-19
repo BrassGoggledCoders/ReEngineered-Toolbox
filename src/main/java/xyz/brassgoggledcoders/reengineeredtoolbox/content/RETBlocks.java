@@ -10,7 +10,7 @@ import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.block.FrameBlock;
 import xyz.brassgoggledcoders.reengineeredtoolbox.blockentity.FrameBlockEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.model.FrameModelBuilder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.model.frame.FrameModelBuilder;
 
 public class RETBlocks {
     public static final BlockEntry<FrameBlock> IRON_FRAME_BLOCK = ReEngineeredToolbox.getRegistrate()
