@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.model;
+package xyz.brassgoggledcoders.reengineeredtoolbox.model.frame;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;

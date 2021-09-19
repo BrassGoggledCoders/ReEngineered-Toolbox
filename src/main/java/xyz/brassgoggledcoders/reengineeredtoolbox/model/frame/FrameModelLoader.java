@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.model;
+package xyz.brassgoggledcoders.reengineeredtoolbox.model.frame;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;

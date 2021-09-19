@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.model;
+package xyz.brassgoggledcoders.reengineeredtoolbox.model.frame;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.model.*;
