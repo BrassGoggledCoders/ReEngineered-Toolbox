@@ -9,4 +9,8 @@ public class PanelState extends StateHolder<Panel, PanelState> {
     public PanelState(Panel pOwner, ImmutableMap<Property<?>, Comparable<?>> pValues, MapCodec<PanelState> pPropertiesCodec) {
         super(pOwner, pValues, pPropertiesCodec);
     }
+
+    public Panel getPanel() {
+        return this.owner;
+    }
 }
