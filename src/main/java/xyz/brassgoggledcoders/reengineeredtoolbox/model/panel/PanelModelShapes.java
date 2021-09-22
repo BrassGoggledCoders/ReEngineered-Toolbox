@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Mod;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.RETRegistries;
 
@@ -26,9 +26,22 @@ public class PanelModelShapes {
         this.modelByStateCache.clear();
     }
 
-    public IBakedModel getBakedModel(ModelBakery modelBakery, PanelState panelState, Direction direction) {
+    public IBakedModel getBakedModel(PanelState panelState, Direction direction) {
         return modelByStateCache.computeIfAbsent(panelState, value -> Maps.newEnumMap(Direction.class))
-                .computeIfAbsent(direction, value -> this.createBakedModel(modelBakery, panelState, direction));
+                .computeIfAbsent(direction, value -> Minecraft.getInstance().getModelManager().getMissingModel());
+    }
+
+    public void bakeModels(ModelBakery modelBakery) {
+        for (Panel panel : RETRegistries.PANELS.get()) {
+            for (PanelState panelState : panel.getStateContainer().getPossibleStates()) {
+                for (Direction direction : Direction.values()) {
+                    if (panelState.isValidFor(direction)) {
+                        modelByStateCache.computeIfAbsent(panelState, value -> Maps.newEnumMap(Direction.class))
+                                .put(direction, this.createBakedModel(modelBakery, panelState, direction));
+                    }
+                }
+            }
+        }
     }
 
     public IBakedModel createBakedModel(ModelBakery modelBakery, PanelState panelState, Direction direction) {

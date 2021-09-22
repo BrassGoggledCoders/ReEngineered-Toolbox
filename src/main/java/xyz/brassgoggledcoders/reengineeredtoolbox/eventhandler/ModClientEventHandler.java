@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.eventhandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,5 +28,11 @@ public class ModClientEventHandler {
                 .getResourceManager())
                 .registerReloadListener(PanelModelManager.INSTANCE)
         );
+    }
+
+    @SubscribeEvent
+    public static void bakeModels(ModelBakeEvent event) {
+        PanelModelManager.INSTANCE.getShapes()
+                .bakeModels(event.getModelLoader());
     }
 }
