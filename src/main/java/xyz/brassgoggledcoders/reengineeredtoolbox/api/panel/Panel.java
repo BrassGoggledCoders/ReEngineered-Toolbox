@@ -1,11 +1,16 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.panel;
 
 import net.minecraft.state.StateContainer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.LazyValue;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrame;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IPanelPlacement;
+
+import javax.annotation.Nullable;
 
 public class Panel extends ForgeRegistryEntry<Panel> {
     private final LazyValue<String> descriptionId;
@@ -26,6 +31,23 @@ public class Panel extends ForgeRegistryEntry<Panel> {
 
     public IFormattableTextComponent getName() {
         return new TranslationTextComponent(this.getDescriptionId());
+    }
+
+    public boolean isStateValidFor(PanelState panelState, Direction direction) {
+        return true;
+    }
+
+    public PanelState getStateForPlacement(PanelState panelState, IPanelPlacement panelPlacement, IFrame frame) {
+        if (panelState.isValidFor(panelPlacement.getPlacementFace())) {
+            return panelState;
+        } else {
+            return null;
+        }
+    }
+
+    @Nullable
+    public PanelEntity createPanelEntity(PanelState panelState) {
+        return null;
     }
 
     public PanelState getDefaultState() {
