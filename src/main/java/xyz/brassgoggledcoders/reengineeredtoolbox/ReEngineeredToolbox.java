@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox;
 
-import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.Registrate;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -10,6 +9,9 @@ import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.RETBlocks;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.RETItems;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.RETPanels;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.RETRegistries;
 
 import javax.annotation.Nonnull;
 
@@ -18,7 +20,7 @@ public class ReEngineeredToolbox {
     public static final String ID = "reengineeredtoolbox";
     public static final Logger LOGGER = LogManager.getLogger(ID);
 
-    private final static Lazy<AbstractRegistrate<?>> REGISTRATE = Lazy.of(() -> Registrate.create(ID)
+    private final static Lazy<Registrate> REGISTRATE = Lazy.of(() -> Registrate.create(ID)
             .itemGroup(() -> new ItemGroup(ID) {
                 @Override
                 @Nonnull
@@ -28,15 +30,19 @@ public class ReEngineeredToolbox {
             })
     );
 
+
     public ReEngineeredToolbox() {
+        RETRegistries.setup();
+        RETPanels.setup();
         RETBlocks.setup();
+        RETItems.setup();
     }
 
     public static ResourceLocation rl(String path) {
         return new ResourceLocation(ID, path);
     }
 
-    public static AbstractRegistrate<?> getRegistrate() {
+    public static Registrate getRegistrate() {
         return REGISTRATE.get();
     }
 }

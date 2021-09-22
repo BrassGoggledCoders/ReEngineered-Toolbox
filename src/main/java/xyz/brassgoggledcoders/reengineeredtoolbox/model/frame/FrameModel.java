@@ -3,11 +3,10 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.model.frame;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
-import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
+import xyz.brassgoggledcoders.reengineeredtoolbox.model.panel.PanelModelManager;
 
 import java.util.Collection;
 import java.util.Set;
@@ -29,7 +28,7 @@ public class FrameModel implements IModelGeometry<FrameModel> {
                 spriteGetter,
                 modelTransform,
                 modelLocation
-        ), spriteGetter);
+        ), spriteGetter, PanelModelManager.INSTANCE.getShapes()::getBakedModel);
     }
 
     @Override
@@ -37,9 +36,9 @@ public class FrameModel implements IModelGeometry<FrameModel> {
                                                   Function<ResourceLocation, IUnbakedModel> modelGetter,
                                                   Set<Pair<String, String>> missingTextureErrors) {
         Collection<RenderMaterial> renderMaterials = frameModel.getMaterials(modelGetter, missingTextureErrors);
-        renderMaterials.add(new RenderMaterial(
-                PlayerContainer.BLOCK_ATLAS,
-                ReEngineeredToolbox.rl("face/empty")
+        renderMaterials.addAll(PanelModelManager.INSTANCE.getMaterials(
+                modelGetter,
+                missingTextureErrors
         ));
         return renderMaterials;
     }
