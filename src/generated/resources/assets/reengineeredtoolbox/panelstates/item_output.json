@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "reengineeredtoolbox:panel/item_output"
+    }
+  }
+}

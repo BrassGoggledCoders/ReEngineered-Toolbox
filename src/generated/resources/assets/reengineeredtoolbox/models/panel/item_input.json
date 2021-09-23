@@ -1,0 +1,6 @@
+{
+  "parent": "reengineeredtoolbox:panel/flat_panel",
+  "textures": {
+    "panel": "reengineeredtoolbox:panel/item_input"
+  }
+}

@@ -87,7 +87,7 @@ public class PanelModelManager implements ISelectiveResourceReloadListener {
             ResourceLocation registryName = Objects.requireNonNull(panel.getRegistryName());
             ResourceLocation panelStateLocation = new ResourceLocation(
                     registryName.getNamespace(),
-                    "panelstate/" + registryName.getPath() + ".json"
+                    "panelstates/" + registryName.getPath() + ".json"
             );
             IResource panelStateResource = resourceManager.getResource(panelStateLocation);
             BlockModelDefinition panelModelDefinition = JSONUtils.fromJson(

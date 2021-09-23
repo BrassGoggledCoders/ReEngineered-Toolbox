@@ -10,8 +10,10 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrame;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IPanelPlacement;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+@SuppressWarnings("unused")
 public class Panel extends ForgeRegistryEntry<Panel> {
     private final LazyValue<String> descriptionId;
     private final StateContainer<Panel, PanelState> stateContainer;
@@ -25,6 +27,7 @@ public class Panel extends ForgeRegistryEntry<Panel> {
         this.defaultState = this.createDefaultState();
     }
 
+    @Nonnull
     public String getDescriptionId() {
         return this.descriptionId.get();
     }

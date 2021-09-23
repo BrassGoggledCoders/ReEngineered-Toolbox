@@ -1,3 +1,13 @@
 {
-  "block.reengineeredtoolbox.iron_frame": "Iron Frame"
+  "block.reengineeredtoolbox.iron_frame": "Iron Frame",
+  "item.reengineeredtoolbox.panel": "Panel",
+  "panel.reengineeredtoolbox.blank": "Blank",
+  "panel.reengineeredtoolbox.dispenser": "Dispenser",
+  "panel.reengineeredtoolbox.energy_input": "Energy Input",
+  "panel.reengineeredtoolbox.energy_output": "Energy Output",
+  "panel.reengineeredtoolbox.fluid_input": "Fluid Input",
+  "panel.reengineeredtoolbox.fluid_output": "Fluid Output",
+  "panel.reengineeredtoolbox.item_input": "Item Input",
+  "panel.reengineeredtoolbox.item_output": "Item Output",
+  "panel.reengineeredtoolbox.open": "Open"
 }

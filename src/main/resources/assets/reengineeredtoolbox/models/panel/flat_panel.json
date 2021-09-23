@@ -1,8 +1,8 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "0": "reengineeredtoolbox:panel/blank",
-    "particle": "reengineeredtoolbox:panel/blank"
+    "0": "#panel",
+    "particle": "#panel"
   },
   "elements": [
     {
