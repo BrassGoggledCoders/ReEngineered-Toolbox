@@ -1,17 +1,26 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.blockentity;
 
 import com.google.common.collect.Maps;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrame;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IPanelPlacement;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.PanelInfo;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
+import xyz.brassgoggledcoders.reengineeredtoolbox.model.frame.FrameModelProperty;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
@@ -69,5 +78,29 @@ public class FrameBlockEntity extends TileEntity implements IFrame {
     @Override
     public IWorld getFrameLevel() {
         return this.level;
+    }
+
+    @Override
+    @Nonnull
+    public CompoundNBT getUpdateTag() {
+        return super.getUpdateTag();
+    }
+
+    @Override
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
+    }
+
+    @Nonnull
+    @Override
+    public IModelData getModelData() {
+        ModelDataMap.Builder modelDataMapBuilder = new ModelDataMap.Builder();
+        for (Direction direction : Direction.values()) {
+            modelDataMapBuilder.withInitial(
+                    FrameModelProperty.getModelForSide(direction),
+                    this.getInfoBySide(direction)
+            );
+        }
+        return modelDataMapBuilder.build();
     }
 }

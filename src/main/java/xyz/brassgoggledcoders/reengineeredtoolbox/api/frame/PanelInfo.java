@@ -1,7 +1,9 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.frame;
 
+import net.minecraft.network.PacketBuffer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.RETRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,6 +24,7 @@ public class PanelInfo {
         this.uniqueId = uniqueId;
     }
 
+
     @Nonnull
     public PanelState getPanelState() {
         return panelState;
@@ -35,5 +38,17 @@ public class PanelInfo {
     @Nonnull
     public UUID getUniqueId() {
         return uniqueId;
+    }
+
+    public void toBuffer(PacketBuffer packetBuffer) {
+        packetBuffer.writeUUID(uniqueId);
+        packetBuffer.writeVarInt(RETRegistries.getPanelStateIdentities().getId(panelState));
+    }
+
+    public static PanelInfo fromBuffer(PacketBuffer buffer) {
+        return new PanelInfo(
+                buffer.readUUID(),
+                RETRegistries.getPanelStateIdentities().byId(buffer.readVarInt())
+        );
     }
 }
