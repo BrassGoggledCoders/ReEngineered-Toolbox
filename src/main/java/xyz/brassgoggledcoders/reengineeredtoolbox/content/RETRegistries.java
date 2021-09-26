@@ -7,6 +7,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
+import xyz.brassgoggledcoders.reengineeredtoolbox.util.ClearableObjectIntIdentityMap;
 
 import java.util.function.Supplier;
 
@@ -36,14 +37,6 @@ public class RETRegistries {
     @SuppressWarnings("unchecked")
     public static ObjectIntIdentityMap<PanelState> getPanelStateIdentities() {
         return PANELS.get().getSlaveMap(PANELSTATE_RL, ClearableObjectIntIdentityMap.class);
-    }
-
-    public static class ClearableObjectIntIdentityMap<I> extends ObjectIntIdentityMap<I> {
-        public void clear() {
-            this.tToId.clear();
-            this.idToT.clear();
-            this.nextId = 0;
-        }
     }
 
     public static void setup() {
