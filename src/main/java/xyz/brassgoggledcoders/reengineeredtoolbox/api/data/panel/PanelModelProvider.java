@@ -46,4 +46,9 @@ public class PanelModelProvider extends ModelProvider<PanelModelBuilder> {
         return withExistingParent(name, retLoc(FOLDER + "/flat_panel"))
                 .texture("panel", texture);
     }
+
+    public ModelFile openPanel(String name, ResourceLocation texture) {
+        return withExistingParent(name, retLoc(FOLDER + "/open_panel"))
+                .texture("panel", texture);
+    }
 }

@@ -20,7 +20,7 @@ public class ItemUsePanelPlacement implements IPanelPlacement {
 
     @Override
     public Direction getPlacementFace() {
-        return context.getClickedFace().getOpposite();
+        return context.getClickedFace();
     }
 
     @Override

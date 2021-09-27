@@ -5,12 +5,14 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelBuilder;
 
+@SuppressWarnings("unused")
 public class RETPanels {
 
     public static final RegistryEntry<Panel> OPEN = ReEngineeredToolbox.getRegistrate()
             .object("open")
             .entry(PanelBuilder.entry())
             .panel(Panel::new)
+            .panelstate((ctx, prov) -> prov.openPanel(ctx.getEntry()))
             .register();
 
     public static final RegistryEntry<Panel> BLANK = ReEngineeredToolbox.getRegistrate()

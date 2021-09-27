@@ -27,7 +27,7 @@ public class ReEngineeredToolbox {
                 public ItemStack makeIcon() {
                     return RETBlocks.IRON_FRAME_BLOCK.asStack();
                 }
-            })
+            }, "ReEngineered Toolbox")
     );
 
 

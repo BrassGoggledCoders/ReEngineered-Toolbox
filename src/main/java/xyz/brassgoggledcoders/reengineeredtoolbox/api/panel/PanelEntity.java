@@ -13,4 +13,12 @@ public class PanelEntity implements INBTSerializable<CompoundNBT> {
     public void deserializeNBT(CompoundNBT nbt) {
 
     }
+
+    public CompoundNBT getClientUpdates() {
+        return new CompoundNBT();
+    }
+
+    public void handleClientUpdates(CompoundNBT nbt) {
+
+    }
 }

@@ -1,5 +1,5 @@
 {
-  "parent": "reengineeredtoolbox:panel/flat_panel",
+  "parent": "reengineeredtoolbox:panel/open_panel",
   "textures": {
     "panel": "reengineeredtoolbox:panel/open"
   }

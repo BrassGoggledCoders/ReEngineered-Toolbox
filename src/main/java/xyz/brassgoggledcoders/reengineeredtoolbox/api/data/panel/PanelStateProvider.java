@@ -70,6 +70,10 @@ public abstract class PanelStateProvider implements IDataProvider {
         simplePanel(panel, models().flatPanel(name(panel), texture(panel)));
     }
 
+    public void openPanel(Panel panel) {
+        simplePanel(panel, models().openPanel(name(panel), texture(panel)));
+    }
+
     public void simplePanel(Panel panel, ModelFile model) {
         simplePanel(panel, new ConfiguredModel(model));
     }
