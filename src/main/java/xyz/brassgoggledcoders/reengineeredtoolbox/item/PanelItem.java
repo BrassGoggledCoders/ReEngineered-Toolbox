@@ -42,9 +42,9 @@ public class PanelItem extends Item {
     @Override
     @Nonnull
     public ITextComponent getName(@Nonnull ItemStack pStack) {
-        CompoundNBT panelTag = pStack.getTagElement("panel");
+        CompoundNBT panelTag = pStack.getTagElement("panelInfo");
         if (panelTag != null) {
-            return NBTHelper.readPanelState(panelTag.getCompound("state"))
+            return NBTHelper.readPanelState(panelTag.getCompound("panelState"))
                     .getPanel()
                     .getName();
         }
@@ -58,8 +58,8 @@ public class PanelItem extends Item {
             for (Panel panel : RETRegistries.PANELS.get()) {
                 if (panel != RETPanels.OPEN.get()) {
                     ItemStack itemStack = new ItemStack(this);
-                    itemStack.getOrCreateTagElement("panel")
-                            .put("state", NBTHelper.writePanelState(panel.getDefaultState()));
+                    itemStack.getOrCreateTagElement("panelInfo")
+                            .put("panelState", NBTHelper.writePanelState(panel.getDefaultState()));
                     itemStacks.add(itemStack);
                 }
             }

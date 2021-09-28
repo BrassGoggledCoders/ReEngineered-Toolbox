@@ -1,6 +1,7 @@
 {
   "block.reengineeredtoolbox.iron_frame": "Iron Frame",
   "item.reengineeredtoolbox.panel": "Panel",
+  "itemGroup.reengineeredtoolbox": "ReEngineered Toolbox",
   "panel.reengineeredtoolbox.blank": "Blank",
   "panel.reengineeredtoolbox.dispenser": "Dispenser",
   "panel.reengineeredtoolbox.energy_input": "Energy Input",

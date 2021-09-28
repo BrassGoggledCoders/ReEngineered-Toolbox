@@ -27,9 +27,9 @@ public class ItemUsePanelPlacement implements IPanelPlacement {
     @Nullable
     public PanelState getPanelState() {
         ItemStack itemStack = context.getItemInHand();
-        CompoundNBT nbt = itemStack.getTagElement("panel");
+        CompoundNBT nbt = itemStack.getTagElement("panelInfo");
         if (nbt != null) {
-            return NBTHelper.readPanelState(nbt.getCompound("state"));
+            return NBTHelper.readPanelState(nbt.getCompound("panelState"));
         }
         return null;
     }
@@ -38,9 +38,9 @@ public class ItemUsePanelPlacement implements IPanelPlacement {
     @Override
     public CompoundNBT getPanelEntityNBT() {
         ItemStack itemStack = context.getItemInHand();
-        CompoundNBT nbt = itemStack.getTagElement("panel");
+        CompoundNBT nbt = itemStack.getTagElement("panelInfo");
         if (nbt != null) {
-            CompoundNBT panelEntityNBT = nbt.getCompound("entity");
+            CompoundNBT panelEntityNBT = nbt.getCompound("panelEntity");
             return panelEntityNBT.isEmpty() ? null : panelEntityNBT;
         }
         return null;
