@@ -61,7 +61,7 @@ public class PanelModelShapes {
                 transform = ModelRotation.X270_Y0;
                 break;
             case SOUTH:
-                transform = ModelRotation.X90_Y90;
+                transform = ModelRotation.X0_Y180;
                 break;
             default:
                 transform = ModelRotation.X0_Y0;
