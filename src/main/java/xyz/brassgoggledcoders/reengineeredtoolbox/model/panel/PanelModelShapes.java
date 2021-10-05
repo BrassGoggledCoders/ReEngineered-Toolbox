@@ -68,17 +68,19 @@ public class PanelModelShapes {
                 break;
         }
         if (model != null) {
-            return model.bake(
+            IBakedModel bakedModel = model.bake(
                     modelBakery,
                     modelBakery.getSpriteMap()::getSprite,
                     transform,
                     stateToModelLocation(panelState)
             );
-        } else {
-            return Minecraft.getInstance()
-                    .getModelManager()
-                    .getMissingModel();
+            if (bakedModel != null) {
+                return bakedModel;
+            }
         }
+        return Minecraft.getInstance()
+                .getModelManager()
+                .getMissingModel();
     }
 
     public static ModelResourceLocation stateToModelLocation(PanelState pState) {

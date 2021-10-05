@@ -28,7 +28,7 @@ public class FrameModel implements IModelGeometry<FrameModel> {
                 spriteGetter,
                 modelTransform,
                 modelLocation
-        ), spriteGetter, PanelModelManager.INSTANCE.getShapes()::getBakedModel);
+        ), PanelModelManager.INSTANCE.getShapes()::getBakedModel);
     }
 
     @Override

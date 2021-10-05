@@ -24,31 +24,31 @@ public class TransformedVariantList extends VariantList {
         if (this.getVariants().isEmpty()) {
             return null;
         } else {
-            WeightedBakedModel.Builder weightedbakedmodel$builder = new WeightedBakedModel.Builder();
+            WeightedBakedModel.Builder weightedBakedModelBuilder = new WeightedBakedModel.Builder();
 
             for (Variant variant : this.getVariants()) {
-                IBakedModel ibakedmodel = pModelBakery.getBakedModel(variant.getModelLocation(), pTransform, pSpriteGetter);
-                weightedbakedmodel$builder.add(ibakedmodel, variant.getWeight());
+                IBakedModel bakedModel = pModelBakery.getBakedModel(variant.getModelLocation(), pTransform, pSpriteGetter);
+                weightedBakedModelBuilder.add(bakedModel, variant.getWeight());
             }
 
-            return weightedbakedmodel$builder.build();
+            return weightedBakedModelBuilder.build();
         }
     }
 
     public static class Deserializer implements JsonDeserializer<VariantList> {
-        public VariantList deserialize(JsonElement p_deserialize_1_, Type p_deserialize_2_, JsonDeserializationContext p_deserialize_3_) throws JsonParseException {
+        public VariantList deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
             List<Variant> list = Lists.newArrayList();
-            if (p_deserialize_1_.isJsonArray()) {
-                JsonArray jsonarray = p_deserialize_1_.getAsJsonArray();
-                if (jsonarray.size() == 0) {
+            if (element.isJsonArray()) {
+                JsonArray jsonArray = element.getAsJsonArray();
+                if (jsonArray.size() == 0) {
                     throw new JsonParseException("Empty variant array");
                 }
 
-                for(JsonElement jsonelement : jsonarray) {
-                    list.add(p_deserialize_3_.deserialize(jsonelement, Variant.class));
+                for (JsonElement arrayElement : jsonArray) {
+                    list.add(context.deserialize(arrayElement, Variant.class));
                 }
             } else {
-                list.add(p_deserialize_3_.deserialize(p_deserialize_1_, Variant.class));
+                list.add(context.deserialize(element, Variant.class));
             }
 
             return new TransformedVariantList(list);
