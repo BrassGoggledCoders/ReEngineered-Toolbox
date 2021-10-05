@@ -5,16 +5,20 @@ import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.AbstractBuilder;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.BuilderCallback;
+import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullBiFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import com.tterrag.registrate.util.nullness.NonnullType;
+import net.minecraft.item.Item;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
+import xyz.brassgoggledcoders.reengineeredtoolbox.item.PanelItem;
 
 import javax.annotation.Nonnull;
+import java.util.function.BiFunction;
 
 public class PanelBuilder<T extends Panel, P> extends AbstractBuilder<Panel, T, P, PanelBuilder<T, P>> {
     private NonNullSupplier<T> panelCreator;
@@ -31,6 +35,16 @@ public class PanelBuilder<T extends Panel, P> extends AbstractBuilder<Panel, T, 
 
     public PanelBuilder<T, P> defaultPanelstate() {
         return panelstate((ctx, prov) -> prov.simplePanel(ctx.getEntry()));
+    }
+
+    public PanelBuilder<T, P> defaultItem() {
+        return item((panelSupplier, properties) -> new PanelItem<>(panelSupplier::get, properties))
+                .model((context, provider) -> provider.generated(context, provider.modLoc("panel/" + context.getName())))
+                .build();
+    }
+
+    public <I extends Item> ItemBuilder<I, PanelBuilder<T, P>> item(BiFunction<NonNullSupplier<T>, Item.Properties, I> creator) {
+        return this.getOwner().item(this, properties -> creator.apply(this::getEntry, properties));
     }
 
     /**
@@ -57,6 +71,7 @@ public class PanelBuilder<T extends Panel, P> extends AbstractBuilder<Panel, T, 
     public static <T2 extends Panel, P2 extends AbstractRegistrate<P2>> NonNullBiFunction<String, BuilderCallback, PanelBuilder<T2, P2>> entry(P2 parent) {
         return (name, builder) -> new PanelBuilder<T2, P2>(parent, parent, name, builder, Panel.class)
                 .defaultPanelstate()
+                .defaultItem()
                 .defaultLang();
     }
 

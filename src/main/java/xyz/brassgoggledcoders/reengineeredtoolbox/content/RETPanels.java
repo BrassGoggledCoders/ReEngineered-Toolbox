@@ -1,8 +1,10 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.content;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import net.minecraft.item.ItemGroup;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
+import xyz.brassgoggledcoders.reengineeredtoolbox.item.PanelItem;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelBuilder;
 
 @SuppressWarnings("unused")
@@ -13,6 +15,9 @@ public class RETPanels {
             .entry(PanelBuilder.entry())
             .panel(Panel::new)
             .panelstate((ctx, prov) -> prov.openPanel(ctx.getEntry()))
+            .item(PanelItem::create)
+            .properties(properties -> properties.tab(ItemGroup.TAB_SEARCH))
+            .build()
             .register();
 
     public static final RegistryEntry<Panel> BLANK = ReEngineeredToolbox.getRegistrate()

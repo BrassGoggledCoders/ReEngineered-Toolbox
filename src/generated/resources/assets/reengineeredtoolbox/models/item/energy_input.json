@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "reengineeredtoolbox:item/panel"
+    "layer0": "reengineeredtoolbox:panel/energy_input"
   }
 }
