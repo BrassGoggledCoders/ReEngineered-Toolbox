@@ -1,0 +1,6 @@
+{
+  "parent": "reengineered_toolbox:block/frame",
+  "textures": {
+    "frame": "reengineered_toolbox:block/iron_frame"
+  }
+}

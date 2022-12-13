@@ -13,7 +13,8 @@ public class ReEngineeredBlocks {
             .blockstate((context, provider) -> provider.simpleBlock(
                     context.get(),
                     provider.models()
-                            .getExistingFile(provider.modLoc("block/frame"))
+                            .withExistingParent(context.getName(), provider.modLoc("block/frame"))
+                            .texture("frame", provider.blockTexture(context.get()))
             ))
             .item()
             .build()

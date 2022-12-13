@@ -1,23 +1,22 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox;
 
+import com.google.common.base.Suppliers;
 import com.tterrag.registrate.Registrate;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredBlocks;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
+import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.ReEngineeredRegistrateAddon;
 
 import javax.annotation.Nonnull;
+import java.util.function.Supplier;
 
 @Mod(value = ReEngineeredToolbox.ID)
 public class ReEngineeredToolbox {
     public static final String ID = "reengineered_toolbox";
-    public static final Logger LOGGER = LogManager.getLogger(ID);
 
-    private final static Lazy<Registrate> REGISTRATE = Lazy.of(() -> Registrate.create(ID)
+    private final static Supplier<Registrate> REGISTRATE = Suppliers.memoize(() -> Registrate.create(ID)
             .creativeModeTab(() -> new CreativeModeTab(ID) {
                 @Override
                 @Nonnull
@@ -27,16 +26,21 @@ public class ReEngineeredToolbox {
             }, "ReEngineered Toolbox")
     );
 
+    private final static Supplier<ReEngineeredRegistrateAddon<Registrate>> REENGINEERED_REGISTRATE = Suppliers.memoize(() ->
+            ReEngineeredRegistrateAddon.of(REGISTRATE.get())
+    );
+
 
     public ReEngineeredToolbox() {
         ReEngineeredBlocks.setup();
-    }
-
-    public static ResourceLocation rl(String path) {
-        return new ResourceLocation(ID, path);
+        ReEngineeredPanels.setup();
     }
 
     public static Registrate getRegistrate() {
         return REGISTRATE.get();
+    }
+
+    public static ReEngineeredRegistrateAddon<Registrate> getRegistrateAddon() {
+        return REENGINEERED_REGISTRATE.get();
     }
 }
