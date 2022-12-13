@@ -1,6 +1,0 @@
-{
-  "parent": "reengineeredtoolbox:panel/open_panel",
-  "textures": {
-    "panel": "reengineeredtoolbox:panel/open"
-  }
-}

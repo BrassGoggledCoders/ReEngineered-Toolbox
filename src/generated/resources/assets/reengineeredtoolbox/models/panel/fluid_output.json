@@ -1,6 +1,0 @@
-{
-  "parent": "reengineeredtoolbox:panel/flat_panel",
-  "textures": {
-    "panel": "reengineeredtoolbox:panel/fluid_output"
-  }
-}
