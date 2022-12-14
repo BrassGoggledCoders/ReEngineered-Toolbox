@@ -5,6 +5,8 @@ import com.tterrag.registrate.Registrate;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredBlocks;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.ReEngineeredRegistrateAddon;
@@ -15,6 +17,7 @@ import java.util.function.Supplier;
 @Mod(value = ReEngineeredToolbox.ID)
 public class ReEngineeredToolbox {
     public static final String ID = "reengineered_toolbox";
+    public static final Logger LOGGER = LoggerFactory.getLogger(ID);
 
     private final static Supplier<Registrate> REGISTRATE = Suppliers.memoize(() -> Registrate.create(ID)
             .creativeModeTab(() -> new CreativeModeTab(ID) {
