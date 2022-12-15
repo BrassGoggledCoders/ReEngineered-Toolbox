@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox;
 
 import com.google.common.base.Suppliers;
 import com.tterrag.registrate.Registrate;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
@@ -37,6 +38,10 @@ public class ReEngineeredToolbox {
     public ReEngineeredToolbox() {
         ReEngineeredBlocks.setup();
         ReEngineeredPanels.setup();
+    }
+
+    public static ResourceLocation rl(String path) {
+        return new ResourceLocation(ID, path);
     }
 
     public static Registrate getRegistrate() {

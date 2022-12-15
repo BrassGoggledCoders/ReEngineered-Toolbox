@@ -13,13 +13,21 @@ import java.util.Set;
 import java.util.function.Function;
 
 public class FrameUnbakedGeometry implements IUnbakedGeometry<FrameUnbakedGeometry> {
+    private final UnbakedModel frameModel;
+
+    public FrameUnbakedGeometry(UnbakedModel frameModel) {
+        this.frameModel = frameModel;
+    }
+
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
-        return null;
+        return new FrameBakedModel(
+                this.frameModel.bake(bakery, spriteGetter, modelState, modelLocation)
+        );
     }
 
     @Override
     public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        return null;
+        return this.frameModel.getMaterials(modelGetter, missingTextureErrors);
     }
 }

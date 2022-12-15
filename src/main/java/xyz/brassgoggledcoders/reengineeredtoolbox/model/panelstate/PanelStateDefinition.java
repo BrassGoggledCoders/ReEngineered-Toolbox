@@ -41,7 +41,7 @@ public class PanelStateDefinition {
             if (!map.isEmpty()) {
                 return new PanelStateDefinition(map);
             } else {
-                throw new JsonParseException("'variants' found");
+                throw new JsonParseException("'variants' not found");
             }
         }
 
