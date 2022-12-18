@@ -1,4 +1,6 @@
 {
   "block.reengineered_toolbox.iron_frame": "Iron Frame",
-  "itemGroup.reengineered_toolbox": "ReEngineered Toolbox"
+  "itemGroup.reengineered_toolbox": "ReEngineered Toolbox",
+  "panel.reengineered_toolbox.item_output": "Item Output",
+  "panel.reengineered_toolbox.plug": "Plug"
 }

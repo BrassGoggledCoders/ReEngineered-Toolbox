@@ -13,7 +13,7 @@ public class ReEngineeredRegistrateAddon<S extends AbstractRegistrate<S>> {
     }
 
     public <P extends Panel> PanelBuilder<P, ReEngineeredRegistrateAddon<S>> panel(Supplier<P> panelConstructor) {
-        return registrate.entry((name, builderCallback) -> new PanelBuilder<>(
+        return registrate.entry((name, builderCallback) -> PanelBuilder.create(
                 this.registrate,
                 this,
                 name,

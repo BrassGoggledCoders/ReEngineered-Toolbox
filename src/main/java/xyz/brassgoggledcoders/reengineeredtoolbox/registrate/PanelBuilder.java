@@ -6,13 +6,16 @@ import com.tterrag.registrate.builders.BuilderCallback;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullBiFunction;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import com.tterrag.registrate.util.nullness.NonnullType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.material.Material;
+import net.minecraftforge.common.util.NonNullFunction;
+import net.minecraftforge.registries.RegistryManager;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
@@ -20,6 +23,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelLike;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.item.PanelItem;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class PanelBuilder<P extends Panel, R> extends AbstractBuilder<Panel, P, R, PanelBuilder<P, R>> {
@@ -41,6 +45,22 @@ public class PanelBuilder<P extends Panel, R> extends AbstractBuilder<Panel, P, 
 
     public PanelBuilder<P, R> defaultLang() {
         return lang(Panel::getDescriptionId);
+    }
+
+    @Override
+    @NotNull
+    public PanelBuilder<P, R> lang(@NotNull NonNullFunction<P, String> langKeyProvider) {
+        return lang(langKeyProvider, (p, t) -> getAutomaticName(t));
+    }
+
+    private PanelBuilder<P, R> lang(
+            NonNullFunction<P, String> langKeyProvider,
+            NonNullBiFunction<RegistrateLangProvider, NonNullSupplier<? extends Panel>, String> localizedNameProvider
+    ) {
+        return setData(ProviderType.LANG, (ctx, prov) -> prov.add(
+                langKeyProvider.apply(ctx.getEntry()),
+                localizedNameProvider.apply(prov, ctx::getEntry)
+        ));
     }
 
     public PanelBuilder<P, R> lang(String name) {
@@ -89,7 +109,13 @@ public class PanelBuilder<P extends Panel, R> extends AbstractBuilder<Panel, P, 
         return (PanelEntry<P>) super.register();
     }
 
-    public static <P extends Panel, R> PanelBuilder<P, R> create(AbstractRegistrate<?> owner, R parent, String name, BuilderCallback callback, Supplier<P> factory, Material material) {
+    private String getAutomaticName(NonNullSupplier<? extends Panel> sup) {
+        return RegistrateLangProvider.toEnglishName(Objects.requireNonNull(
+                RegistryManager.ACTIVE.getRegistry(this.getRegistryKey()).getKey(sup.get())
+        ).getPath());
+    }
+
+    public static <P extends Panel, R> PanelBuilder<P, R> create(AbstractRegistrate<?> owner, R parent, String name, BuilderCallback callback, Supplier<P> factory) {
         return new PanelBuilder<>(owner, parent, name, callback, factory)
                 .defaultPanelState()
                 .defaultLang();

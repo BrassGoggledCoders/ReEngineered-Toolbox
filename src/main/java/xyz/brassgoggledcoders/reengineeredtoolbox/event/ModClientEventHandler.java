@@ -6,8 +6,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.data.PanelModelBuilder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.data.PanelModelProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.model.frame.FrameGeometryLoader;
 import xyz.brassgoggledcoders.reengineeredtoolbox.model.panelstate.PanelModelBakery;
 

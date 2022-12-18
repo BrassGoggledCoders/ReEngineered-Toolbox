@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "reengineered_toolbox:panel/item_output",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "reengineered_toolbox:panel/item_output",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "reengineered_toolbox:panel/item_output",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "reengineered_toolbox:panel/item_output",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "reengineered_toolbox:panel/item_output"
+    },
+    "facing=west": {
+      "model": "reengineered_toolbox:panel/item_output",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

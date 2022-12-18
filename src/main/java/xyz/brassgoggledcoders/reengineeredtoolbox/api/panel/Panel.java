@@ -15,6 +15,8 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 
 import java.util.Optional;
@@ -60,13 +62,13 @@ public class Panel implements ItemLike {
 
     public String getDescriptionId() {
         if (this.descriptionId == null) {
-            this.descriptionId = Util.makeDescriptionId("block", ReEngineeredPanels.getRegistry().getKey(this));
+            this.descriptionId = Util.makeDescriptionId("panel", ReEngineeredPanels.getRegistry().getKey(this));
         }
 
         return this.descriptionId;
     }
 
-    public PanelState getPanelStateForPlacement(UseOnContext context) {
+    public PanelState getPanelStateForPlacement(UseOnContext context, IFrameEntity frame) {
         PanelState panelState = this.defaultPanelState();
         if (this.getFacingProperty() != null) {
             panelState = panelState.setValue(this.getFacingProperty(), context.getClickedFace());
@@ -103,5 +105,10 @@ public class Panel implements ItemLike {
      */
     public final PanelState defaultPanelState() {
         return this.defaultPanelState;
+    }
+
+    @Nullable
+    public PanelEntity createPanelEntity(PanelState panelState, IFrameEntity frame) {
+        return null;
     }
 }
