@@ -1,6 +1,7 @@
 {
   "frame": {
     "parent": "reengineered_toolbox:block/frame",
+    "render_type": "minecraft:cutout",
     "textures": {
       "frame": "reengineered_toolbox:block/iron_frame"
     }

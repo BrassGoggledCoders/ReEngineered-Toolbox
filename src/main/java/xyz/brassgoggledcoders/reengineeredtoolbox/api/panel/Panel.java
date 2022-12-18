@@ -1,13 +1,17 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.panel;
 
 import net.minecraft.Util;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -62,11 +66,27 @@ public class Panel implements ItemLike {
         return this.descriptionId;
     }
 
+    public PanelState getPanelStateForPlacement(UseOnContext context) {
+        PanelState panelState = this.defaultPanelState();
+        if (this.getFacingProperty() != null) {
+            panelState = panelState.setValue(this.getFacingProperty(), context.getClickedFace());
+        }
+        return panelState;
+    }
+
     private boolean filter(Item item) {
         return item instanceof PanelLike panelLike && panelLike.asPanel() == this;
     }
 
+    @Nullable
+    public Property<Direction> getFacingProperty() {
+        return BlockStateProperties.FACING;
+    }
+
     protected void createPanelStateDefinition(StateDefinition.Builder<Panel, PanelState> pBuilder) {
+        if (this.getFacingProperty() != null) {
+            pBuilder.add(this.getFacingProperty());
+        }
     }
 
     @NotNull

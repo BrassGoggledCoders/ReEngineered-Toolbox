@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +38,10 @@ public class FrameBlockEntity extends BlockEntity {
     public ModelData getModelData() {
         ModelData.Builder modelData = ModelData.builder();
         for (Map.Entry<Direction, ModelProperty<PanelState>> entry : PANEL_STATE_MODEL_PROPERTIES.entrySet()) {
-            modelData.with(entry.getValue(), ReEngineeredPanels.PLUG.get().defaultPanelState());
+            modelData.with(entry.getValue(), ReEngineeredPanels.PLUG.get()
+                    .defaultPanelState()
+                    .setValue(BlockStateProperties.FACING, entry.getKey())
+            );
         }
         return modelData.build();
     }

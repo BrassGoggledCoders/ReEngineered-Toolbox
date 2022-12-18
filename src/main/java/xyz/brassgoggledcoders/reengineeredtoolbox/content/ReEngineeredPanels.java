@@ -21,13 +21,23 @@ public class ReEngineeredPanels {
             RegistryManager.ACTIVE.getRegistry(PANEL_KEY)
     );
 
+    @SuppressWarnings("DataFlowIssue")
     public static final PanelEntry<Panel> PLUG = ReEngineeredToolbox.getRegistrateAddon()
             .object("plug")
             .panel(Panel::new)
+            .panelState((context, provider) -> provider.openDirectionalPanel(context.get()))
             .item()
             .properties(properties -> properties.tab(null))
             .build()
             .register();
+
+    public static final PanelEntry<Panel> ITEM_OUTPUT = ReEngineeredToolbox.getRegistrateAddon()
+            .object("item_output")
+            .panel(Panel::new)
+            .item()
+            .build()
+            .register();
+
 
     public static ForgeRegistry<Panel> getRegistry() {
         return PANEL_REGISTRY.get();

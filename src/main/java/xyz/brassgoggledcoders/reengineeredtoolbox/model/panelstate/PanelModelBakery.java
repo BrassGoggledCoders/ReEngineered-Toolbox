@@ -1,16 +1,16 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.model.panelstate;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
+import com.mojang.math.Transformation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.MultiVariant;
 import net.minecraft.client.renderer.block.model.Variant;
-import net.minecraft.client.resources.model.*;
-import net.minecraft.core.Direction;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraftforge.client.model.SimpleModelState;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
@@ -21,20 +21,24 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class PanelModelBakery {
     private static final PanelModelBakery INSTANCE = new PanelModelBakery();
+
+    private static final SimpleModelState IDENTITY = new SimpleModelState(Transformation.identity());
+    private static final ResourceLocation UNUSED = new ResourceLocation("unused");
     private final Map<Panel, PanelStateDefinition> panelPanelStateDefinitionMap;
-    private final Table<PanelState, Direction, BakedModel> panelStateBakedModelLoadingCache;
+    private final Map<PanelState, BakedModel> panelStateBakedModelLoadingCache;
 
     public PanelModelBakery() {
         this.panelPanelStateDefinitionMap = new IdentityHashMap<>();
-        this.panelStateBakedModelLoadingCache = HashBasedTable.create();
+        this.panelStateBakedModelLoadingCache = new IdentityHashMap<>();
     }
 
     @NotNull
-    public BakedModel getPanelStateModel(@NotNull PanelState key, @NotNull Direction direction) {
-        BakedModel bakedModel = this.panelStateBakedModelLoadingCache.get(key, direction);
+    public BakedModel getPanelStateModel(@NotNull PanelState key) {
+        BakedModel bakedModel = this.panelStateBakedModelLoadingCache.get(key);
         return bakedModel != null ? bakedModel : Minecraft.getInstance().getModelManager().getMissingModel();
     }
 
@@ -73,51 +77,38 @@ public class PanelModelBakery {
                     .getStateDefinition()
                     .getPossibleStates()
                     .forEach(panelState -> {
-                        for (Direction direction : Direction.values()) {
-                            if (panelState.isValidFor(direction)) {
-                                MultiVariant multiVariant = definition.getVariant(BlockModelShaper.statePropertiesToString(panelState.getValues()));
-                                if (multiVariant != null) {
-                                    WeightedBakedModel.Builder builder = new WeightedBakedModel.Builder();
-
-                                    for (Variant variant : multiVariant.getVariants()) {
-                                        BakedModel bakedmodel = modelBakery.bake(
-                                                variant.getModelLocation(),
-                                                this.getModelTransform(direction),
-                                                modelBakery.getAtlasSet()::getSprite
-                                        );
-                                        builder.add(bakedmodel, variant.getWeight());
-                                    }
-
-                                    BakedModel bakedModel = builder.build();
-                                    if (bakedModel != null) {
-                                        this.panelStateBakedModelLoadingCache.put(
-                                                panelState,
-                                                direction,
-                                                bakedModel
-                                        );
-                                    }
-                                }
+                        MultiVariant multiVariant = definition.getVariant(BlockModelShaper.statePropertiesToString(panelState.getValues()));
+                        if (multiVariant != null) {
+                            BakedModel bakedModel = multiVariant.bake(
+                                    modelBakery,
+                                    modelBakery.getAtlasSet()::getSprite,
+                                    IDENTITY,
+                                    UNUSED
+                            );
+                            if (bakedModel != null) {
+                                this.panelStateBakedModelLoadingCache.put(
+                                        panelState,
+                                        bakedModel
+                                );
                             }
                         }
                     });
         }
     }
 
-    private ModelState getModelTransform(Direction direction) {
-        return switch (direction) {
-            case EAST:
-                yield BlockModelRotation.X0_Y90;
-            case WEST:
-                yield BlockModelRotation.X0_Y270;
-            case DOWN:
-                yield BlockModelRotation.X90_Y0;
-            case UP:
-                yield BlockModelRotation.X270_Y0;
-            case SOUTH:
-                yield BlockModelRotation.X0_Y180;
-            default:
-                yield BlockModelRotation.X0_Y0;
-        };
+    public void registerPanelModels(Consumer<ResourceLocation> register) {
+        loadPanelStates();
+        panelPanelStateDefinitionMap.values()
+                .stream()
+                .flatMap(panelStateDefinition -> panelStateDefinition.getVariants()
+                        .values()
+                        .stream()
+                )
+                .flatMap(multiVariant -> multiVariant.getVariants()
+                        .stream()
+                        .map(Variant::getModelLocation)
+                )
+                .forEach(register);
     }
 
     public static PanelModelBakery getInstance() {

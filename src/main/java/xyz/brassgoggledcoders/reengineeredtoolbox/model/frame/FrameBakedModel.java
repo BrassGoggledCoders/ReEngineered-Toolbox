@@ -10,10 +10,14 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
+import xyz.brassgoggledcoders.reengineeredtoolbox.blockentity.FrameBlockEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.model.panelstate.PanelModelBakery;
 
@@ -34,8 +38,15 @@ public class FrameBakedModel implements BakedModel {
     public List<BakedQuad> getQuads(@Nullable BlockState pState, @Nullable Direction pDirection, @NotNull RandomSource pRandom, @NotNull ModelData modelData, RenderType renderType) {
         List<BakedQuad> bakedQuads = new ArrayList<>(frameModel.getQuads(pState, pDirection, pRandom, ModelData.EMPTY, renderType));
         for (Direction direction : Direction.values()) {
+            ModelProperty<PanelState> modelProperty = FrameBlockEntity.PANEL_STATE_MODEL_PROPERTIES.get(direction);
+            PanelState panelState = modelData.get(modelProperty);
+            if (panelState == null) {
+                panelState = ReEngineeredPanels.PLUG.get()
+                        .defaultPanelState()
+                        .setValue(BlockStateProperties.FACING, direction);
+            }
             bakedQuads.addAll(PanelModelBakery.getInstance()
-                    .getPanelStateModel(ReEngineeredPanels.PLUG.get().defaultPanelState(), direction)
+                    .getPanelStateModel(panelState)
                     .getQuads(pState, pDirection, pRandom, ModelData.EMPTY, renderType)
             );
         }
@@ -46,7 +57,7 @@ public class FrameBakedModel implements BakedModel {
     @Override
     @NotNull
     public List<BakedQuad> getQuads(@Nullable BlockState pState, @Nullable Direction pDirection, @NotNull RandomSource pRandom) {
-        return Collections.emptyList();
+        return this.frameModel.getQuads(pState, pDirection, pRandom);
     }
 
     @Override
