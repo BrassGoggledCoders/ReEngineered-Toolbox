@@ -28,9 +28,11 @@ import java.util.List;
 
 public class FrameBakedModel implements BakedModel {
     private final BakedModel frameModel;
+    private final ItemOverrides itemOverrides;
 
     public FrameBakedModel(BakedModel frameModel) {
         this.frameModel = frameModel;
+        this.itemOverrides = new FrameItemOverrides();
     }
 
     @Override
@@ -57,7 +59,7 @@ public class FrameBakedModel implements BakedModel {
     @Override
     @NotNull
     public List<BakedQuad> getQuads(@Nullable BlockState pState, @Nullable Direction pDirection, @NotNull RandomSource pRandom) {
-        return this.frameModel.getQuads(pState, pDirection, pRandom);
+        return Collections.emptyList();
     }
 
     @Override
@@ -89,7 +91,7 @@ public class FrameBakedModel implements BakedModel {
     @Override
     @NotNull
     public ItemOverrides getOverrides() {
-        return ItemOverrides.EMPTY;
+        return this.itemOverrides;
     }
 
     @Override
