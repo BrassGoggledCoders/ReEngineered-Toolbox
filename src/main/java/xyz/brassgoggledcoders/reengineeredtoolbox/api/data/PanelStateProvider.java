@@ -136,6 +136,10 @@ public abstract class PanelStateProvider implements DataProvider {
         directionalPanel(panel, $ -> model, angleOffset);
     }
 
+    public void directionalPanel(Panel panel, Function<PanelState, ModelFile> modelFunc) {
+        directionalPanel(panel, modelFunc, DEFAULT_ANGLE_OFFSET);
+    }
+
     public void directionalPanel(Panel block, Function<PanelState, ModelFile> modelFunc, int angleOffset) {
         getVariantBuilder(block)
                 .forAllStates(state -> {

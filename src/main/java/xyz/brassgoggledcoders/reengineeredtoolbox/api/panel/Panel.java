@@ -108,7 +108,19 @@ public class Panel implements ItemLike {
     }
 
     @Nullable
-    public PanelEntity createPanelEntity(PanelState panelState, IFrameEntity frame) {
+    public PanelEntity createPanelEntity(IFrameEntity frame, PanelState panelState) {
+        return null;
+    }
+
+    public boolean canConnectRedstone(IFrameEntity entity, PanelState panelState) {
+        return false;
+    }
+
+    @Nullable
+    public Direction getFacing(PanelState panelState) {
+        if (this.getFacingProperty() != null) {
+            return panelState.getValue(this.getFacingProperty());
+        }
         return null;
     }
 }

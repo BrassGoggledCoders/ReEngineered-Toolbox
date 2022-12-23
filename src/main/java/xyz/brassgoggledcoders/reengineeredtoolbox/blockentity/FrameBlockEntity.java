@@ -10,7 +10,6 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,6 +21,8 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlotHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.NbtHelper;
 
 import java.util.Arrays;
@@ -30,7 +31,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
@@ -44,10 +44,14 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
             ));
 
     private final ConcurrentMap<Direction, PanelState> panelStateMap;
+    private final Map<Direction, PanelEntity> panelEntityMap;
+    private final ITypedSlotHolder typedSlotHolder;
 
     public FrameBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
         this.panelStateMap = new ConcurrentHashMap<>();
+        this.panelEntityMap = new EnumMap<>(Direction.class);
+        this.typedSlotHolder = new TypedSlotHolder(this::getFrameLevel, pPos, this::setChanged);
     }
 
     @NotNull
@@ -66,10 +70,25 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     }
 
     @Override
-    public InteractionResultHolder<PanelState> setPanelState(@NotNull Direction direction, PanelState panelState) {
+    public InteractionResultHolder<PanelState> putPanelState(@NotNull Direction direction, PanelState panelState, boolean replace) {
         PanelState existingPanelState = this.panelStateMap.get(direction);
-        if (existingPanelState == null) {
+        if (existingPanelState == null || replace) {
             this.panelStateMap.put(direction, panelState);
+            if (existingPanelState != null) {
+                PanelEntity panelEntity = this.getPanelEntity(direction);
+                if (panelEntity == null || existingPanelState.getPanel() != panelState.getPanel()) {
+                    panelEntity = panelState.createPanelEntity(this);
+                }
+                if (panelEntity != null) {
+                    panelEntity.setPanelState(panelState);
+                    this.panelEntityMap.put(direction, panelEntity);
+                }
+            } else {
+                PanelEntity panelEntity = panelState.createPanelEntity(this);
+                if (panelEntity != null) {
+                    this.panelEntityMap.put(direction, panelEntity);
+                }
+            }
             this.setChanged();
             this.requestModelDataUpdate();
             this.getNoNullLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
@@ -88,17 +107,35 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     @Override
     @Nullable
     public PanelEntity getPanelEntity(@NotNull Direction direction) {
-        return null;
+        return this.panelEntityMap.get(direction);
+    }
+
+    @Override
+    @NotNull
+    public BlockPos getFramePos() {
+        return this.getBlockPos();
+    }
+
+    @Override
+    @NotNull
+    public Level getFrameLevel() {
+        return this.getNoNullLevel();
+    }
+
+    @Override
+    public ITypedSlotHolder getTypedSlotHolder() {
+        return this.typedSlotHolder;
     }
 
     @Override
     protected void saveAdditional(@NotNull CompoundTag pTag) {
         super.saveAdditional(pTag);
         CompoundTag panelsTag = new CompoundTag();
-        writePanels(panelsTag, ((direction, compoundTag) -> {
-        }));
+        writePanels(panelsTag);
         pTag.put("Panels", panelsTag);
     }
+
+    //private void savePanelEntity(Direction direction, CompoundTag compoundTag, )
 
     @Override
     public void load(@NotNull CompoundTag pTag) {
@@ -106,29 +143,43 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
         if (pTag.contains("Panels")) {
             CompoundTag panelsTag = pTag.getCompound("Panels");
-            readPanels(panelsTag, (direction, compoundTag) -> {
-            });
+            readPanels(panelsTag);
         }
     }
 
-    private void readPanels(CompoundTag panelsTag, BiConsumer<Direction, CompoundTag> readAdditional) {
+    private void readPanels(CompoundTag panelsTag) {
         for (Direction direction : Direction.values()) {
             CompoundTag panelTag = panelsTag.getCompound(direction.getName());
             if (!panelTag.isEmpty()) {
-                this.panelStateMap.put(direction, NbtHelper.readPanelState(panelTag.getCompound("PanelState")));
-                readAdditional.accept(direction, panelTag);
+                PanelState panelState = NbtHelper.readPanelState(panelTag.getCompound("PanelState"));
+                this.panelStateMap.put(direction, panelState);
+                PanelEntity panelEntity;
+                if (panelTag.contains("PanelEntity")) {
+                    panelEntity = PanelEntity.loadStatic(this, panelState, panelsTag.getCompound("PanelEntity"));
+                } else {
+                    panelEntity = panelState.createPanelEntity(this);
+                }
+
+                if (panelEntity != null) {
+                    this.panelEntityMap.put(direction, panelEntity);
+                }
             }
         }
     }
 
-    private void writePanels(CompoundTag panelsTag, BiConsumer<Direction, CompoundTag> writeAdditional) {
+    private void writePanels(CompoundTag panelsTag) {
         for (Direction direction : Direction.values()) {
             PanelState panelState = this.panelStateMap.get(direction);
             if (panelState != null) {
                 CompoundTag panelTag = new CompoundTag();
                 panelTag.put("PanelState", NbtHelper.writePanelState(panelState));
-                writeAdditional.accept(direction, panelTag);
+                PanelEntity panelEntity = this.panelEntityMap.get(direction);
+                if (panelEntity != null) {
+                    panelTag.put("PanelEntity", panelEntity.saveWithId());
+                }
+
                 panelsTag.put(direction.getName(), panelTag);
+
             }
         }
     }
@@ -138,16 +189,14 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         CompoundTag panelsTag = new CompoundTag();
-        writePanels(panelsTag, (direction, compoundTag) -> {
-        });
+        writePanels(panelsTag);
         tag.put("Panels", panelsTag);
         return tag;
     }
 
     @Override
     public void handleUpdateTag(CompoundTag tag) {
-        readPanels(tag.getCompound("Panels"), (direction, compoundTag) -> {
-        });
+        readPanels(tag.getCompound("Panels"));
         this.requestModelDataUpdate();
     }
 

@@ -3,7 +3,6 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.api.panel;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +26,16 @@ public class PanelState extends StateHolder<Panel, PanelState> {
     }
 
     @Nullable
+    public Direction getFacing() {
+        return this.getPanel().getFacing(this);
+    }
+
+    @Nullable
     public PanelEntity createPanelEntity(IFrameEntity frame) {
-        return this.getPanel().createPanelEntity(this, frame);
+        return this.getPanel().createPanelEntity(frame, this);
+    }
+
+    public boolean canConnectRedstone(IFrameEntity frame) {
+        return this.getPanel().canConnectRedstone(frame, this);
     }
 }

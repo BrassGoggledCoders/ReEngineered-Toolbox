@@ -2,5 +2,7 @@
   "block.reengineered_toolbox.iron_frame": "Iron Frame",
   "itemGroup.reengineered_toolbox": "ReEngineered Toolbox",
   "panel.reengineered_toolbox.item_output": "Item Output",
-  "panel.reengineered_toolbox.plug": "Plug"
+  "panel.reengineered_toolbox.plug": "Plug",
+  "panel.reengineered_toolbox.redstone_input": "Redstone Input",
+  "panel.reengineered_toolbox.redstone_output": "Redstone Output"
 }

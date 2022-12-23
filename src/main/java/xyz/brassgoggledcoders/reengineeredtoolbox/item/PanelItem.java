@@ -25,7 +25,7 @@ public class PanelItem<P extends Panel> extends Item implements PanelLike {
         if (pContext.getLevel().getBlockEntity(pContext.getClickedPos()) instanceof IFrameEntity frameEntity) {
             PanelState panelState = this.asPanel().getPanelStateForPlacement(pContext, frameEntity);
             if (panelState != null) {
-                InteractionResult setResult = frameEntity.setPanelState(pContext.getClickedFace(), panelState).getResult();
+                InteractionResult setResult = frameEntity.putPanelState(pContext.getClickedFace(), panelState).getResult();
                 if (setResult.consumesAction()) {
                     pContext.getItemInHand().shrink(1);
                 }
