@@ -13,6 +13,7 @@ public class RedstoneTypedSlot implements IRedstoneTypedSlot {
             "empty"
     );
     private final Map<Object, RedstoneSupplier> supplierMap;
+    private int lastPower = -1;
 
     public RedstoneTypedSlot() {
         this.supplierMap = new HashMap<>();
@@ -20,11 +21,16 @@ public class RedstoneTypedSlot implements IRedstoneTypedSlot {
 
     @Override
     public RedstoneSupplier getContent() {
-        return this.supplierMap.values()
+        RedstoneSupplier redstoneSupplier = this.supplierMap.values()
                 .stream()
                 .filter(RedstoneSupplier::isValid)
                 .max(RedstoneSupplier::compareTo)
                 .orElse(EMPTY);
+        if (this.lastPower != redstoneSupplier.getAsInt()) {
+            this.lastPower = redstoneSupplier.getAsInt();
+            this.onChange();
+        }
+        return redstoneSupplier;
     }
 
     @Override
@@ -32,7 +38,7 @@ public class RedstoneTypedSlot implements IRedstoneTypedSlot {
         if (content != null) {
             this.supplierMap.put(content.identifier(), content);
         }
-        this.supplierMap.entrySet().removeIf(entry -> entry.getValue().isValid());
+        this.supplierMap.entrySet().removeIf(entry -> !entry.getValue().isValid());
     }
 
     @Override
@@ -48,5 +54,10 @@ public class RedstoneTypedSlot implements IRedstoneTypedSlot {
     @Override
     public boolean containsIdentifier(Object o) {
         return this.supplierMap.containsKey(o);
+    }
+
+    @Override
+    public void checkPower() {
+        this.getContent();
     }
 }

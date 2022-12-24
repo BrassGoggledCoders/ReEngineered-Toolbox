@@ -12,6 +12,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.ItemTyped
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 
 public class TypedSlotHolder implements ITypedSlotHolder {
@@ -24,13 +25,13 @@ public class TypedSlotHolder implements ITypedSlotHolder {
     private final int height;
 
     private final ITypedSlot<?>[] typedSlots;
-    private final Runnable onChange;
+    private final IntConsumer onChange;
 
-    public TypedSlotHolder(Supplier<Level> level, BlockPos blockPos, Runnable onChange) {
+    public TypedSlotHolder(Supplier<Level> level, BlockPos blockPos, IntConsumer onChange) {
         this(level, blockPos, 3, 3, onChange);
     }
 
-    public TypedSlotHolder(Supplier<Level> level, BlockPos blockPos, int width, int height, Runnable onChange) {
+    public TypedSlotHolder(Supplier<Level> level, BlockPos blockPos, int width, int height, IntConsumer onChange) {
         this.level = level;
         this.blockPos = blockPos;
         this.onChange = onChange;
@@ -46,6 +47,11 @@ public class TypedSlotHolder implements ITypedSlotHolder {
     }
 
     @Override
+    public ITypedSlot<?> getSlot(int slot) {
+        return this.getSlots()[slot];
+    }
+
+    @Override
     public void setSlot(int slot, @Nullable ITypedSlot<?> typedSlot) {
         if (typedSlot == null) {
             typedSlot = new ItemTypedSlot();
@@ -53,8 +59,10 @@ public class TypedSlotHolder implements ITypedSlotHolder {
         if (slot < this.getSlots().length) {
             ITypedSlot<?> existingTypedSlot = this.getSlots()[slot];
             existingTypedSlot.onReplaced(this, typedSlot);
+            typedSlot.setOnChange(() -> this.onChange.accept(slot));
             this.getSlots()[slot] = typedSlot;
-            this.onChange.run();
+            this.onChange.accept(slot);
+
             if (!this.capabilityProviderMap.containsKey(typedSlot.getType())) {
                 this.capabilityProviderMap.put(typedSlot.getType(), typedSlot.getType().createProvider(this));
             }

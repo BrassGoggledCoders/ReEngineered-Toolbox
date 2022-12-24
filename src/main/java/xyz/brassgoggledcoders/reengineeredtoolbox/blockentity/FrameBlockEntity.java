@@ -51,7 +51,12 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         super(pType, pPos, pBlockState);
         this.panelStateMap = new ConcurrentHashMap<>();
         this.panelEntityMap = new EnumMap<>(Direction.class);
-        this.typedSlotHolder = new TypedSlotHolder(this::getFrameLevel, pPos, this::setChanged);
+        this.typedSlotHolder = new TypedSlotHolder(this::getFrameLevel, pPos, this::slotUpdated);
+    }
+
+    private void slotUpdated(int slot) {
+        this.setChanged();
+        this.panelEntityMap.forEach((direction, panelEntity) -> panelEntity.slotUpdated(slot));
     }
 
     @NotNull

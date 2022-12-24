@@ -9,6 +9,8 @@ public interface IRedstoneTypedSlot extends ITypedSlot<RedstoneSupplier> {
 
     boolean containsIdentifier(Object o);
 
+    void checkPower();
+
     @NotNull
     default TypedSlotType getType() {
         return TypedSlotTypes.REDSTONE.get();

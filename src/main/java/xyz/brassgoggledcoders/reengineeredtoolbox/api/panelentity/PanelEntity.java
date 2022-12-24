@@ -33,6 +33,10 @@ public class PanelEntity {
 
     }
 
+    public boolean trySetSlotConnection(String identifier, int slotNumber) {
+        return false;
+    }
+
 
     public void load(CompoundTag pTag) {
     }
@@ -91,6 +95,10 @@ public class PanelEntity {
         } else {
             pTag.putString("id", resourcelocation.toString());
         }
+    }
+
+    public void slotUpdated(int slot) {
+
     }
 
 

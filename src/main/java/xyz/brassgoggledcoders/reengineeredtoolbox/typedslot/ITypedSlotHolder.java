@@ -8,6 +8,8 @@ import org.jetbrains.annotations.Nullable;
 public interface ITypedSlotHolder extends ICapabilityProvider {
     ITypedSlot<?>[] getSlots();
 
+    ITypedSlot<?> getSlot(int slot);
+
     void setSlot(int slot, @Nullable ITypedSlot<?> typedSlot);
 
     BlockPos getPosition();
