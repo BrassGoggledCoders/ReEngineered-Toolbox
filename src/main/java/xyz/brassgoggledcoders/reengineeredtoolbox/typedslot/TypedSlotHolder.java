@@ -48,7 +48,10 @@ public class TypedSlotHolder implements ITypedSlotHolder {
 
     @Override
     public ITypedSlot<?> getSlot(int slot) {
-        return this.getSlots()[slot];
+        if (slot >= 0 && slot < this.getSlots().length) {
+            return this.getSlots()[slot];
+        }
+        return null;
     }
 
     @Override

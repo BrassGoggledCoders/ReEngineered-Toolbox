@@ -9,12 +9,14 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
@@ -160,7 +162,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
                 this.panelStateMap.put(direction, panelState);
                 PanelEntity panelEntity;
                 if (panelTag.contains("PanelEntity")) {
-                    panelEntity = PanelEntity.loadStatic(this, panelState, panelsTag.getCompound("PanelEntity"));
+                    panelEntity = PanelEntity.loadStatic(this, panelState, panelTag.getCompound("PanelEntity"));
                 } else {
                     panelEntity = panelState.createPanelEntity(this);
                 }

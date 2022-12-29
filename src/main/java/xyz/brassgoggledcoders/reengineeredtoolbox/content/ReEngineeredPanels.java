@@ -13,7 +13,8 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.RedstoneIOPanel;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.RedstoneInputPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneInputPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelEntry;
 
 import java.util.function.Supplier;
@@ -79,8 +80,8 @@ public class ReEngineeredPanels {
 
     public static final PanelEntry<RedstoneIOPanel> REDSTONE_OUTPUT = ReEngineeredToolbox.getRegistrateAddon()
             .object("redstone_output")
-            .panel(() -> new RedstoneIOPanel(RedstoneInputPanelEntity::new))
-            .<RedstoneInputPanelEntity>panelEntity(RedstoneInputPanelEntity::new)
+            .panel(() -> new RedstoneIOPanel(RedstoneOutputPanelEntity::new))
+            .<RedstoneOutputPanelEntity>panelEntity(RedstoneOutputPanelEntity::new)
             .panelState((context, provider) -> {
                 ModelFile inputOn = provider.models().flatPanel("redstone_output_on");
                 ModelFile inputOff = provider.models().flatPanel("redstone_output_off");
@@ -102,7 +103,6 @@ public class ReEngineeredPanels {
             ))
             .build()
             .register();
-
 
 
     public static ForgeRegistry<Panel> getRegistry() {

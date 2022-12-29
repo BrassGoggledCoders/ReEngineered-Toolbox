@@ -1,21 +1,51 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.menu;
 
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
+import xyz.brassgoggledcoders.reengineeredtoolbox.menu.slot.TypedMenuSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.IItemTypedSlot;
+import xyz.brassgoggledcoders.reengineeredtoolbox.util.MenuHelper;
+import xyz.brassgoggledcoders.shadyskies.containersyncing.property.IPropertyManaged;
+import xyz.brassgoggledcoders.shadyskies.containersyncing.property.PropertyManager;
 
-public class SingleTypedSlotMenu extends AbstractContainerMenu {
-    private final ITypedSlot<?> typedSlot;
+public class SingleTypedSlotMenu<T extends ITypedSlot<U>, U> extends AbstractContainerMenu implements IPropertyManaged {
+    private final PropertyManager propertyManager;
+    private final T typedSlot;
+    private final Direction panelSide;
+    private final Panel panel;
+    private final ContainerLevelAccess access;
+    private final Inventory inventory;
 
-    public SingleTypedSlotMenu(@Nullable MenuType<?> pMenuType, int pContainerId, ITypedSlot<?> typedSlot) {
+    public SingleTypedSlotMenu(@Nullable MenuType<?> pMenuType, int pContainerId, Inventory inventory, ContainerLevelAccess access,
+                               T typedSlot, Direction panelSide, Panel panel) {
         super(pMenuType, pContainerId);
+        this.propertyManager = new PropertyManager((short) pContainerId);
+        this.access = access;
         this.typedSlot = typedSlot;
+        this.panelSide = panelSide;
+        this.panel = panel;
+        this.inventory = inventory;
+
+        this.addSlot(new TypedMenuSlot(typedSlot, 0, 80, 35));
+
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 9; ++j) {
+                this.addSlot(new Slot(inventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+            }
+        }
+
+        for (int k = 0; k < 9; ++k) {
+            this.addSlot(new Slot(inventory, k, 8 + k * 18, 142));
+        }
     }
 
     @Override
@@ -48,6 +78,28 @@ public class SingleTypedSlotMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(@NotNull Player pPlayer) {
-        return false;
+        return !TypedSlotTypes.BLANK.is(this.typedSlot.getType()) && !ReEngineeredPanels.PLUG.is(this.panel) &&
+                MenuHelper.checkPanelMenuValid(this.access, pPlayer, this.panelSide, this.panel);
+    }
+
+    @Override
+    public void broadcastFullState() {
+        super.broadcastFullState();
+        this.propertyManager.sendChanges(inventory, true);
+    }
+
+    @Override
+    public void broadcastChanges() {
+        super.broadcastChanges();
+        this.propertyManager.sendChanges(inventory, false);
+    }
+
+    @Override
+    public PropertyManager getPropertyManager() {
+        return this.propertyManager;
+    }
+
+    public T getTypedSlot() {
+        return typedSlot;
     }
 }

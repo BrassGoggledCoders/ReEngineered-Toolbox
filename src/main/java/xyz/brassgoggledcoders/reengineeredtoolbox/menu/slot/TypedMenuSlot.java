@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.menu;
+package xyz.brassgoggledcoders.reengineeredtoolbox.menu.slot;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -16,11 +16,11 @@ import javax.annotation.Nonnull;
 public class TypedMenuSlot extends Slot {
     private static final Container EMPTY_INVENTORY = new SimpleContainer(0);
 
-    private final ITypedSlotHolder hypper;
+    private final ITypedSlotHolder typedSlotHolder;
 
-    public TypedMenuSlot(ITypedSlotHolder hypper, int index, int xPosition, int yPosition) {
+    public TypedMenuSlot(ITypedSlotHolder typedSlotHolder, int index, int xPosition, int yPosition) {
         super(EMPTY_INVENTORY, index, xPosition, yPosition);
-        this.hypper = hypper;
+        this.typedSlotHolder = typedSlotHolder;
     }
 
     public TypedMenuSlot(ITypedSlot<?> typedSlot, int index, int xPosition, int yPosition) {
@@ -28,8 +28,8 @@ public class TypedMenuSlot extends Slot {
     }
 
     @NotNull
-    public ITypedSlot<?> getHypperSlot() {
-        return hypper.getSlots()[this.getContainerSlot()];
+    public ITypedSlot<?> getTypedSlot() {
+        return typedSlotHolder.getSlots()[this.getContainerSlot()];
     }
 
     @Override
@@ -39,13 +39,13 @@ public class TypedMenuSlot extends Slot {
 
     @Override
     public boolean mayPlace(@Nonnull ItemStack stack) {
-        return this.getHypperSlot().allowMenuClick(stack);
+        return this.getTypedSlot().allowMenuClick(stack);
     }
 
     @Override
     @NotNull
     public ItemStack getItem() {
-        if (this.getHypperSlot().getContent() instanceof ItemStack itemStack) {
+        if (this.getTypedSlot().getContent() instanceof ItemStack itemStack) {
             return itemStack;
         } else {
             return ItemStack.EMPTY;
@@ -55,16 +55,21 @@ public class TypedMenuSlot extends Slot {
     @Override
     @NotNull
     public ItemStack safeInsert(@NotNull ItemStack itemStack, int count) {
-        itemStack = this.getHypperSlot().menuClick(itemStack);
+        itemStack = this.getTypedSlot().menuClick(itemStack);
         return super.safeInsert(itemStack, count);
     }
 
     @Override
     public void set(@NotNull ItemStack stack) {
-        if (this.getHypperSlot() instanceof IItemTypedSlot itemHypperSlot) {
+        if (this.getTypedSlot() instanceof IItemTypedSlot itemHypperSlot) {
             itemHypperSlot.setContent(stack);
             this.setChanged();
         }
+    }
+
+    @Override
+    public void initialize(@NotNull ItemStack itemStack) {
+        this.set(itemStack);
     }
 
     @Override
@@ -74,7 +79,7 @@ public class TypedMenuSlot extends Slot {
 
     @Override
     public int getMaxStackSize() {
-        if (this.getHypperSlot() instanceof IItemTypedSlot itemHypperSlot) {
+        if (this.getTypedSlot() instanceof IItemTypedSlot itemHypperSlot) {
             return itemHypperSlot.getSlotLimit();
         } else {
             return 0;
@@ -87,7 +92,7 @@ public class TypedMenuSlot extends Slot {
         int maxInput = stack.getMaxStackSize();
         maxAdd.setCount(maxInput);
 
-        if (this.getHypperSlot() instanceof IItemTypedSlot itemHypperSlot) {
+        if (this.getTypedSlot() instanceof IItemTypedSlot itemHypperSlot) {
             ItemStack currentStack = itemHypperSlot.getContent();
 
             itemHypperSlot.setContent(ItemStack.EMPTY);
@@ -103,7 +108,7 @@ public class TypedMenuSlot extends Slot {
 
     @Override
     public boolean mayPickup(@NotNull Player playerIn) {
-        if (this.getHypperSlot() instanceof IItemTypedSlot itemHypperSlot) {
+        if (this.getTypedSlot() instanceof IItemTypedSlot itemHypperSlot) {
             return !itemHypperSlot.extract(1, true).isEmpty();
         } else {
             return false;
@@ -113,7 +118,7 @@ public class TypedMenuSlot extends Slot {
     @Override
     @Nonnull
     public ItemStack remove(int amount) {
-        if (this.getHypperSlot() instanceof IItemTypedSlot itemHypperSlot) {
+        if (this.getTypedSlot() instanceof IItemTypedSlot itemHypperSlot) {
             return itemHypperSlot.extract(amount, false);
         } else {
             return ItemStack.EMPTY;

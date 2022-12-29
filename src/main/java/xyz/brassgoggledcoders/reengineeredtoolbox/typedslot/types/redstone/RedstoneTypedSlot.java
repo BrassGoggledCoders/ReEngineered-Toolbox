@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.IntSupplier;
 
 public class RedstoneTypedSlot implements IRedstoneTypedSlot {
     private final RedstoneSupplier EMPTY = new RedstoneSupplier(

@@ -71,6 +71,7 @@ sourceSets.main.resources {
 }
 
 repositories {
+    mavenLocal()
     maven {
         name = "Registrate"
         url = "https://maven.tterrag.com/"
@@ -81,8 +82,10 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
 
     implementation fg.deobf("com.tterrag.registrate:Registrate:MC1.19-1.1.5")
-
     jarJar(group: 'com.tterrag.registrate', name: 'Registrate', version: "[MC1.19.2,MC1.19.3)")
+
+    implementation fg.deobf("xyz.brassgoggledcoders.shadyskies:ContainerSyncing:1.1.0")
+    jarJar(group: 'xyz.brassgoggledcoders.shadyskies', name: 'ContainerSyncing', version: "[1.1.0, 1.2.0]")
 
 }
 

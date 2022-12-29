@@ -8,7 +8,9 @@ import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.blank.BlankTypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.ItemTypedSlot;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneSlotType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneTypedSlot;
 
 import java.util.function.Supplier;
@@ -28,7 +30,11 @@ public class TypedSlotTypes {
 
     public static final RegistryEntry<TypedSlotType> REDSTONE = ReEngineeredToolbox.getRegistrate()
             .object("redstone")
-            .simple(TYPED_SLOT_KEY, () -> new TypedSlotType(typedSlotHolder -> null, RedstoneTypedSlot::new));
+            .simple(TYPED_SLOT_KEY, RedstoneSlotType::new);
+
+    public static final RegistryEntry<TypedSlotType> BLANK = ReEngineeredToolbox.getRegistrate()
+            .object("blank")
+            .simple(TYPED_SLOT_KEY, () -> new TypedSlotType(typedSlotHolder -> null, BlankTypedSlot::new));
 
 
     public static ForgeRegistry<TypedSlotType> getRegistry() {

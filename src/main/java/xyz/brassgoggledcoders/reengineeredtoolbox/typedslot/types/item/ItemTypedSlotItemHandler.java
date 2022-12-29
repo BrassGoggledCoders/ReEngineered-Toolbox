@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlotHolder;
 
-public class ItemHypperSlotItemHandler implements IItemHandlerModifiable {
+public class ItemTypedSlotItemHandler implements IItemHandlerModifiable {
     private final ITypedSlotHolder typedSlotHolder;
 
-    public ItemHypperSlotItemHandler(ITypedSlotHolder typedSlotHolder) {
+    public ItemTypedSlotItemHandler(ITypedSlotHolder typedSlotHolder) {
         this.typedSlotHolder = typedSlotHolder;
     }
 

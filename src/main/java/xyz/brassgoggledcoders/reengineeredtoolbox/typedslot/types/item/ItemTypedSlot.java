@@ -86,7 +86,7 @@ public class ItemTypedSlot implements IItemTypedSlot {
         return new TypedSlotCapabilityProvider<>(
                 hypper,
                 ForgeCapabilities.ITEM_HANDLER,
-                ItemHypperSlotItemHandler::new
+                ItemTypedSlotItemHandler::new
         );
     }
 }
