@@ -134,6 +134,9 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         return this.typedSlotHolder;
     }
 
+    public void setupConnectionTabsFor(Player player, PanelConnectionInfo panelConnectionInfo) {
+    }
+
     @Override
     protected void saveAdditional(@NotNull CompoundTag pTag) {
         super.saveAdditional(pTag);

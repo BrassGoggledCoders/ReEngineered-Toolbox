@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ContainerScreenEvent;
 import net.minecraftforge.client.event.ScreenEvent;
@@ -19,31 +20,30 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.IPanelMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.PanelConnectionInfo;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.PanelConnectionInfo.Connection;
+import xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab.ClientConnectionTabManager;
 
 import java.util.List;
 
 @EventBusSubscriber(modid = ReEngineeredToolbox.ID, value = Dist.CLIENT, bus = Bus.FORGE)
 public class ForgeClientEventHandler {
 
-    private static final ResourceLocation TABS = ReEngineeredToolbox.rl("textures/screen/connection_tabs.png");
-
-    private static PanelConnectionInfo currentPanelConnectionInfo = null;
-    private static String currentlySelectedConnect = null;
+    private static final ResourceLocation TABS = ReEngineeredToolbox.rl("textures/screen/components.png");
 
     @SubscribeEvent
     public static void onMenuOpen(ScreenEvent.Opening openingEvent) {
         if (openingEvent.getNewScreen() instanceof AbstractContainerScreen<?> screen && screen.getMenu() instanceof IPanelMenu panelMenu) {
             PanelConnectionInfo panelConnectionInfo = panelMenu.getConnectionInfo();
             if (panelConnectionInfo != null) {
-                currentPanelConnectionInfo = panelConnectionInfo;
+                ClientConnectionTabManager.getInstance()
+                        .setPanelConnectionInfo(panelConnectionInfo);
             }
         }
     }
 
     @SubscribeEvent
     public static void onMenuClose(ScreenEvent.Closing closingEvent) {
-        currentlySelectedConnect = null;
-        currentPanelConnectionInfo = null;
+        ClientConnectionTabManager.getInstance()
+                .clear();
     }
 
     @SubscribeEvent
@@ -51,27 +51,28 @@ public class ForgeClientEventHandler {
         Screen screen = mouseClickedEvent.getScreen();
         if (mouseClickedEvent.getButton() == 0 && screen instanceof AbstractContainerScreen<?> containerScreen) {
             AbstractContainerMenu menu = containerScreen.getMenu();
-            if (currentPanelConnectionInfo != null && currentPanelConnectionInfo.menuId() == menu.containerId) {
+            ClientConnectionTabManager tabManager = ClientConnectionTabManager.getInstance();
+            if (tabManager.isForMenu(menu)) {
+                PanelConnectionInfo panelConnectionInfo = tabManager.getPanelConnectionInfo();
+                String selectedConnection = tabManager.getSelectedConnection();
                 int screenLeft = containerScreen.getGuiLeft();
                 double mouseX = mouseClickedEvent.getMouseX();
-                Range<Integer> outwardTabs = getOutwardTabs(containerScreen, currentPanelConnectionInfo.connections(), currentlySelectedConnect);
+                Range<Integer> outwardTabs = getOutwardTabs(containerScreen, panelConnectionInfo.connections(), selectedConnection);
                 int screenTop = containerScreen.getGuiTop();
                 double mouseY = mouseClickedEvent.getMouseY();
                 if (mouseY > screenTop) {
                     double difference = mouseY - screenTop;
                     int tab = Math.floorDiv((int) Math.floor(difference), 28);
-                    if (tab >= 0 && tab < currentPanelConnectionInfo.connections().size()) {
+                    if (tab >= 0 && tab < panelConnectionInfo.connections().size()) {
                         if (outwardTabs.contains(tab)) {
                             screenLeft -= 79;
                         }
                         if (mouseX < screenLeft && mouseX > screenLeft - 32) {
-                            Connection moduleTab = currentPanelConnectionInfo.connections().get(tab);
-                            if (!moduleTab.identifier().equals(currentlySelectedConnect)) {
-                                ReEngineeredToolbox.LOGGER.warn("Clicked Tab");
-                                currentlySelectedConnect = moduleTab.identifier();
+                            Connection moduleTab = panelConnectionInfo.connections().get(tab);
+                            if (!moduleTab.identifier().equals(selectedConnection)) {
+                                tabManager.setSelectedConnection(moduleTab.identifier());
                             }
                         }
-
                     }
                 }
             }
@@ -81,12 +82,13 @@ public class ForgeClientEventHandler {
     @SubscribeEvent
     public static void renderModuleTabs(ContainerScreenEvent.Render.Background drawScreenEvent) {
         AbstractContainerMenu menu = drawScreenEvent.getContainerScreen().getMenu();
-        if (currentPanelConnectionInfo != null && currentPanelConnectionInfo.menuId() == menu.containerId) {
+        ClientConnectionTabManager tabManager = ClientConnectionTabManager.getInstance();
+        if (tabManager.isForMenu(menu)) {
             loopTabs(
                     drawScreenEvent.getContainerScreen(),
                     drawScreenEvent.getPoseStack(),
-                    currentPanelConnectionInfo.connections(),
-                    currentlySelectedConnect
+                    tabManager.getConnections(),
+                    tabManager.getSelectedConnection()
             );
         }
     }
@@ -104,8 +106,11 @@ public class ForgeClientEventHandler {
         }
 
         int panelTabStart = Math.min(matchingTab, maxSupportedTabs - 3);
-
-        return Range.between(panelTabStart, panelTabStart + 2);
+        if (matchingTab >= 0) {
+            return Range.between(panelTabStart, panelTabStart + 2);
+        } else {
+            return Range.is(maxSupportedTabs);
+        }
     }
 
     private static void loopTabs(AbstractContainerScreen<?> screen, PoseStack poseStack, List<Connection> tabs, String identity) {
@@ -148,7 +153,7 @@ public class ForgeClientEventHandler {
         };
     }
 
-    private static void renderTab(AbstractContainerScreen<?> screen, Connection moduleTab, PoseStack matrixStack, boolean selected, int tab, int x, int y) {
+    private static void renderTab(AbstractContainerScreen<?> screen, Connection connection, PoseStack matrixStack, boolean selected, int tab, int x, int y) {
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.enableBlend();
         Minecraft minecraft = Minecraft.getInstance();
@@ -156,10 +161,9 @@ public class ForgeClientEventHandler {
         screen.blit(matrixStack, x, y, selected ? 32 : 0, tab * 28, 32, 28);
         ItemRenderer itemRenderer = minecraft.getItemRenderer();
         itemRenderer.blitOffset = 100.0F;
-        //RenderSystem.enableRescaleNormal();
-        //ItemStack itemstack = moduleTab.getDisplayStack();
-        //itemRenderer.renderItemAndEffectIntoGUI(itemstack, x + 9, y + 6);
-        //itemRenderer.renderItemOverlays(minecraft.fontRenderer, itemstack, x + 9, y + 6);
+        ItemStack itemstack = connection.backingSlot().getDisplayStack();
+        itemRenderer.renderAndDecorateItem(itemstack, x + 9, y + 6);
+        itemRenderer.renderGuiItemDecorations(minecraft.font, itemstack, x + 9, y + 6);
         itemRenderer.blitOffset = 0.0F;
     }
 }

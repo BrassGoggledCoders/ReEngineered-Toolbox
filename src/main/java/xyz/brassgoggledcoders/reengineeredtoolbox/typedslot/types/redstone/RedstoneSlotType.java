@@ -9,6 +9,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.RedStoneWireBlock;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlotRenderProperties;
@@ -22,7 +24,7 @@ public class RedstoneSlotType extends TypedSlotType {
     private static final ResourceLocation REDSTONE_DOT = new ResourceLocation("block/redstone_dust_dot");
 
     public RedstoneSlotType() {
-        super(typedSlotHolder -> null, RedstoneTypedSlot::new);
+        super(typedSlotHolder -> null, RedstoneTypedSlot::new, () -> new ItemStack(Items.REDSTONE));
     }
 
     @Override
