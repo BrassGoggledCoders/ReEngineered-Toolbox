@@ -6,36 +6,39 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
 
 import java.util.List;
 
-public record PanelConnectionInfo(
+public record PanelPortInfo(
         short menuId,
-        List<Connection> connections
+        List<Port> ports
 ) {
 
     public void encode(FriendlyByteBuf friendlyByteBuf) {
         friendlyByteBuf.writeShort(menuId());
-        friendlyByteBuf.writeCollection(connections(), (listByteBuf, connection) -> connection.encode(listByteBuf));
+        friendlyByteBuf.writeCollection(ports(), (listByteBuf, port) -> port.encode(listByteBuf));
     }
 
-    public static PanelConnectionInfo decode(FriendlyByteBuf friendlyByteBuf) {
-        return new PanelConnectionInfo(
+    public static PanelPortInfo decode(FriendlyByteBuf friendlyByteBuf) {
+        return new PanelPortInfo(
                 friendlyByteBuf.readShort(),
-                friendlyByteBuf.readList(Connection::decode)
+                friendlyByteBuf.readList(Port::decode)
         );
     }
 
-    public record Connection(
+    public record Port(
             String identifier,
+            int connection,
             TypedSlotType backingSlot
     ) {
 
         public void encode(FriendlyByteBuf friendlyByteBuf) {
             friendlyByteBuf.writeUtf(identifier());
+            friendlyByteBuf.writeInt(connection());
             friendlyByteBuf.writeRegistryId(TypedSlotTypes.getRegistry(), backingSlot());
         }
 
-        public static Connection decode(FriendlyByteBuf friendlyByteBuf) {
-            return new Connection(
+        public static Port decode(FriendlyByteBuf friendlyByteBuf) {
+            return new Port(
                     friendlyByteBuf.readUtf(),
+                    friendlyByteBuf.readInt(),
                     friendlyByteBuf.readRegistryId()
             );
         }

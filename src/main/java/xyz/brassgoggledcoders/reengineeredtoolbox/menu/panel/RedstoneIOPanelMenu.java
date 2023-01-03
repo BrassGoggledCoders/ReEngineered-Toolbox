@@ -6,7 +6,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.IPanelMenu;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.PanelConnectionInfo;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.PanelPortInfo;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredMenus;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.SingleTypedSlotMenu;
@@ -41,16 +41,16 @@ public class RedstoneIOPanelMenu extends SingleTypedSlotMenu<IRedstoneTypedSlot,
 
     @Override
     @Nullable
-    public PanelConnectionInfo getConnectionInfo() {
-        return new PanelConnectionInfo(
+    public PanelPortInfo getConnectionInfo() {
+        return new PanelPortInfo(
                 (short) this.containerId,
                 List.of(
-                        new PanelConnectionInfo.Connection("redstone", TypedSlotTypes.REDSTONE.get()),
-                        new PanelConnectionInfo.Connection("redstone1", TypedSlotTypes.REDSTONE.get()),
-                        new PanelConnectionInfo.Connection("redstone2", TypedSlotTypes.REDSTONE.get()),
-                        new PanelConnectionInfo.Connection("redstone3", TypedSlotTypes.REDSTONE.get()),
-                        new PanelConnectionInfo.Connection("redstone4", TypedSlotTypes.REDSTONE.get()),
-                        new PanelConnectionInfo.Connection("redstone5", TypedSlotTypes.REDSTONE.get())
+                        new PanelPortInfo.Port("redstone", -1, TypedSlotTypes.REDSTONE.get()),
+                        new PanelPortInfo.Port("redstone1", -1, TypedSlotTypes.REDSTONE.get()),
+                        new PanelPortInfo.Port("redstone2", -1, TypedSlotTypes.REDSTONE.get()),
+                        new PanelPortInfo.Port("redstone3", -1, TypedSlotTypes.REDSTONE.get()),
+                        new PanelPortInfo.Port("redstone4", -1, TypedSlotTypes.REDSTONE.get()),
+                        new PanelPortInfo.Port("redstone5", -1, TypedSlotTypes.REDSTONE.get())
                 )
         );
     }

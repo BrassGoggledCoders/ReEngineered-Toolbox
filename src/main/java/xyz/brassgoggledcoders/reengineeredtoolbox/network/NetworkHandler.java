@@ -6,7 +6,7 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.PanelConnectionInfo;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.PanelPortInfo;
 
 public class NetworkHandler {
     private static final String VERSION = "1";
@@ -34,8 +34,8 @@ public class NetworkHandler {
                 .add();
     }
 
-    public void syncPanelConnectionInfo(ServerPlayer serverPlayer, PanelConnectionInfo panelConnectionInfo) {
-        this.channel.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new SyncPanelConnectionInfo(panelConnectionInfo));
+    public void syncPanelConnectionInfo(ServerPlayer serverPlayer, PanelPortInfo panelPortInfo) {
+        this.channel.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new SyncPanelConnectionInfo(panelPortInfo));
     }
 
     public void syncPanelConnectionSelect(@Nullable String selectedConnection) {

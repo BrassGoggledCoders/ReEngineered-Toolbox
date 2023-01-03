@@ -21,13 +21,19 @@ public class ItemTypedSlot implements IItemTypedSlot {
     }
 
     @Override
+    @NotNull
     public ItemStack getContent() {
         return this.itemHandler.getStackInSlot(0);
     }
 
     @Override
-    public void setContent(ItemStack content) {
+    public void setContent(@NotNull ItemStack content) {
         this.itemHandler.setStackInSlot(0, content);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return this.getContent().isEmpty();
     }
 
     @Override

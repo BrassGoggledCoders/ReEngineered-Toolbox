@@ -5,11 +5,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -20,9 +22,11 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.PanelMenuProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
+import xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab.ServerConnectionTabManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlotHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.NbtHelper;
@@ -32,7 +36,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
@@ -45,7 +49,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
                     () -> new EnumMap<>(Direction.class)
             ));
 
-    private final ConcurrentMap<Direction, PanelState> panelStateMap;
+    private final Map<Direction, PanelState> panelStateMap;
     private final Map<Direction, PanelEntity> panelEntityMap;
     private final ITypedSlotHolder typedSlotHolder;
 
@@ -134,7 +138,23 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         return this.typedSlotHolder;
     }
 
-    public void setupConnectionTabsFor(Player player, PanelConnectionInfo panelConnectionInfo) {
+    @Override
+    public void openMenu(Player player, PanelMenuProvider menuProvider, @NotNull Consumer<FriendlyByteBuf> friendlyByteBuf) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            ServerConnectionTabManager.getInstance()
+                    .startSession(serverPlayer, this, menuProvider.getPanelEntity());
+
+            NetworkHooks.openScreen(
+                    serverPlayer,
+                    menuProvider,
+                    friendlyByteBuf
+            );
+        }
+    }
+
+    @Override
+    public boolean isValid() {
+        return !this.isRemoved();
     }
 
     @Override
@@ -144,8 +164,6 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         writePanels(panelsTag);
         pTag.put("Panels", panelsTag);
     }
-
-    //private void savePanelEntity(Direction direction, CompoundTag compoundTag, )
 
     @Override
     public void load(@NotNull CompoundTag pTag) {

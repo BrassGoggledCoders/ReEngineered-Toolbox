@@ -93,6 +93,40 @@ public class TypedSlotHolder implements ITypedSlotHolder {
     }
 
     @Override
+    public TypedSlotHolderState getState() {
+        return new TypedSlotHolderState(
+                this.getHeight(),
+                this.getWidth(),
+                this.getSlotStates()
+        );
+    }
+
+    @Override
+    public boolean matches(TypedSlotHolderState slotHolderState) {
+        boolean sizeMatches = slotHolderState.height() == this.getHeight() && slotHolderState.width() == this.getWidth();
+        if (sizeMatches) {
+            for (int i = 0; i < this.getSlots().length; i++) {
+                if (!this.getSlot(i).matches(slotHolderState.slotStates()[i])) {
+                    return false;
+                }
+            }
+        }
+        return sizeMatches;
+    }
+
+    public TypedSlotState[] getSlotStates() {
+        TypedSlotState[] typedSlotStates = new TypedSlotState[this.getSlots().length];
+        for (int i = 0; i < this.getSlots().length; i++) {
+            ITypedSlot<?> typedSlot = this.getSlot(i);
+            typedSlotStates[i] = new TypedSlotState(
+                    typedSlot.getType(),
+                    typedSlot.isEmpty()
+            );
+        }
+        return typedSlotStates;
+    }
+
+    @Override
     @NotNull
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         for (ICapabilityProvider provider : this.capabilityProviderMap.values()) {

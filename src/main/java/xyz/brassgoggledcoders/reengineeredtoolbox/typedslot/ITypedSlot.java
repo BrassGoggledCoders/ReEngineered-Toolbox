@@ -18,6 +18,10 @@ public interface ITypedSlot<U> {
 
     void fromNBT(CompoundTag compoundTag);
 
+    default boolean isEmpty() {
+        return this.getContent() == null;
+    }
+
     default void setOnChange(Runnable runnable) {
 
     }
@@ -36,5 +40,9 @@ public interface ITypedSlot<U> {
     @NotNull
     default ItemStack menuClick(@NotNull ItemStack itemStack) {
         return itemStack;
+    }
+
+    default boolean matches(TypedSlotState slotState) {
+        return slotState.empty() == this.isEmpty() && slotState.type() == this.getType();
     }
 }

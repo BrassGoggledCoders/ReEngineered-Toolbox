@@ -18,9 +18,9 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import org.apache.commons.lang3.Range;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.IPanelMenu;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.PanelConnectionInfo;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.PanelConnectionInfo.Connection;
-import xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab.ClientConnectionTabManager;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.PanelPortInfo;
+import xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab.ClientPlayerConnectionTabManager;
+import xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab.PlayerConnectionTabManager;
 
 import java.util.List;
 
@@ -32,17 +32,17 @@ public class ForgeClientEventHandler {
     @SubscribeEvent
     public static void onMenuOpen(ScreenEvent.Opening openingEvent) {
         if (openingEvent.getNewScreen() instanceof AbstractContainerScreen<?> screen && screen.getMenu() instanceof IPanelMenu panelMenu) {
-            PanelConnectionInfo panelConnectionInfo = panelMenu.getConnectionInfo();
-            if (panelConnectionInfo != null) {
-                ClientConnectionTabManager.getInstance()
-                        .setPanelConnectionInfo(panelConnectionInfo);
+            PanelPortInfo panelPortInfo = panelMenu.getConnectionInfo();
+            if (panelPortInfo != null) {
+                ClientPlayerConnectionTabManager.getInstance()
+                        .setPanelConnectionInfo(panelPortInfo);
             }
         }
     }
 
     @SubscribeEvent
     public static void onMenuClose(ScreenEvent.Closing closingEvent) {
-        ClientConnectionTabManager.getInstance()
+        ClientPlayerConnectionTabManager.getInstance()
                 .clear();
     }
 
@@ -51,24 +51,24 @@ public class ForgeClientEventHandler {
         Screen screen = mouseClickedEvent.getScreen();
         if (mouseClickedEvent.getButton() == 0 && screen instanceof AbstractContainerScreen<?> containerScreen) {
             AbstractContainerMenu menu = containerScreen.getMenu();
-            ClientConnectionTabManager tabManager = ClientConnectionTabManager.getInstance();
+            PlayerConnectionTabManager tabManager = ClientPlayerConnectionTabManager.getInstance();
             if (tabManager.isForMenu(menu)) {
-                PanelConnectionInfo panelConnectionInfo = tabManager.getPanelConnectionInfo();
+                PanelPortInfo panelPortInfo = tabManager.getPanelConnectionInfo();
                 String selectedConnection = tabManager.getSelectedConnection();
                 int screenLeft = containerScreen.getGuiLeft();
                 double mouseX = mouseClickedEvent.getMouseX();
-                Range<Integer> outwardTabs = getOutwardTabs(containerScreen, panelConnectionInfo.connections(), selectedConnection);
+                Range<Integer> outwardTabs = getOutwardTabs(containerScreen, panelPortInfo.ports(), selectedConnection);
                 int screenTop = containerScreen.getGuiTop();
                 double mouseY = mouseClickedEvent.getMouseY();
                 if (mouseY > screenTop) {
                     double difference = mouseY - screenTop;
                     int tab = Math.floorDiv((int) Math.floor(difference), 28);
-                    if (tab >= 0 && tab < panelConnectionInfo.connections().size()) {
+                    if (tab >= 0 && tab < panelPortInfo.ports().size()) {
                         if (outwardTabs.contains(tab)) {
                             screenLeft -= 79;
                         }
                         if (mouseX < screenLeft && mouseX > screenLeft - 32) {
-                            Connection moduleTab = panelConnectionInfo.connections().get(tab);
+                            PanelPortInfo.Port moduleTab = panelPortInfo.ports().get(tab);
                             if (!moduleTab.identifier().equals(selectedConnection)) {
                                 tabManager.setSelectedConnection(moduleTab.identifier());
                             }
@@ -82,7 +82,7 @@ public class ForgeClientEventHandler {
     @SubscribeEvent
     public static void renderModuleTabs(ContainerScreenEvent.Render.Background drawScreenEvent) {
         AbstractContainerMenu menu = drawScreenEvent.getContainerScreen().getMenu();
-        ClientConnectionTabManager tabManager = ClientConnectionTabManager.getInstance();
+        PlayerConnectionTabManager tabManager = ClientPlayerConnectionTabManager.getInstance();
         if (tabManager.isForMenu(menu)) {
             loopTabs(
                     drawScreenEvent.getContainerScreen(),
@@ -93,14 +93,14 @@ public class ForgeClientEventHandler {
         }
     }
 
-    private static Range<Integer> getOutwardTabs(AbstractContainerScreen<?> screen, List<Connection> tabs, String identity) {
+    private static Range<Integer> getOutwardTabs(AbstractContainerScreen<?> screen, List<PanelPortInfo.Port> tabs, String identity) {
         int maxSupportedTabs = (int) Math.floor(screen.getYSize() / 28F);
         int maxTabs = Math.min(tabs.size(), maxSupportedTabs);
         int matchingTab = -1;
 
         for (int x = 0; x < maxTabs; x++) {
-            Connection connection = tabs.get(x);
-            if (connection.identifier().equals(identity)) {
+            PanelPortInfo.Port port = tabs.get(x);
+            if (port.identifier().equals(identity)) {
                 matchingTab = x;
             }
         }
@@ -113,7 +113,7 @@ public class ForgeClientEventHandler {
         }
     }
 
-    private static void loopTabs(AbstractContainerScreen<?> screen, PoseStack poseStack, List<Connection> tabs, String identity) {
+    private static void loopTabs(AbstractContainerScreen<?> screen, PoseStack poseStack, List<PanelPortInfo.Port> tabs, String identity) {
         if (!tabs.isEmpty()) {
             Range<Integer> handledTabs = getOutwardTabs(screen, tabs, identity);
             int outward = -1;
@@ -121,8 +121,8 @@ public class ForgeClientEventHandler {
             int maxTabs = Math.min(tabs.size(), maxSupportedTabs);
 
             for (int x = 0; x < maxTabs; x++) {
-                Connection connection = tabs.get(x);
-                boolean matches = connection.identifier().equals(identity);
+                PanelPortInfo.Port port = tabs.get(x);
+                boolean matches = port.identifier().equals(identity);
                 if (x == handledTabs.getMinimum()) {
                     outward = 2;
                     RenderSystem.setShaderTexture(0, TABS);
@@ -131,7 +131,7 @@ public class ForgeClientEventHandler {
                 }
                 renderTab(
                         screen,
-                        connection,
+                        port,
                         poseStack,
                         matches,
                         (outward >= 0 ? getOutwardTab(outward) : Math.min(x, 1)),
@@ -153,7 +153,7 @@ public class ForgeClientEventHandler {
         };
     }
 
-    private static void renderTab(AbstractContainerScreen<?> screen, Connection connection, PoseStack matrixStack, boolean selected, int tab, int x, int y) {
+    private static void renderTab(AbstractContainerScreen<?> screen, PanelPortInfo.Port port, PoseStack matrixStack, boolean selected, int tab, int x, int y) {
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.enableBlend();
         Minecraft minecraft = Minecraft.getInstance();
@@ -161,7 +161,7 @@ public class ForgeClientEventHandler {
         screen.blit(matrixStack, x, y, selected ? 32 : 0, tab * 28, 32, 28);
         ItemRenderer itemRenderer = minecraft.getItemRenderer();
         itemRenderer.blitOffset = 100.0F;
-        ItemStack itemstack = connection.backingSlot().getDisplayStack();
+        ItemStack itemstack = port.backingSlot().getDisplayStack();
         itemRenderer.renderAndDecorateItem(itemstack, x + 9, y + 6);
         itemRenderer.renderGuiItemDecorations(minecraft.font, itemstack, x + 9, y + 6);
         itemRenderer.blitOffset = 0.0F;

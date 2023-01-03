@@ -8,10 +8,14 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.PanelPortInfo;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class PanelEntity {
@@ -99,6 +103,10 @@ public class PanelEntity {
 
     public void slotUpdated(int slot) {
 
+    }
+
+    public List<PanelPortInfo.Port> getPorts() {
+        return Collections.emptyList();
     }
 
 
