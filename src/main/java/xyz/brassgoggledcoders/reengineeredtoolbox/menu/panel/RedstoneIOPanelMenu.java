@@ -1,12 +1,13 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.menu.panel;
 
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.IPanelMenu;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.PanelPortInfo;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Port;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredMenus;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.SingleTypedSlotMenu;
@@ -40,18 +41,10 @@ public class RedstoneIOPanelMenu extends SingleTypedSlotMenu<IRedstoneTypedSlot,
     }
 
     @Override
-    @Nullable
-    public PanelPortInfo getConnectionInfo() {
-        return new PanelPortInfo(
-                (short) this.containerId,
-                List.of(
-                        new PanelPortInfo.Port("redstone", -1, TypedSlotTypes.REDSTONE.get()),
-                        new PanelPortInfo.Port("redstone1", -1, TypedSlotTypes.REDSTONE.get()),
-                        new PanelPortInfo.Port("redstone2", -1, TypedSlotTypes.REDSTONE.get()),
-                        new PanelPortInfo.Port("redstone3", -1, TypedSlotTypes.REDSTONE.get()),
-                        new PanelPortInfo.Port("redstone4", -1, TypedSlotTypes.REDSTONE.get()),
-                        new PanelPortInfo.Port("redstone5", -1, TypedSlotTypes.REDSTONE.get())
-                )
+    @NotNull
+    public List<Port> getPorts() {
+        return List.of(
+                new Port("redstone", Component.literal("Redstone IO"), -1, TypedSlotTypes.REDSTONE.get())
         );
     }
 

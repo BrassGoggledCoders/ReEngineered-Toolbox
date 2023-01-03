@@ -45,4 +45,11 @@ public interface ITypedSlot<U> {
     default boolean matches(TypedSlotState slotState) {
         return slotState.empty() == this.isEmpty() && slotState.type() == this.getType();
     }
+
+    default TypedSlotState getState() {
+        return new TypedSlotState(
+                this.getType(),
+                this.isEmpty()
+        );
+    }
 }

@@ -1,9 +1,12 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.menu;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Port;
+
+import java.util.List;
 
 public interface IPanelMenu {
 
-    @Nullable
-    PanelPortInfo getConnectionInfo();
+    @NotNull
+    List<Port> getPorts();
 }

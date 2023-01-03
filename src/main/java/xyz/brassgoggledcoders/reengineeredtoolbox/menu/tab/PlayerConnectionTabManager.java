@@ -2,42 +2,70 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab;
 
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jetbrains.annotations.Nullable;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.PanelPortInfo;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Port;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotHolderState;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerConnectionTabManager {
-
-    private PanelPortInfo panelPortInfo = null;
-    private String selectedConnection = null;
+public abstract class PlayerConnectionTabManager {
+    private short activeMenuId = -1;
+    private final List<Port> panelPorts = new ArrayList<>();
+    private String selectedPort = null;
+    private TypedSlotHolderState typedSlotHolderState;
 
     public boolean isForMenu(@Nullable AbstractContainerMenu menu) {
-        return menu != null && this.getPanelConnectionInfo() != null && this.getPanelConnectionInfo().menuId() == menu.containerId;
+        return menu != null && !this.getPanelPorts().isEmpty() && this.getActiveMenuId() == menu.containerId;
     }
 
-    public PanelPortInfo getPanelConnectionInfo() {
-        return panelPortInfo;
+    public short getActiveMenuId() {
+        return activeMenuId;
     }
 
-    public void setPanelConnectionInfo(PanelPortInfo panelPortInfo) {
-        this.panelPortInfo = panelPortInfo;
+    public void setActiveMenuId(short activeMenuId) {
+        this.activeMenuId = activeMenuId;
     }
 
-    public String getSelectedConnection() {
-        return selectedConnection;
+    public String getSelectedPort() {
+        return selectedPort;
     }
 
-    public void setSelectedConnection(String currentSelectedConnect) {
-        this.selectedConnection = currentSelectedConnect;
+    public void setSelectedPort(String currentSelectedConnect) {
+        this.selectedPort = currentSelectedConnect;
     }
 
-    public List<PanelPortInfo.Port> getConnections() {
-        return this.getPanelConnectionInfo() != null ? this.getPanelConnectionInfo().ports() : Collections.emptyList();
+    public List<Port> getPanelPorts() {
+        return panelPorts;
+    }
+
+    public void setPanelPorts(List<Port> ports) {
+        this.panelPorts.clear();
+        this.panelPorts.addAll(ports);
     }
 
     public void clear() {
-        this.setPanelConnectionInfo(null);
-        this.setSelectedConnection(null);
+        this.getPanelPorts().clear();
+        this.setSelectedPort(null);
+    }
+
+    public void setTypedSlotHolderState(TypedSlotHolderState holderState) {
+        this.typedSlotHolderState = holderState;
+    }
+
+    public TypedSlotHolderState getTypedSlotHolderState() {
+        return typedSlotHolderState;
+    }
+
+    public void setPortConnection(String identifier, int connectionId) {
+
+    }
+
+    @Nullable
+    public Port getSelectedPortValue() {
+        return this.getPanelPorts()
+                .stream()
+                .filter(port -> port.identifier().equals(this.getSelectedPort()))
+                .findFirst()
+                .orElse(null);
     }
 }

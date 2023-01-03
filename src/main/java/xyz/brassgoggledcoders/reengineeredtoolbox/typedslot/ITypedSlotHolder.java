@@ -23,4 +23,6 @@ public interface ITypedSlotHolder extends ICapabilityProvider {
     TypedSlotHolderState getState();
 
     boolean matches(TypedSlotHolderState slotHolderState);
+
+    int getSize();
 }

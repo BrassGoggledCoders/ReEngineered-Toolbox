@@ -6,7 +6,10 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.PanelPortInfo;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Port;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotHolderState;
+
+import java.util.List;
 
 public class NetworkHandler {
     private static final String VERSION = "1";
@@ -21,25 +24,35 @@ public class NetworkHandler {
                 .serverAcceptedVersions(VERSION::equals)
                 .simpleChannel();
 
-        this.channel.messageBuilder(SyncPanelConnectionInfo.class, 0)
-                .encoder(SyncPanelConnectionInfo::encode)
-                .decoder(SyncPanelConnectionInfo::decode)
-                .consumerMainThread(SyncPanelConnectionInfo::consume)
+        this.channel.messageBuilder(SyncPortTabInfo.class, 0)
+                .encoder(SyncPortTabInfo::encode)
+                .decoder(SyncPortTabInfo::decode)
+                .consumerMainThread(SyncPortTabInfo::consume)
                 .add();
 
-        this.channel.messageBuilder(UpdatePanelConnectionSelection.class, 1)
-                .encoder(UpdatePanelConnectionSelection::encode)
-                .decoder(UpdatePanelConnectionSelection::decode)
-                .consumerMainThread(UpdatePanelConnectionSelection::consume)
+        this.channel.messageBuilder(UpdatePortSelection.class, 1)
+                .encoder(UpdatePortSelection::encode)
+                .decoder(UpdatePortSelection::decode)
+                .consumerMainThread(UpdatePortSelection::consume)
+                .add();
+
+        this.channel.messageBuilder(UpdatePortConnection.class, 2)
+                .encoder(UpdatePortConnection::encode)
+                .decoder(UpdatePortConnection::decode)
+                .consumerMainThread(UpdatePortConnection::consume)
                 .add();
     }
 
-    public void syncPanelConnectionInfo(ServerPlayer serverPlayer, PanelPortInfo panelPortInfo) {
-        this.channel.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new SyncPanelConnectionInfo(panelPortInfo));
+    public void syncPortTabInfo(ServerPlayer serverPlayer, List<Port> panelPortInfo, TypedSlotHolderState holderState) {
+        this.channel.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new SyncPortTabInfo(panelPortInfo, holderState));
     }
 
     public void syncPanelConnectionSelect(@Nullable String selectedConnection) {
-        this.channel.send(PacketDistributor.SERVER.noArg(), new UpdatePanelConnectionSelection(selectedConnection));
+        this.channel.send(PacketDistributor.SERVER.noArg(), new UpdatePortSelection(selectedConnection));
+    }
+
+    public void updatePortConnect(String identifier, int connectionId) {
+        this.channel.send(PacketDistributor.SERVER.noArg(), new UpdatePortConnection(identifier, connectionId));
     }
 
     public static void setup() {

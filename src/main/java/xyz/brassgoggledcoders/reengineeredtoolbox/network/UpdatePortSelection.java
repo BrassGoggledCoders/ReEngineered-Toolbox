@@ -7,7 +7,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab.ServerConnectionTabMa
 
 import java.util.function.Supplier;
 
-public record UpdatePanelConnectionSelection(
+public record UpdatePortSelection(
         @Nullable
         String selection
 ) {
@@ -18,11 +18,11 @@ public record UpdatePanelConnectionSelection(
     public void consume(Supplier<NetworkEvent.Context> context) {
         ServerConnectionTabManager.getInstance()
                 .getForPlayer(context.get().getSender())
-                .ifPresent(tabManager -> tabManager.setSelectedConnection(this.selection()));
+                .ifPresent(tabManager -> tabManager.setSelectedPort(this.selection()));
     }
 
-    public static UpdatePanelConnectionSelection decode(FriendlyByteBuf friendlyByteBuf) {
-        return new UpdatePanelConnectionSelection(
+    public static UpdatePortSelection decode(FriendlyByteBuf friendlyByteBuf) {
+        return new UpdatePortSelection(
                 friendlyByteBuf.readNullable(FriendlyByteBuf::readUtf)
         );
     }

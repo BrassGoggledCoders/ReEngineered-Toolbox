@@ -23,7 +23,7 @@ public class ServerConnectionTabManager {
         this.playerConnectionTabManagers.put(serverPlayer, new ServerPlayerConnectionTabManager(serverPlayer, frame, panelEntity));
     }
 
-    public Optional<PlayerConnectionTabManager> getForPlayer(Player player) {
+    public Optional<? extends PlayerConnectionTabManager> getForPlayer(Player player) {
         ServerPlayerConnectionTabManager tabManager = this.playerConnectionTabManagers.get(player);
         return Optional.ofNullable(tabManager);
     }

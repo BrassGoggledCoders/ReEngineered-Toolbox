@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.IntSupplier;
 
 public class RedstoneTypedSlot implements IRedstoneTypedSlot {
     private final RedstoneSupplier EMPTY = new RedstoneSupplier(
@@ -14,6 +13,8 @@ public class RedstoneTypedSlot implements IRedstoneTypedSlot {
             "empty"
     );
     private final Map<Object, RedstoneSupplier> supplierMap;
+
+    private Runnable onChange = null;
     private int lastPower = -1;
 
     public RedstoneTypedSlot() {
@@ -32,6 +33,18 @@ public class RedstoneTypedSlot implements IRedstoneTypedSlot {
             this.onChange();
         }
         return redstoneSupplier;
+    }
+
+    @Override
+    public void setOnChange(Runnable runnable) {
+        this.onChange = runnable;
+    }
+
+    @Override
+    public void onChange() {
+        if (this.onChange != null) {
+            this.onChange.run();
+        }
     }
 
     @Override

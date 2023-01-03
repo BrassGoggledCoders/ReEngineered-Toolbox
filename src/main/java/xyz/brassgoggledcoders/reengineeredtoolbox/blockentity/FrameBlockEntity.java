@@ -6,12 +6,16 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -22,7 +26,6 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.PanelMenuProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
@@ -31,6 +34,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlotHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.NbtHelper;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
@@ -139,14 +143,30 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     }
 
     @Override
-    public void openMenu(Player player, PanelMenuProvider menuProvider, @NotNull Consumer<FriendlyByteBuf> friendlyByteBuf) {
+    public void openMenu(Player player, PanelEntity panelEntity, MenuProvider menuProvider, @NotNull Consumer<FriendlyByteBuf> friendlyByteBuf) {
         if (player instanceof ServerPlayer serverPlayer) {
             ServerConnectionTabManager.getInstance()
-                    .startSession(serverPlayer, this, menuProvider.getPanelEntity());
+                    .startSession(serverPlayer, this, panelEntity);
 
             NetworkHooks.openScreen(
                     serverPlayer,
-                    menuProvider,
+                    new MenuProvider() {
+                        @Override
+                        @NotNull
+                        public Component getDisplayName() {
+                            return menuProvider.getDisplayName();
+                        }
+
+                        @Nullable
+                        @Override
+                        @ParametersAreNonnullByDefault
+                        public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
+                            ServerConnectionTabManager.getInstance()
+                                    .getForPlayer(player)
+                                    .ifPresent(tabManager -> tabManager.setActiveMenuId((short) pContainerId));
+                            return menuProvider.createMenu(pContainerId, pPlayerInventory, pPlayer);
+                        }
+                    },
                     friendlyByteBuf
             );
         }

@@ -51,6 +51,27 @@ public class SingleSlotTypedSlotHolder implements ITypedSlotHolder {
     }
 
     @Override
+    public TypedSlotHolderState getState() {
+        return new TypedSlotHolderState(
+                this.getHeight(),
+                this.getWidth(),
+                new TypedSlotState[]{
+                        this.typedSlot.getState()
+                }
+        );
+    }
+
+    @Override
+    public boolean matches(TypedSlotHolderState slotHolderState) {
+        return this.typedSlot.matches(slotHolderState.slotStates()[0]);
+    }
+
+    @Override
+    public int getSize() {
+        return 1;
+    }
+
+    @Override
     @NotNull
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         return LazyOptional.empty();

@@ -1,15 +1,19 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone;
 
+import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Port;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlotHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneTypedSlot;
+
+import java.util.List;
 
 public abstract class RedstoneIOPanelEntity extends PanelEntity {
     private int power;
@@ -20,21 +24,15 @@ public abstract class RedstoneIOPanelEntity extends PanelEntity {
     }
 
     @Override
-    public boolean trySetSlotConnection(String identifier, int slotNumber) {
-        if (identifier.equals("redstone")) {
+    public void setPortConnection(Port port, int slotNumber) {
+        if (port.identifier().equals("redstone")) {
             ITypedSlotHolder typedSlotHolder = this.getFrameEntity()
                     .getTypedSlotHolder();
-            if (!(typedSlotHolder.getSlot(slotNumber) instanceof IRedstoneTypedSlot)) {
-                typedSlotHolder.setSlot(slotNumber, new RedstoneTypedSlot());
-            }
             if (typedSlotHolder.getSlot(slotNumber) instanceof IRedstoneTypedSlot redstoneTypedSlot) {
                 this.setConnectedSlotId(slotNumber);
                 afterConnection(redstoneTypedSlot);
             }
-
-            return true;
         }
-        return false;
     }
 
     protected void afterConnection(IRedstoneTypedSlot typedSlot) {
@@ -71,4 +69,25 @@ public abstract class RedstoneIOPanelEntity extends PanelEntity {
     }
 
     public abstract IRedstoneTypedSlot getSlotForMenu();
+
+    @Override
+    public void load(CompoundTag pTag) {
+        super.load(pTag);
+        this.connectedSlotId = pTag.getInt("ConnectedSlotId");
+        this.power = pTag.getInt("Power");
+    }
+
+    @Override
+    public void save(CompoundTag pTag) {
+        super.save(pTag);
+        pTag.putInt("ConnectedSlotId", this.connectedSlotId);
+        pTag.putInt("Power", this.power);
+    }
+
+    @Override
+    public List<Port> getPorts() {
+        return List.of(
+                new Port("redstone", this.getPanelState().getPanel().getName(), this.getConnectedSlotId(), TypedSlotTypes.REDSTONE.get())
+        );
+    }
 }

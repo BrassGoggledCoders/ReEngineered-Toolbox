@@ -19,10 +19,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.panel.RedstoneIOPanelMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneIOPanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneTypedSlot;
 
-import java.util.Optional;
 import java.util.function.BiFunction;
 
 public class RedstoneIOPanel extends Panel {
@@ -48,8 +45,9 @@ public class RedstoneIOPanel extends Panel {
     public InteractionResult use(IFrameEntity frameEntity, PanelState panelState, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (frameEntity.getPanelEntity(pHit.getDirection()) instanceof RedstoneIOPanelEntity redstoneIOPanelEntity) {
             if (pPlayer instanceof ServerPlayer serverPlayer) {
-                NetworkHooks.openScreen(
+                frameEntity.openMenu(
                         serverPlayer,
+                        redstoneIOPanelEntity,
                         new SimpleMenuProvider(
                                 (menuId, inventory, player) -> new RedstoneIOPanelMenu(
                                         menuId,

@@ -36,6 +36,9 @@ public class TypedSlotHolder implements ITypedSlotHolder {
         this.blockPos = blockPos;
         this.onChange = onChange;
         this.typedSlots = new ITypedSlot<?>[width * height];
+        for (int i = 0; i < this.typedSlots.length; i++) {
+            this.typedSlots[i] = TypedSlotTypes.BLANK.get().createSlot();
+        }
         this.capabilityProviderMap = new IdentityHashMap<>();
         this.width = width;
         this.height = height;
@@ -57,7 +60,7 @@ public class TypedSlotHolder implements ITypedSlotHolder {
     @Override
     public void setSlot(int slot, @Nullable ITypedSlot<?> typedSlot) {
         if (typedSlot == null) {
-            typedSlot = new ItemTypedSlot();
+            typedSlot = TypedSlotTypes.BLANK.get().createSlot();
         }
         if (slot < this.getSlots().length) {
             ITypedSlot<?> existingTypedSlot = this.getSlots()[slot];
@@ -112,6 +115,11 @@ public class TypedSlotHolder implements ITypedSlotHolder {
             }
         }
         return sizeMatches;
+    }
+
+    @Override
+    public int getSize() {
+        return this.getSlots().length;
     }
 
     public TypedSlotState[] getSlotStates() {

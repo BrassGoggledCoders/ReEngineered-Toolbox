@@ -33,7 +33,9 @@ public class RedstoneOutputPanelEntity extends RedstoneIOPanelEntity {
                 int newPower = redstoneTypedSlot.getContent().getAsInt();
                 this.setPower(newPower);
                 if (newPower > 0 != this.getPanelState().getValue(BlockStateProperties.POWERED)) {
-                    this.setPanelState(this.getPanelState().setValue(BlockStateProperties.POWERED, newPower > 0));
+                    this.getFrameEntity()
+                            .putPanelState(this.getFacing(), this.getPanelState().setValue(BlockStateProperties.POWERED, this.getPower() > 0), true);
+
                 }
             }
         }
