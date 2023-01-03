@@ -10,7 +10,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
@@ -75,5 +74,14 @@ public class RedstoneIOPanel extends Panel {
     @Override
     public boolean canConnectRedstone(IFrameEntity entity, PanelState panelState) {
         return true;
+    }
+
+    @Override
+    public int getSignal(IFrameEntity frameEntity, PanelState panelState) {
+        if (frameEntity.getPanelEntity(panelState.getFacing()) instanceof RedstoneIOPanelEntity redstoneIOPanelEntity) {
+            return redstoneIOPanelEntity.getSignal();
+        } else {
+            return 0;
+        }
     }
 }

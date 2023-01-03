@@ -27,7 +27,7 @@ public interface IFrameEntity {
     PanelState getPanelState(@NotNull Direction direction);
 
     @Nullable
-    PanelEntity getPanelEntity(@NotNull Direction direction);
+    PanelEntity getPanelEntity(@Nullable Direction direction);
 
     @NotNull
     BlockPos getFramePos();

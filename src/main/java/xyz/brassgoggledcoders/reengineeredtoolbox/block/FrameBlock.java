@@ -65,4 +65,32 @@ public class FrameBlock extends Block implements EntityBlock {
         }
         return InteractionResult.PASS;
     }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
+    public int getSignal(BlockState pBlockState, BlockGetter pBlockAccess, BlockPos pPos, Direction pSide) {
+        if (pBlockAccess.getBlockEntity(pPos) instanceof IFrameEntity frameEntity) {
+            return frameEntity.getPanelState(pSide.getOpposite())
+                    .getSignal(frameEntity);
+        }
+        return 0;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    @ParametersAreNonnullByDefault
+    public int getDirectSignal(BlockState pBlockState, BlockGetter pBlockAccess, BlockPos pPos, Direction pSide) {
+        if (pBlockAccess.getBlockEntity(pPos) instanceof IFrameEntity frameEntity) {
+            return frameEntity.getPanelState(pSide.getOpposite())
+                    .getSignal(frameEntity);
+        }
+        return 0;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean isSignalSource(@NotNull BlockState pState) {
+        return true;
+    }
 }

@@ -90,4 +90,8 @@ public abstract class RedstoneIOPanelEntity extends PanelEntity {
                 new Port("redstone", this.getPanelState().getPanel().getName(), this.getConnectedSlotId(), TypedSlotTypes.REDSTONE.get())
         );
     }
+
+    public int getSignal() {
+        return 0;
+    }
 }

@@ -8,6 +8,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityTyp
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneSupplier;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneTypedSlot;
 
 import java.util.Optional;
@@ -35,7 +36,6 @@ public class RedstoneOutputPanelEntity extends RedstoneIOPanelEntity {
                 if (newPower > 0 != this.getPanelState().getValue(BlockStateProperties.POWERED)) {
                     this.getFrameEntity()
                             .putPanelState(this.getFacing(), this.getPanelState().setValue(BlockStateProperties.POWERED, this.getPower() > 0), true);
-
                 }
             }
         }
@@ -45,5 +45,13 @@ public class RedstoneOutputPanelEntity extends RedstoneIOPanelEntity {
     public IRedstoneTypedSlot getSlotForMenu() {
         return Optional.ofNullable(this.getConnectedSlot())
                 .orElseGet(RedstoneTypedSlot::new);
+    }
+
+    @Override
+    public int getSignal() {
+        return Optional.ofNullable(this.getConnectedSlot())
+                .map(IRedstoneTypedSlot::getContent)
+                .map(RedstoneSupplier::getAsInt)
+                .orElse(0);
     }
 }

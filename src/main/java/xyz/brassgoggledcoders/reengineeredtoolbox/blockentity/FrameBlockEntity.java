@@ -121,8 +121,12 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
     @Override
     @Nullable
-    public PanelEntity getPanelEntity(@NotNull Direction direction) {
-        return this.panelEntityMap.get(direction);
+    public PanelEntity getPanelEntity(@Nullable Direction direction) {
+        if (direction != null) {
+            return this.panelEntityMap.get(direction);
+        } else {
+            return null;
+        }
     }
 
     @Override

@@ -132,4 +132,8 @@ public class Panel implements ItemLike {
     public InteractionResult use(IFrameEntity frameEntity, PanelState panelState, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         return InteractionResult.PASS;
     }
+
+    public int getSignal(IFrameEntity frameEntity, PanelState panelState) {
+        return 0;
+    }
 }

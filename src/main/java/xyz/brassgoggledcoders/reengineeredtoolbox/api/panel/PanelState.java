@@ -50,4 +50,8 @@ public class PanelState extends StateHolder<Panel, PanelState> {
     public InteractionResult use(IFrameEntity frameEntity, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         return this.getPanel().use(frameEntity, this, pPlayer, pHand, pHit);
     }
+
+    public int getSignal(IFrameEntity frameEntity) {
+        return this.getPanel().getSignal(frameEntity, this);
+    }
 }
