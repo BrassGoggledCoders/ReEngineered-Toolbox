@@ -51,7 +51,7 @@ public class RedstoneIOPanel extends Panel {
                                 (menuId, inventory, player) -> new RedstoneIOPanelMenu(
                                         menuId,
                                         inventory,
-                                        redstoneIOPanelEntity.getSlotForMenu(),
+                                        redstoneIOPanelEntity::getSlotForMenu,
                                         ContainerLevelAccess.create(frameEntity.getFrameLevel(), frameEntity.getFramePos()),
                                         panelState.getFacing(),
                                         panelState.getPanel()

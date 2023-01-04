@@ -178,6 +178,8 @@ public class TypedSlotHolder implements ITypedSlotHolder, INBTSerializable<Compo
                 if (type != null) {
                     newSlot = type.createSlot();
                     newSlot.fromNBT(slotTag);
+                    int finalX = x;
+                    newSlot.setOnChange(() -> this.onChange.accept(finalX));
                 }
             }
 

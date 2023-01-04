@@ -12,8 +12,9 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.SingleSlotTypedSlotH
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.IItemTypedSlot;
 
 import javax.annotation.Nonnull;
+import java.util.function.Supplier;
 
-public class TypedMenuSlot extends Slot {
+public class TypedMenuSlot<T> extends Slot {
     private static final Container EMPTY_INVENTORY = new SimpleContainer(0);
 
     private final ITypedSlotHolder typedSlotHolder;
@@ -23,8 +24,8 @@ public class TypedMenuSlot extends Slot {
         this.typedSlotHolder = typedSlotHolder;
     }
 
-    public TypedMenuSlot(ITypedSlot<?> typedSlot, int index, int xPosition, int yPosition) {
-        this(new SingleSlotTypedSlotHolder(typedSlot), index, xPosition, yPosition);
+    public TypedMenuSlot(Supplier<ITypedSlot<T>> typedSlot, int index, int xPosition, int yPosition) {
+        this(new SingleSlotTypedSlotHolder<>(typedSlot), index, xPosition, yPosition);
     }
 
     @NotNull

@@ -9,21 +9,23 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SingleSlotTypedSlotHolder implements ITypedSlotHolder {
-    private final ITypedSlot<?> typedSlot;
+import java.util.function.Supplier;
 
-    public SingleSlotTypedSlotHolder(ITypedSlot<?> typedSlot) {
+public class SingleSlotTypedSlotHolder<U> implements ITypedSlotHolder {
+    private final Supplier<ITypedSlot<U>> typedSlot;
+
+    public SingleSlotTypedSlotHolder(Supplier<ITypedSlot<U>> typedSlot) {
         this.typedSlot = typedSlot;
     }
 
     @Override
     public ITypedSlot<?>[] getSlots() {
-        return new ITypedSlot[]{typedSlot};
+        return new ITypedSlot[]{typedSlot.get()};
     }
 
     @Override
     public ITypedSlot<?> getSlot(int slot) {
-        return typedSlot;
+        return typedSlot.get();
     }
 
     @Override
@@ -57,14 +59,14 @@ public class SingleSlotTypedSlotHolder implements ITypedSlotHolder {
                 this.getHeight(),
                 this.getWidth(),
                 new TypedSlotState[]{
-                        this.typedSlot.getState()
+                        this.typedSlot.get().getState()
                 }
         );
     }
 
     @Override
     public boolean matches(TypedSlotHolderState slotHolderState) {
-        return this.typedSlot.matches(slotHolderState.slotStates()[0]);
+        return this.typedSlot.get().matches(slotHolderState.slotStates()[0]);
     }
 
     @Override

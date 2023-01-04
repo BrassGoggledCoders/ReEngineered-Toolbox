@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.menu.panel;
 
+import com.google.common.base.Suppliers;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,10 +19,11 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.Redst
 import xyz.brassgoggledcoders.shadyskies.containersyncing.property.PropertyTypes;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class RedstoneIOPanelMenu extends SingleTypedSlotMenu<IRedstoneTypedSlot, RedstoneSupplier> implements IPanelMenu {
     public RedstoneIOPanelMenu(MenuType<?> pMenuType, int pContainerId, Inventory inventory) {
-        super(pMenuType, pContainerId, inventory, ContainerLevelAccess.NULL, new RedstoneTypedSlot(), null, null);
+        super(pMenuType, pContainerId, inventory, ContainerLevelAccess.NULL, Suppliers.memoize(RedstoneTypedSlot::new), null, null);
         this.getPropertyManager().addTrackedProperty(PropertyTypes.INTEGER.create(
                 () -> this.getTypedSlot().getContent().getAsInt(),
                 value -> this.getTypedSlot().setContent(new RedstoneSupplier(
@@ -32,7 +34,7 @@ public class RedstoneIOPanelMenu extends SingleTypedSlotMenu<IRedstoneTypedSlot,
         ));
     }
 
-    public RedstoneIOPanelMenu(int pContainerId, Inventory inventory, IRedstoneTypedSlot typedSlot,
+    public RedstoneIOPanelMenu(int pContainerId, Inventory inventory, Supplier<IRedstoneTypedSlot> typedSlot,
                                ContainerLevelAccess access, Direction panelSide, Panel panel) {
         super(ReEngineeredMenus.REDSTONE_IO.get(), pContainerId, inventory, access, typedSlot, panelSide, panel);
         this.getPropertyManager().addTrackedProperty(PropertyTypes.INTEGER.create(

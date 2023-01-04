@@ -17,16 +17,18 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.util.MenuHelper;
 import xyz.brassgoggledcoders.shadyskies.containersyncing.property.IPropertyManaged;
 import xyz.brassgoggledcoders.shadyskies.containersyncing.property.PropertyManager;
 
+import java.util.function.Supplier;
+
 public class SingleTypedSlotMenu<T extends ITypedSlot<U>, U> extends AbstractContainerMenu implements IPropertyManaged {
     private final PropertyManager propertyManager;
-    private final T typedSlot;
+    private final Supplier<T> typedSlot;
     private final Direction panelSide;
     private final Panel panel;
     private final ContainerLevelAccess access;
     private final Inventory inventory;
 
     public SingleTypedSlotMenu(@Nullable MenuType<?> pMenuType, int pContainerId, Inventory inventory, ContainerLevelAccess access,
-                               T typedSlot, Direction panelSide, Panel panel) {
+                               Supplier<T> typedSlot, Direction panelSide, Panel panel) {
         super(pMenuType, pContainerId);
         this.propertyManager = new PropertyManager((short) pContainerId);
         this.access = access;
@@ -35,7 +37,7 @@ public class SingleTypedSlotMenu<T extends ITypedSlot<U>, U> extends AbstractCon
         this.panel = panel;
         this.inventory = inventory;
 
-        this.addSlot(new TypedMenuSlot(typedSlot, 0, 80, 35));
+        this.addSlot(new TypedMenuSlot<>(typedSlot::get, 0, 80, 35));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
@@ -78,7 +80,7 @@ public class SingleTypedSlotMenu<T extends ITypedSlot<U>, U> extends AbstractCon
 
     @Override
     public boolean stillValid(@NotNull Player pPlayer) {
-        return !TypedSlotTypes.BLANK.is(this.typedSlot.getType()) && !ReEngineeredPanels.PLUG.is(this.panel) &&
+        return !TypedSlotTypes.BLANK.is(this.typedSlot.get().getType()) && !ReEngineeredPanels.PLUG.is(this.panel) &&
                 MenuHelper.checkPanelMenuValid(this.access, pPlayer, this.panelSide, this.panel);
     }
 
@@ -100,6 +102,6 @@ public class SingleTypedSlotMenu<T extends ITypedSlot<U>, U> extends AbstractCon
     }
 
     public T getTypedSlot() {
-        return typedSlot;
+        return typedSlot.get();
     }
 }

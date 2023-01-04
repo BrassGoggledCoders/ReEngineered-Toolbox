@@ -19,6 +19,15 @@ public record Port(
         friendlyByteBuf.writeRegistryId(TypedSlotTypes.getRegistry(), backingSlot());
     }
 
+    public Port withConnection(int connectionId) {
+        return new Port(
+                this.identifier(),
+                this.description(),
+                connectionId,
+                this.backingSlot()
+        );
+    }
+
     public static Port decode(FriendlyByteBuf friendlyByteBuf) {
         return new Port(
                 friendlyByteBuf.readUtf(),

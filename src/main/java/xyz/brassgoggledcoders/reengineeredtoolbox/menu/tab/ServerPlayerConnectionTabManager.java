@@ -107,6 +107,7 @@ public class ServerPlayerConnectionTabManager extends PlayerConnectionTabManager
                     }
                 }
             }
+            this.setPanelPorts(panelEntity.getPorts());
         }
     }
 

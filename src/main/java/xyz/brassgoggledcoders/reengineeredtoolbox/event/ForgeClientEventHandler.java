@@ -22,6 +22,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Port;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab.ClientPlayerConnectionTabManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab.PlayerConnectionTabManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotHolderState;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotState;
 
 import java.util.List;
 
@@ -101,7 +102,6 @@ public class ForgeClientEventHandler {
                                     }
                                 }
                             }
-
                         }
                     }
                 }
@@ -172,11 +172,16 @@ public class ForgeClientEventHandler {
                             int slotPosX = slotStartX + (slotX * 18);
                             int slotPosY = slotStartY + (slotY * 18);
                             RenderSystem.setShaderTexture(0, TABS);
-                            screen.blit(poseStack, slotPosX, slotPosY, 152, 0, 18, 18);
+                            TypedSlotState slotState = state.slotStates()[slot];
+                            int textureY = slotState.type() == port.backingSlot() || slotState.empty() ? 18 : 0;
+                            if (slot == port.connection()) {
+                                textureY = 0;
+                            }
+                            screen.blit(poseStack, slotPosX, slotPosY, 152, textureY, 18, 18);
                             Minecraft minecraft = Minecraft.getInstance();
                             ItemRenderer itemRenderer = minecraft.getItemRenderer();
                             itemRenderer.blitOffset = 100.0F;
-                            ItemStack itemstack = state.slotStates()[slot].type().getDisplayStack();
+                            ItemStack itemstack = slotState.type().getDisplayStack();
                             itemRenderer.renderAndDecorateItem(itemstack, slotPosX + 1, slotPosY);
                             itemRenderer.renderGuiItemDecorations(minecraft.font, itemstack, slotPosX + 1, slotPosY);
                             itemRenderer.blitOffset = 0.0F;
