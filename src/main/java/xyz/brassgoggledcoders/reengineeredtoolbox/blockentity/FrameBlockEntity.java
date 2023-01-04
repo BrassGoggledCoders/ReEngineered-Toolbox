@@ -187,6 +187,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         CompoundTag panelsTag = new CompoundTag();
         writePanels(panelsTag);
         pTag.put("Panels", panelsTag);
+        pTag.put("TypedSlotHolder", this.typedSlotHolder.serializeNBT());
     }
 
     @Override
@@ -196,6 +197,9 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         if (pTag.contains("Panels")) {
             CompoundTag panelsTag = pTag.getCompound("Panels");
             readPanels(panelsTag);
+        }
+        if (pTag.contains("TypedSlotHolder")) {
+            this.typedSlotHolder.deserializeNBT(pTag.getCompound("TypedSlotHolder"));
         }
     }
 

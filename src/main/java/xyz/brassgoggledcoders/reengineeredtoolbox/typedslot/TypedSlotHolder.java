@@ -2,20 +2,22 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.typedslot;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.ItemTypedSlot;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 
-public class TypedSlotHolder implements ITypedSlotHolder {
+public class TypedSlotHolder implements ITypedSlotHolder, INBTSerializable<CompoundTag> {
     private final Supplier<Level> level;
     private final BlockPos blockPos;
 
@@ -144,5 +146,45 @@ public class TypedSlotHolder implements ITypedSlotHolder {
             }
         }
         return LazyOptional.empty();
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag compoundTag = new CompoundTag();
+        CompoundTag slotsTag = new CompoundTag();
+        for (int x = 0; x < this.getSize(); x++) {
+            ITypedSlot<?> typedSlot = this.getSlot(x);
+            ResourceLocation id = TypedSlotTypes.getRegistry().getKey(typedSlot.getType());
+            if (id != null) {
+                CompoundTag slotTag = typedSlot.toNBT();
+                slotTag.putString("Id", id.toString());
+                slotsTag.put(Integer.toString(x), slotTag);
+            }
+        }
+        compoundTag.put("Slots", slotsTag);
+        return compoundTag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+        CompoundTag slotsTag = nbt.getCompound("Slots");
+        for (int x = 0; x < this.getSize(); x++) {
+            CompoundTag slotTag = slotsTag.getCompound(Integer.toString(x));
+            ITypedSlot<?> newSlot = null;
+            if (!slotsTag.isEmpty()) {
+                TypedSlotType type = TypedSlotTypes.getRegistry()
+                        .getValue(new ResourceLocation(slotTag.getString("Id")));
+
+                if (type != null) {
+                    newSlot = type.createSlot();
+                    newSlot.fromNBT(slotTag);
+                }
+            }
+
+            if (newSlot == null) {
+                newSlot = TypedSlotTypes.BLANK.get().createSlot();
+            }
+            this.typedSlots[x] = newSlot;
+        }
     }
 }

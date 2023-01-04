@@ -60,6 +60,9 @@ public class RedstoneInputPanelEntity extends RedstoneIOPanelEntity {
                             .getSlot(this.getConnectedSlotId());
 
                     if (typedSlot instanceof IRedstoneTypedSlot redstoneTypedSlot) {
+                        if (this.redstoneSupplier == null || !this.redstoneSupplier.isValid()) {
+                            afterConnection(redstoneTypedSlot);
+                        }
                         redstoneTypedSlot.checkPower();
                     }
                 }
