@@ -12,7 +12,9 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
@@ -22,6 +24,7 @@ public class TypedSlotHolder implements ITypedSlotHolder, INBTSerializable<Compo
     private final BlockPos blockPos;
 
     private final Map<TypedSlotType, ICapabilityProvider> capabilityProviderMap;
+    private final List<Runnable> invalidationListeners;
 
     private final int width;
     private final int height;
@@ -42,6 +45,7 @@ public class TypedSlotHolder implements ITypedSlotHolder, INBTSerializable<Compo
             this.typedSlots[i] = TypedSlotTypes.BLANK.get().createSlot();
         }
         this.capabilityProviderMap = new IdentityHashMap<>();
+        this.invalidationListeners = new ArrayList<>();
         this.width = width;
         this.height = height;
     }
@@ -188,5 +192,14 @@ public class TypedSlotHolder implements ITypedSlotHolder, INBTSerializable<Compo
             }
             this.typedSlots[x] = newSlot;
         }
+    }
+
+    public void invalidateCaps() {
+        this.invalidationListeners.forEach(Runnable::run);
+    }
+
+    @Override
+    public void addInvalidationListener(Runnable runnable) {
+        this.invalidationListeners.add(runnable);
     }
 }

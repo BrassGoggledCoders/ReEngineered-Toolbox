@@ -4,6 +4,7 @@ import com.google.common.base.Suppliers;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.registries.ForgeRegistry;
@@ -12,10 +13,14 @@ import net.minecraftforge.registries.RegistryManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.IOPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.RedstoneIOPanel;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemInputPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneInputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelEntry;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.IItemTypedSlot;
 
 import java.util.function.Supplier;
 
@@ -45,9 +50,19 @@ public class ReEngineeredPanels {
             .build()
             .register();
 
-    public static final PanelEntry<Panel> ITEM_OUTPUT = ReEngineeredToolbox.getRegistrateAddon()
+    public static final PanelEntry<IOPanel<IItemTypedSlot, ItemStack>> ITEM_INPUT = ReEngineeredToolbox.getRegistrateAddon()
+            .object("item_input")
+            .panel(() -> new IOPanel<>(ItemInputPanelEntity::new))
+            .panelEntity(ItemInputPanelEntity::new)
+            .item()
+            .build()
+            .register();
+
+
+    public static final PanelEntry<IOPanel<IItemTypedSlot, ItemStack>> ITEM_OUTPUT = ReEngineeredToolbox.getRegistrateAddon()
             .object("item_output")
-            .panel(Panel::new)
+            .panel(() -> new IOPanel<>(ItemOutputPanelEntity::new))
+            .panelEntity(ItemOutputPanelEntity::new)
             .item()
             .build()
             .register();

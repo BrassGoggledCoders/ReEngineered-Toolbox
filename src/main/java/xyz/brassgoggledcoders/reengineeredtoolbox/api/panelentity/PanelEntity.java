@@ -121,6 +121,10 @@ public class PanelEntity implements ICapabilityProvider {
         return LazyOptional.empty();
     }
 
+    public void invalidate() {
+
+    }
+
     @Nullable
     public static PanelEntity loadStatic(IFrameEntity frame, PanelState pState, CompoundTag pTag) {
         String s = pTag.getString("id");

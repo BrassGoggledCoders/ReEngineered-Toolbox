@@ -57,7 +57,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
     private final Map<Direction, PanelState> panelStateMap;
     private final Map<Direction, PanelEntity> panelEntityMap;
-    private final ITypedSlotHolder typedSlotHolder;
+    private final TypedSlotHolder typedSlotHolder;
 
     public FrameBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
@@ -263,6 +263,13 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         if (pkt.getTag() != null) {
             this.handleUpdateTag(pkt.getTag());
         }
+    }
+
+    @Override
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        this.typedSlotHolder.invalidateCaps();
+        this.panelEntityMap.values().forEach(PanelEntity::invalidate);
     }
 
     @Nullable

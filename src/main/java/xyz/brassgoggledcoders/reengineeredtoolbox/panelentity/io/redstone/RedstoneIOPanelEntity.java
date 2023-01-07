@@ -1,63 +1,29 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Port;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Port;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
+import xyz.brassgoggledcoders.reengineeredtoolbox.menu.panel.RedstoneIOPanelMenu;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.IOPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlotHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneSupplier;
 
 import java.util.List;
+import java.util.Optional;
 
-public abstract class RedstoneIOPanelEntity extends PanelEntity {
+public abstract class RedstoneIOPanelEntity extends IOPanelEntity<IRedstoneTypedSlot, RedstoneSupplier> {
     private int power;
-    private int connectedSlotId = -1;
 
     public RedstoneIOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(type, frameEntity, panelState);
-    }
-
-    @Override
-    public void setPortConnection(Port port, int slotNumber) {
-        if (port.identifier().equals("redstone")) {
-            ITypedSlotHolder typedSlotHolder = this.getFrameEntity()
-                    .getTypedSlotHolder();
-            if (typedSlotHolder.getSlot(slotNumber) instanceof IRedstoneTypedSlot redstoneTypedSlot) {
-                this.setConnectedSlotId(slotNumber);
-                afterConnection(redstoneTypedSlot);
-            }
-        }
-    }
-
-    protected void afterConnection(IRedstoneTypedSlot typedSlot) {
-
-    }
-
-    public int getConnectedSlotId() {
-        return connectedSlotId;
-    }
-
-    public void setConnectedSlotId(int connectedSlotId) {
-        this.connectedSlotId = connectedSlotId;
-    }
-
-    @Nullable
-    public IRedstoneTypedSlot getConnectedSlot() {
-        ITypedSlot<?> slot = this.getFrameEntity()
-                .getTypedSlotHolder()
-                .getSlot(this.getConnectedSlotId());
-
-        if (slot instanceof IRedstoneTypedSlot redstoneTypedSlot) {
-            return redstoneTypedSlot;
-        } else {
-            return null;
-        }
     }
 
     public int getPower() {
@@ -68,30 +34,51 @@ public abstract class RedstoneIOPanelEntity extends PanelEntity {
         this.power = power;
     }
 
-    public abstract IRedstoneTypedSlot getSlotForMenu();
-
     @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);
-        this.connectedSlotId = pTag.getInt("ConnectedSlotId");
         this.power = pTag.getInt("Power");
     }
 
     @Override
     public void save(CompoundTag pTag) {
         super.save(pTag);
-        pTag.putInt("ConnectedSlotId", this.connectedSlotId);
         pTag.putInt("Power", this.power);
-    }
-
-    @Override
-    public List<Port> getPorts() {
-        return List.of(
-                new Port("redstone", this.getPanelState().getPanel().getName(), this.getConnectedSlotId(), TypedSlotTypes.REDSTONE.get())
-        );
     }
 
     public int getSignal() {
         return 0;
+    }
+
+    @Override
+    protected Optional<IRedstoneTypedSlot> getTypedSlot(ITypedSlot<?> typedSlot) {
+        if (typedSlot instanceof IRedstoneTypedSlot redstoneTypedSlot) {
+            return Optional.of(redstoneTypedSlot);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    @NotNull
+    protected String getIdentifier() {
+        return "redstone";
+    }
+
+    @Override
+    public TypedSlotType getTypedSlotType() {
+        return TypedSlotTypes.REDSTONE.get();
+    }
+
+    @Override
+    public MenuConstructor getMenuCreator() {
+        return (menuId, inventory, player) -> new RedstoneIOPanelMenu(
+                menuId,
+                inventory,
+                this::getSlotForMenu,
+                ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()),
+                this.getFacing(),
+                this.getPanelState().getPanel()
+        );
     }
 }

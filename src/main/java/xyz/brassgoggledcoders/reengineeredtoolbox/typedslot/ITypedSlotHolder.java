@@ -27,4 +27,12 @@ public interface ITypedSlotHolder extends ICapabilityProvider, INBTSerializable<
     boolean matches(TypedSlotHolderState slotHolderState);
 
     int getSize();
+
+    default void invalidateCaps() {
+
+    }
+
+    default void addInvalidationListener(Runnable runnable) {
+
+    }
 }

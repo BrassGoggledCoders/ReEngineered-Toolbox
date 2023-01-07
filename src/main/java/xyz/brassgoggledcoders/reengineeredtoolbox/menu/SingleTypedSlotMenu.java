@@ -54,20 +54,20 @@ public class SingleTypedSlotMenu<T extends ITypedSlot<U>, U> extends AbstractCon
     @NotNull
     public ItemStack quickMoveStack(@NotNull Player pPlayer, int pIndex) {
         ItemStack itemstack = ItemStack.EMPTY;
-        if (typedSlot instanceof IItemTypedSlot) {
+        if (typedSlot.get() instanceof IItemTypedSlot) {
             Slot slot = this.slots.get(pIndex);
             if (slot.hasItem()) {
-                ItemStack slotStack = slot.getItem();
-                itemstack = slotStack.copy();
-                if (pIndex < this.slots.size() - 1) {
-                    if (!this.moveItemStackTo(slotStack, this.slots.size() - 1, this.slots.size(), true)) {
+                ItemStack itemstack1 = slot.getItem();
+                itemstack = itemstack1.copy();
+                if (pIndex < 1) {
+                    if (!this.moveItemStackTo(itemstack1, 1, this.slots.size(), true)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (!this.moveItemStackTo(slotStack, 0, this.slots.size() - 1, false)) {
+                } else if (!this.moveItemStackTo(itemstack1, 0, 1, false)) {
                     return ItemStack.EMPTY;
                 }
 
-                if (slotStack.isEmpty()) {
+                if (itemstack1.isEmpty()) {
                     slot.set(ItemStack.EMPTY);
                 } else {
                     slot.setChanged();
