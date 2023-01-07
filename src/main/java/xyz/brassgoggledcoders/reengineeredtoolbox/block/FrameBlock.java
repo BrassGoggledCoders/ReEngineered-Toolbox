@@ -10,12 +10,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.blockentity.FrameBlockEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredBlocks;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -92,5 +95,18 @@ public class FrameBlock extends Block implements EntityBlock {
     @SuppressWarnings("deprecation")
     public boolean isSignalSource(@NotNull BlockState pState) {
         return true;
+    }
+
+
+    @Nullable
+    @Override
+    @ParametersAreNonnullByDefault
+    @SuppressWarnings({"RedundantCast", "unchecked"})
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        if (!pLevel.isClientSide() && ReEngineeredBlocks.IRON_FRAME_ENTITY.is(pBlockEntityType)) {
+            return (BlockEntityTicker<T>) (BlockEntityTicker<FrameBlockEntity>) (tickerLevel, pPos, pState1, pBlockEntity) -> pBlockEntity.serverTick();
+        }
+
+        return null;
     }
 }
