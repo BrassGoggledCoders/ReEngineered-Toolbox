@@ -10,9 +10,9 @@ public class MenuHelper {
     public static boolean checkPanelMenuValid(ContainerLevelAccess levelAccess, Player player, Direction direction, Panel panel) {
         return levelAccess.evaluate((level, blockPos) -> {
             double distance = player.distanceToSqr(
-                    (double)blockPos.getX() + 0.5D,
-                    (double)blockPos.getY() + 0.5D,
-                    (double)blockPos.getZ() + 0.5D
+                    (double) blockPos.getX() + 0.5D,
+                    (double) blockPos.getY() + 0.5D,
+                    (double) blockPos.getZ() + 0.5D
             );
 
             boolean matchesPanel = false;

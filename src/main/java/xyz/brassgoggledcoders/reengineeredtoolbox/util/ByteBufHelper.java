@@ -20,7 +20,7 @@ public class ByteBufHelper {
         }
     }
 
-    public static <T> T readValue(@Nullable FriendlyByteBuf friendlyByteBuf, Function<FriendlyByteBuf,T> convertor, Supplier<T> backup) {
+    public static <T> T readValue(@Nullable FriendlyByteBuf friendlyByteBuf, Function<FriendlyByteBuf, T> convertor, Supplier<T> backup) {
         if (friendlyByteBuf != null) {
             return convertor.apply(friendlyByteBuf);
         } else {

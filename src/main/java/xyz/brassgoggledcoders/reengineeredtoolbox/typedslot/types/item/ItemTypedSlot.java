@@ -10,7 +10,9 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.RunnableItemHandler;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.*;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlotHolder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotCapabilityProvider;
 
 public class ItemTypedSlot implements IItemTypedSlot {
 

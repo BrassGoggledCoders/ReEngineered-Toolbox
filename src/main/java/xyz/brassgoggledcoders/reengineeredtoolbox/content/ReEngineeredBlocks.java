@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.content;
 
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.block.FrameBlock;
 import xyz.brassgoggledcoders.reengineeredtoolbox.blockentity.FrameBlockEntity;

@@ -2,14 +2,11 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.model.frame;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -73,7 +70,7 @@ public class FrameItemOverrides extends ItemOverrides {
                 }
             }
 
-            BakedModel cachedModel =  frameToModelCache.getIfPresent(panelKey);
+            BakedModel cachedModel = frameToModelCache.getIfPresent(panelKey);
             if (cachedModel == null) {
                 cachedModel = new FrameItemBakedModel(panelKey, pModel);
                 frameToModelCache.put(panelKey, cachedModel);

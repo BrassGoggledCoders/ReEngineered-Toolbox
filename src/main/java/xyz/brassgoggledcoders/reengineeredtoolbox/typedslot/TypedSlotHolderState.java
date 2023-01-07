@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.typedslot;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public record TypedSlotHolderState(
