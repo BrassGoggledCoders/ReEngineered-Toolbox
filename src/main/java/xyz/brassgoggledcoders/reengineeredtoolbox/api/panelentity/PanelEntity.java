@@ -5,6 +5,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
@@ -17,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class PanelEntity {
+public class PanelEntity implements ICapabilityProvider {
     @NotNull
     private final IFrameEntity frameEntity;
     @NotNull
@@ -108,6 +111,15 @@ public class PanelEntity {
         return Collections.emptyList();
     }
 
+    public void serverTick() {
+
+    }
+
+    @Override
+    @NotNull
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        return LazyOptional.empty();
+    }
 
     @Nullable
     public static PanelEntity loadStatic(IFrameEntity frame, PanelState pState, CompoundTag pTag) {

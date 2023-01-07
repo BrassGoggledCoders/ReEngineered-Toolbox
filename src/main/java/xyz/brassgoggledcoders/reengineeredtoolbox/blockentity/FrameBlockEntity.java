@@ -22,6 +22,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -267,5 +269,29 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    @NotNull
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        LazyOptional<T> lazyOptional = LazyOptional.empty();
+        if (side == null) {
+            lazyOptional = this.getTypedSlotHolder()
+                    .getCapability(cap);
+        } else {
+            PanelEntity panelEntity = this.getPanelEntity(side);
+            if (panelEntity != null) {
+                lazyOptional = panelEntity.getCapability(cap, side);
+            }
+        }
+        if (lazyOptional.isPresent()) {
+            return lazyOptional;
+        } else {
+            return super.getCapability(cap, side);
+        }
+    }
+
+    public void serverTick() {
+        this.panelEntityMap.values().forEach(PanelEntity::serverTick);
     }
 }
