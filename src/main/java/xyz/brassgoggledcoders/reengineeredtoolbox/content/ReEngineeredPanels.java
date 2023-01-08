@@ -15,10 +15,12 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.IOPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.RedstoneIOPanel;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panel.world.DispenserPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemInputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneInputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneOutputPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.DispenserPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelEntry;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.IItemTypedSlot;
 
@@ -118,6 +120,16 @@ public class ReEngineeredPanels {
             ))
             .build()
             .register();
+
+
+    public static final PanelEntry<DispenserPanel> DISPENSER = ReEngineeredToolbox.getRegistrateAddon()
+            .object("dispenser")
+            .panel(DispenserPanel::new)
+            .panelEntity(DispenserPanelEntity::new)
+            .item()
+            .build()
+            .register();
+
 
 
     public static ForgeRegistry<Panel> getRegistry() {
