@@ -22,6 +22,10 @@ public interface ITypedSlot<U> {
         return this.getContent() == null;
     }
 
+    default boolean isFull() {
+        return false;
+    }
+
     default void setOnChange(Runnable runnable) {
 
     }

@@ -5,12 +5,12 @@ import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Port;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotHolderState;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class PlayerConnectionTabManager {
-    private short activeMenuId = -1;
-    private final List<Port> panelPorts = new ArrayList<>();
+    private int activeMenuId = -1;
+    private final Map<Port, Integer> panelPorts = new HashMap<>();
     private String selectedPort = null;
     private TypedSlotHolderState typedSlotHolderState;
 
@@ -18,11 +18,11 @@ public abstract class PlayerConnectionTabManager {
         return menu != null && !this.getPanelPorts().isEmpty() && this.getActiveMenuId() == menu.containerId;
     }
 
-    public short getActiveMenuId() {
+    public int getActiveMenuId() {
         return activeMenuId;
     }
 
-    public void setActiveMenuId(short activeMenuId) {
+    public void setActiveMenuId(int activeMenuId) {
         this.activeMenuId = activeMenuId;
     }
 
@@ -34,13 +34,13 @@ public abstract class PlayerConnectionTabManager {
         this.selectedPort = currentSelectedConnect;
     }
 
-    public List<Port> getPanelPorts() {
+    public Map<Port, Integer> getPanelPorts() {
         return panelPorts;
     }
 
-    public void setPanelPorts(List<Port> ports) {
+    public void setPanelPorts(Map<Port, Integer> ports) {
         this.panelPorts.clear();
-        this.panelPorts.addAll(ports);
+        this.panelPorts.putAll(ports);
     }
 
     public void clear() {
@@ -56,16 +56,5 @@ public abstract class PlayerConnectionTabManager {
         return typedSlotHolderState;
     }
 
-    public void setPortConnection(String identifier, int connectionId) {
-
-    }
-
-    @Nullable
-    public Port getSelectedPortValue() {
-        return this.getPanelPorts()
-                .stream()
-                .filter(port -> port.identifier().equals(this.getSelectedPort()))
-                .findFirst()
-                .orElse(null);
-    }
+    public abstract void setPortConnection(String identifier, int connectionId);
 }

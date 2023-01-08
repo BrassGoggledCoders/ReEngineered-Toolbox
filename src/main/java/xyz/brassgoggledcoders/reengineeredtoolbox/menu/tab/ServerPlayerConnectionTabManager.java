@@ -15,7 +15,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotState;
 
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 public class ServerPlayerConnectionTabManager extends PlayerConnectionTabManager {
     private final WeakReference<ServerPlayer> serverPlayerWeakReference;
@@ -26,20 +26,30 @@ public class ServerPlayerConnectionTabManager extends PlayerConnectionTabManager
         this.serverPlayerWeakReference = new WeakReference<>(serverPlayer);
         this.frameEntityWeakReference = new WeakReference<>(frame);
         this.panelEntityWeakReference = new WeakReference<>(panelEntity);
-        super.setPanelPorts(panelEntity.getPorts());
+        this.setPanelPorts(panelEntity.getPorts());
     }
 
     @Override
-    public void setPanelPorts(List<Port> ports) {
+    public void setPanelPorts(Map<Port, Integer> ports) {
         super.setPanelPorts(ports);
-        this.sync();
+        if (this.getActiveMenuId() >= 0) {
+            this.sync();
+        }
+    }
+
+    @Override
+    public void setActiveMenuId(int activeMenuId) {
+        super.setActiveMenuId(activeMenuId);
+        if (!this.getPanelPorts().isEmpty()) {
+            this.sync();
+        }
     }
 
     public void sync() {
         ServerPlayer serverPlayer = serverPlayerWeakReference.get();
         if (serverPlayer != null) {
             NetworkHandler.getInstance()
-                    .syncPortTabInfo(serverPlayer, this.getPanelPorts(), this.getTypedSlotHolderState());
+                    .syncPortTabInfo(serverPlayer, this.getActiveMenuId(), this.getPanelPorts(), this.getTypedSlotHolderState());
         }
     }
 
@@ -82,7 +92,10 @@ public class ServerPlayerConnectionTabManager extends PlayerConnectionTabManager
         IFrameEntity frameEntity = this.getFrameEntity();
         PanelEntity panelEntity = this.panelEntityWeakReference.get();
         if (frameEntity != null && panelEntity != null) {
-            Iterator<Port> portIterator = this.getPanelPorts().iterator();
+            Iterator<Port> portIterator = this.getPanelPorts()
+                    .keySet()
+                    .iterator();
+
             Port port = null;
 
             while (port == null && portIterator.hasNext()) {

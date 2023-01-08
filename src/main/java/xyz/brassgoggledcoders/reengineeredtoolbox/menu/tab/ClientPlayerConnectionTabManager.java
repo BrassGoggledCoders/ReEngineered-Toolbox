@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab;
 
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Port;
 import xyz.brassgoggledcoders.reengineeredtoolbox.network.NetworkHandler;
 
 public class ClientPlayerConnectionTabManager extends PlayerConnectionTabManager {
@@ -20,12 +19,12 @@ public class ClientPlayerConnectionTabManager extends PlayerConnectionTabManager
     public void setPortConnection(String identifier, int connectionId) {
         NetworkHandler.getInstance()
                 .updatePortConnect(identifier, connectionId);
-        for (int x = 0; x < this.getPanelPorts().size(); x++) {
-            Port port = this.getPanelPorts().get(x);
-            if (port.identifier().equals(identifier)) {
-                this.getPanelPorts().set(x, port.withConnection(connectionId));
-            }
-        }
+        this.getPanelPorts()
+                .keySet()
+                .stream()
+                .filter(port -> port.identifier().equals(identifier))
+                .findFirst()
+                .ifPresent(port -> this.getPanelPorts().put(port, connectionId));
     }
 
     public static PlayerConnectionTabManager getInstance() {

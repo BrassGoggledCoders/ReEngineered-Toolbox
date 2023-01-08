@@ -34,7 +34,7 @@ public class ItemIOPanelMenu extends SingleTypedSlotMenu<IItemTypedSlot, ItemSta
     @NotNull
     public List<Port> getPorts() {
         return List.of(
-                new Port("itemstack", Component.literal("ItemStack IO"), -1, TypedSlotTypes.ITEM.get())
+                new Port("itemstack", Component.literal("ItemStack IO"), TypedSlotTypes.ITEM.get())
         );
     }
 

@@ -46,7 +46,7 @@ public class RedstoneIOPanelMenu extends SingleTypedSlotMenu<IRedstoneTypedSlot,
     @NotNull
     public List<Port> getPorts() {
         return List.of(
-                new Port("redstone", Component.literal("Redstone IO"), -1, TypedSlotTypes.REDSTONE.get())
+                new Port("redstone", Component.literal("Redstone IO"), TypedSlotTypes.REDSTONE.get())
         );
     }
 

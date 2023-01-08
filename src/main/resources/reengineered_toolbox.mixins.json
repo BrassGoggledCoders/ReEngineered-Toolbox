@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "xyz.brassgoggledcoders.reengineeredtoolbox.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "reengineered_toolbox.refmap.json",
+  "mixins": [
+    "DispenserBlockAccessor"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}

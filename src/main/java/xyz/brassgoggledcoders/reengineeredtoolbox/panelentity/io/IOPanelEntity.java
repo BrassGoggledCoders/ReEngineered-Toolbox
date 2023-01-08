@@ -13,14 +13,21 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlotHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotType;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class IOPanelEntity<T extends ITypedSlot<U>, U> extends PanelEntity {
+
+    private final Port ioPort;
     private int connectedSlotId = -1;
 
     public IOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(type, frameEntity, panelState);
+        this.ioPort = new Port(
+                this.getIdentifier(),
+                this.getPanelState().getPanel().getName(),
+                this.getTypedSlotType()
+        );
     }
 
     protected abstract Optional<T> getTypedSlot(ITypedSlot<?> typedSlot);
@@ -81,13 +88,8 @@ public abstract class IOPanelEntity<T extends ITypedSlot<U>, U> extends PanelEnt
     }
 
     @Override
-    public List<Port> getPorts() {
-        return List.of(new Port(
-                this.getIdentifier(),
-                this.getPanelState().getPanel().getName(),
-                this.getConnectedSlotId(),
-                this.getTypedSlotType()
-        ));
+    public Map<Port, Integer> getPorts() {
+        return Map.of(ioPort, this.getConnectedSlotId());
     }
 
     public boolean isConnected() {

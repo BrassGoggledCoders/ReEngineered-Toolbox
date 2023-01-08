@@ -17,33 +17,19 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import org.apache.commons.lang3.Range;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.IPanelMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Port;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab.ClientPlayerConnectionTabManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab.PlayerConnectionTabManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotHolderState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotState;
 
-import java.util.List;
+import java.util.*;
+import java.util.Map.Entry;
 
 @EventBusSubscriber(modid = ReEngineeredToolbox.ID, value = Dist.CLIENT, bus = Bus.FORGE)
 public class ForgeClientEventHandler {
 
     private static final ResourceLocation TABS = ReEngineeredToolbox.rl("textures/screen/components.png");
-
-    @SubscribeEvent
-    public static void onMenuOpen(ScreenEvent.Opening openingEvent) {
-        if (openingEvent.getNewScreen() instanceof AbstractContainerScreen<?> screen && screen.getMenu() instanceof IPanelMenu panelMenu) {
-            PlayerConnectionTabManager tabManager = ClientPlayerConnectionTabManager.getInstance();
-            AbstractContainerMenu menu = screen.getMenu();
-            if (!tabManager.isForMenu(menu)) {
-                List<Port> panelPortInfo = panelMenu.getPorts();
-                tabManager.setActiveMenuId((short) screen.getMenu().containerId);
-                tabManager.setPanelPorts(panelPortInfo);
-            }
-
-        }
-    }
 
     @SubscribeEvent
     public static void onMenuClose(ScreenEvent.Closing closingEvent) {
@@ -60,7 +46,9 @@ public class ForgeClientEventHandler {
             AbstractContainerMenu menu = containerScreen.getMenu();
             PlayerConnectionTabManager tabManager = ClientPlayerConnectionTabManager.getInstance();
             if (tabManager.isForMenu(menu)) {
-                List<Port> panelPortInfo = tabManager.getPanelPorts();
+                List<Port> panelPortInfo = new ArrayList<>(tabManager.getPanelPorts()
+                        .keySet()
+                );
                 String selectedConnection = tabManager.getSelectedPort();
                 int screenLeft = containerScreen.getGuiLeft();
                 double mouseX = mouseClickedEvent.getMouseX();
@@ -123,16 +111,20 @@ public class ForgeClientEventHandler {
         }
     }
 
-    private static Range<Integer> getOutwardTabs(AbstractContainerScreen<?> screen, List<Port> tabs, String identity) {
+    private static Range<Integer> getOutwardTabs(AbstractContainerScreen<?> screen, Collection<Port> tabs, String identity) {
         int maxSupportedTabs = (int) Math.floor(screen.getYSize() / 28F);
         int maxTabs = Math.min(tabs.size(), maxSupportedTabs);
         int matchingTab = -1;
 
-        for (int x = 0; x < maxTabs; x++) {
-            Port port = tabs.get(x);
+        Iterator<Port> portIterator = tabs.iterator();
+
+        int x = 0;
+        while (portIterator.hasNext() && x < maxTabs) {
+            Port port = portIterator.next();
             if (port.identifier().equals(identity)) {
                 matchingTab = x;
             }
+            x++;
         }
 
         int panelTabStart = Math.min(matchingTab, maxSupportedTabs - 3);
@@ -143,15 +135,18 @@ public class ForgeClientEventHandler {
         }
     }
 
-    private static void loopTabs(AbstractContainerScreen<?> screen, PoseStack poseStack, List<Port> tabs, String identity) {
-        if (!tabs.isEmpty()) {
-            Range<Integer> handledTabs = getOutwardTabs(screen, tabs, identity);
+    private static void loopTabs(AbstractContainerScreen<?> screen, PoseStack poseStack, Map<Port, Integer> ports, String identity) {
+        if (!ports.isEmpty()) {
+            Range<Integer> handledTabs = getOutwardTabs(screen, ports.keySet(), identity);
             int outward = -1;
             int maxSupportedTabs = (int) Math.floor(screen.getYSize() / 28F);
-            int maxTabs = Math.min(tabs.size(), maxSupportedTabs);
+            int maxTabs = Math.min(ports.size(), maxSupportedTabs);
 
-            for (int x = 0; x < maxTabs; x++) {
-                Port port = tabs.get(x);
+            int x = 0;
+            Iterator<Entry<Port, Integer>> portIterator = ports.entrySet().iterator();
+            while (portIterator.hasNext() && x < maxTabs) {
+                Entry<Port, Integer> portConnection = portIterator.next();
+                Port port = portConnection.getKey();
                 boolean matches = port.identifier().equals(identity);
                 if (x == handledTabs.getMinimum()) {
                     outward = 2;
@@ -174,7 +169,7 @@ public class ForgeClientEventHandler {
                             RenderSystem.setShaderTexture(0, TABS);
                             TypedSlotState slotState = state.slotStates()[slot];
                             int textureY = slotState.type() == port.backingSlot() || slotState.empty() ? 18 : 0;
-                            if (slot == port.connection()) {
+                            if (slot == portConnection.getValue()) {
                                 textureY = 0;
                             }
                             screen.blit(poseStack, slotPosX, slotPosY, 152, textureY, 18, 18);
@@ -200,6 +195,7 @@ public class ForgeClientEventHandler {
                 if (outward >= 0) {
                     outward--;
                 }
+                x++;
             }
         }
     }

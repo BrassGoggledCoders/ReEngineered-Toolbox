@@ -9,7 +9,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Port;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotHolderState;
 
-import java.util.List;
+import java.util.Map;
 
 public class NetworkHandler {
     private static final String VERSION = "1";
@@ -43,8 +43,8 @@ public class NetworkHandler {
                 .add();
     }
 
-    public void syncPortTabInfo(ServerPlayer serverPlayer, List<Port> panelPortInfo, TypedSlotHolderState holderState) {
-        this.channel.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new SyncPortTabInfo(panelPortInfo, holderState));
+    public void syncPortTabInfo(ServerPlayer serverPlayer, int menuId, Map<Port, Integer> panelPortInfo, TypedSlotHolderState holderState) {
+        this.channel.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new SyncPortTabInfo(menuId, panelPortInfo, holderState));
     }
 
     public void syncPanelConnectionSelect(@Nullable String selectedConnection) {

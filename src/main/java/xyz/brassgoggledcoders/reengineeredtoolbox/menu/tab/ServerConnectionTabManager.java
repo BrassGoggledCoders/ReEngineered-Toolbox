@@ -19,13 +19,16 @@ public class ServerConnectionTabManager {
         this.playerConnectionTabManagers = new WeakHashMap<>();
     }
 
-    public void startSession(ServerPlayer serverPlayer, IFrameEntity frame, PanelEntity panelEntity) {
-        this.playerConnectionTabManagers.put(serverPlayer, new ServerPlayerConnectionTabManager(serverPlayer, frame, panelEntity));
+    public PlayerConnectionTabManager startSession(ServerPlayer serverPlayer, IFrameEntity frame, PanelEntity panelEntity) {
+        ServerPlayerConnectionTabManager tabManager = new ServerPlayerConnectionTabManager(serverPlayer, frame, panelEntity);
+        this.playerConnectionTabManagers.put(serverPlayer, tabManager);
+        return tabManager;
     }
 
     public Optional<? extends PlayerConnectionTabManager> getForPlayer(Player player) {
         ServerPlayerConnectionTabManager tabManager = this.playerConnectionTabManagers.get(player);
-        return Optional.ofNullable(tabManager);
+        return Optional.ofNullable(tabManager)
+                .filter(ServerPlayerConnectionTabManager::isValid);
     }
 
     public void tick() {
