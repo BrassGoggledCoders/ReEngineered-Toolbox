@@ -208,14 +208,4 @@ public class DispenserPanelEntity extends PanelEntity implements MenuProvider {
                 )
         );
     }
-
-    private boolean stillValid(Player player) {
-        if (player.distanceToSqr(Vec3.atCenterOf(this.getBlockPos())) <= 64.0D) {
-            if (this.getLevel().getBlockEntity(this.getBlockPos()) == this.getFrameEntity()) {
-                return this.getFrameEntity().getPanelEntity(this.getFacing()) == this;
-            }
-        }
-
-        return false;
-    }
 }

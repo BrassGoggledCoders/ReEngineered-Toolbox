@@ -4,7 +4,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -18,7 +20,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -129,6 +130,16 @@ public class PanelEntity implements ICapabilityProvider {
 
     public void invalidate() {
 
+    }
+
+    protected boolean stillValid(Player player) {
+        if (player.distanceToSqr(Vec3.atCenterOf(this.getBlockPos())) <= 64.0D) {
+            if (this.getLevel().getBlockEntity(this.getBlockPos()) == this.getFrameEntity()) {
+                return this.getFrameEntity().getPanelEntity(this.getFacing()) == this;
+            }
+        }
+
+        return false;
     }
 
     protected Panel getPanel() {
