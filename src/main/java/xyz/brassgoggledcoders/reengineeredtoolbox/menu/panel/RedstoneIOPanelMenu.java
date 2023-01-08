@@ -9,7 +9,7 @@ import net.minecraft.world.inventory.MenuType;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.IPanelMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Port;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.Port;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredMenus;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.SingleTypedSlotMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;

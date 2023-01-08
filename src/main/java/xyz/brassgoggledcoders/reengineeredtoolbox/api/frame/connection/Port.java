@@ -1,4 +1,4 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.api.panel;
+package xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;

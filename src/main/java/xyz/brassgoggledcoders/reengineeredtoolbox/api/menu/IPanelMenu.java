@@ -1,7 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.menu;
 
 import org.jetbrains.annotations.NotNull;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Port;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.Port;
 
 import java.util.List;
 
