@@ -9,14 +9,9 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityTyp
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneSupplier;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneTypedSlot;
 
-import java.util.UUID;
-
 public class RedstoneInputPanelEntity extends RedstoneIOPanelEntity {
-
-    private RedstoneSupplier redstoneSupplier;
 
     public RedstoneInputPanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(ReEngineeredPanels.REDSTONE_INPUT.getPanelEntityType(), frameEntity, panelState);
@@ -28,22 +23,13 @@ public class RedstoneInputPanelEntity extends RedstoneIOPanelEntity {
 
     @Override
     protected void afterConnection(IRedstoneTypedSlot typedSlot) {
-        this.redstoneSupplier = new RedstoneSupplier(
-                this::getPower,
-                this::checkValid,
-                UUID.randomUUID()
-        );
-        typedSlot.setContent(this.redstoneSupplier);
+        typedSlot.addSupplier(this.getIdentifier(), this::getPower);
     }
 
     @Override
     public IRedstoneTypedSlot getSlotForMenu() {
         IRedstoneTypedSlot redstoneTypedSlot = new RedstoneTypedSlot();
-        redstoneTypedSlot.setContent(new RedstoneSupplier(
-                this::getPower,
-                o -> true,
-                "screen"
-        ));
+        redstoneTypedSlot.addSupplier(this.getIdentifier(), this::getPower);
         return redstoneTypedSlot;
     }
 
@@ -60,10 +46,7 @@ public class RedstoneInputPanelEntity extends RedstoneIOPanelEntity {
                             .getSlot(this.getConnectedSlotId());
 
                     if (typedSlot instanceof IRedstoneTypedSlot redstoneTypedSlot) {
-                        if (this.redstoneSupplier == null || !this.redstoneSupplier.isValid()) {
-                            afterConnection(redstoneTypedSlot);
-                        }
-                        redstoneTypedSlot.checkPower();
+                        redstoneTypedSlot.checkUpdate();
                     }
                 }
                 if (this.getPower() > 0 != this.getPanelState().getValue(BlockStateProperties.POWERED)) {
@@ -72,9 +55,5 @@ public class RedstoneInputPanelEntity extends RedstoneIOPanelEntity {
                 }
             }
         }
-    }
-
-    public boolean checkValid(Object identification) {
-        return this.redstoneSupplier != null && this.redstoneSupplier.identifier().equals(identification);
     }
 }

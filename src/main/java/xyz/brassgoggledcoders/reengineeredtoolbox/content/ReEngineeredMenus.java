@@ -8,14 +8,13 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.menu.panel.RedstoneIOPanelMenu
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.SingleTypedSlotScreen;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.IItemTypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneSupplier;
 
 @SuppressWarnings("RedundantTypeArguments")
 public class ReEngineeredMenus {
 
     public static final MenuEntry<RedstoneIOPanelMenu> REDSTONE_IO = ReEngineeredToolbox.getRegistrate()
             .object("redstone_io")
-            .<RedstoneIOPanelMenu, SingleTypedSlotScreen<RedstoneIOPanelMenu, IRedstoneTypedSlot, RedstoneSupplier>>menu(
+            .<RedstoneIOPanelMenu, SingleTypedSlotScreen<RedstoneIOPanelMenu, IRedstoneTypedSlot, Integer>>menu(
                     RedstoneIOPanelMenu::create,
                     () -> SingleTypedSlotScreen::create
             )

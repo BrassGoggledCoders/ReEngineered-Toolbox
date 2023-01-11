@@ -35,7 +35,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.IItemTypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.util.MovingConnection;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.MovingConnection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.wrapper.PanelStillValidContainerWrapper;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -96,7 +96,7 @@ public class DispenserPanelEntity extends PanelEntity implements MenuProvider {
                     .getSlot(redstoneConnection);
 
             if (typedSlot instanceof IRedstoneTypedSlot redstoneTypedSlot) {
-                int newPower = redstoneTypedSlot.getContent().getAsInt();
+                int newPower = redstoneTypedSlot.getContent();
                 if (newPower > 0 != this.getPanelState().getValue(BlockStateProperties.TRIGGERED)) {
                     if (newPower > 0) {
                         this.getFrameEntity()

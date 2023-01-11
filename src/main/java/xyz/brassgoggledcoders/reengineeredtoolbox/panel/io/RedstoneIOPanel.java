@@ -8,11 +8,10 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneIOPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneSupplier;
 
 import java.util.function.BiFunction;
 
-public class RedstoneIOPanel extends IOPanel<IRedstoneTypedSlot, RedstoneSupplier> {
+public class RedstoneIOPanel extends IOPanel<IRedstoneTypedSlot, Integer> {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     public RedstoneIOPanel(BiFunction<IFrameEntity, PanelState, ? extends RedstoneIOPanelEntity> panelEntityConstructor) {

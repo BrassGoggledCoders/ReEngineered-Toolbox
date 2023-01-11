@@ -13,11 +13,10 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneSupplier;
 
 import java.util.Optional;
 
-public abstract class RedstoneIOPanelEntity extends IOPanelEntity<IRedstoneTypedSlot, RedstoneSupplier> {
+public abstract class RedstoneIOPanelEntity extends IOPanelEntity<IRedstoneTypedSlot, Integer> {
     private int power;
 
     public RedstoneIOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
