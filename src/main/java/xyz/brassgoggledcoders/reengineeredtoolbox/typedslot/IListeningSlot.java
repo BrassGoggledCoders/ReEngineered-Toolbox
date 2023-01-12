@@ -10,7 +10,6 @@ public interface IListeningSlot<T> extends ITypedSlot<T> {
 
     void addConsumer(Port port, Consumer<T> tConsumer);
 
-    boolean containsHandler(Port port);
 
     void removeHandler(Port port);
 

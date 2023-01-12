@@ -72,11 +72,6 @@ public class RedstoneTypedSlot implements IRedstoneTypedSlot {
     }
 
     @Override
-    public boolean containsHandler(Port port) {
-        return this.suppliers.containsKey(port) || this.consumers.containsKey(port);
-    }
-
-    @Override
     public void removeHandler(Port port) {
         this.suppliers.remove(port);
         this.consumers.remove(port);
