@@ -1,10 +1,15 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.content;
 
 import com.google.common.base.Suppliers;
+import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import net.minecraft.core.Registry;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.items.IItemHandler;
@@ -15,6 +20,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.MovingConnection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panel.PanelWithMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.IOPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.RedstoneIOPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.world.DispenserPanel;
@@ -22,7 +28,10 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemInputP
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneInputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneOutputPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.FreezerPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.dispenser.DispenserPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.freezer.FreezerRecipeBuilder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.ingredient.FluidIngredient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelEntry;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.IItemTypedSlot;
 
@@ -51,6 +60,13 @@ public class ReEngineeredPanels {
             .panelState((context, provider) -> provider.openDirectionalPanel(context.get()))
             .item()
             .properties(properties -> properties.tab(null))
+            .build()
+            .register();
+
+    public static final PanelEntry<Panel> BLANK = ReEngineeredToolbox.getRegistrateAddon()
+            .object("blank")
+            .panel(Panel::new)
+            .item()
             .build()
             .register();
 
@@ -131,6 +147,42 @@ public class ReEngineeredPanels {
             .panel(DispenserPanel::new)
             .panelEntity(DispenserPanelEntity::new)
             .item()
+            .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())
+                    .pattern("D")
+                    .pattern("P")
+                    .define('D', Items.DISPENSER)
+                    .define('P', BLANK.asPanel())
+                    .unlockedBy("has_item", RegistrateRecipeProvider.has(BLANK.asPanel()))
+                    .save(provider)
+            )
+            .build()
+            .register();
+
+    public static final PanelEntry<PanelWithMenu<FreezerPanelEntity>> FREEZER = ReEngineeredToolbox.getRegistrateAddon()
+            .object("freezer")
+            .panel(() -> new PanelWithMenu<>(FreezerPanelEntity::new))
+            .panelEntity(FreezerPanelEntity::new)
+            .item()
+            .recipe((context, provider) -> {
+                ShapedRecipeBuilder.shaped(context.get())
+                        .pattern(" I ")
+                        .pattern("IFI")
+                        .pattern(" P ")
+                        .define('I', Items.ICE)
+                        .define('F', Items.FURNACE)
+                        .define('P', BLANK.asPanel())
+                        .unlockedBy("has_item", RegistrateRecipeProvider.has(BLANK.asPanel()))
+                        .save(provider);
+
+                FreezerRecipeBuilder.of(Items.ICE, 4)
+                        .withFluidInput(FluidIngredient.of(FluidTags.WATER))
+                        .save(provider);
+
+                FreezerRecipeBuilder.of(Items.BLUE_ICE)
+                        .withItemInput(Ingredient.of(Items.ICE))
+                        .withFluidInput(FluidIngredient.of(FluidTags.WATER))
+                        .save(provider);
+            })
             .build()
             .register();
 

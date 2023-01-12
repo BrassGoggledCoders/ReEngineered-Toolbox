@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "D": {
+      "item": "minecraft:dispenser"
+    },
+    "P": {
+      "item": "reengineered_toolbox:blank"
+    }
+  },
+  "pattern": [
+    "D",
+    "P"
+  ],
+  "result": {
+    "item": "reengineered_toolbox:dispenser"
+  }
+}

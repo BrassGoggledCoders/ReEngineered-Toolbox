@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredBlocks;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredMenus;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredRecipes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.network.NetworkHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.ReEngineeredRegistrateAddon;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
@@ -45,6 +46,7 @@ public class ReEngineeredToolbox {
         ReEngineeredBlocks.setup();
         ReEngineeredMenus.setup();
         ReEngineeredPanels.setup();
+        ReEngineeredRecipes.setup();
 
         ContainerSyncing.setup(ID, LOGGER);
         TypedSlotTypes.setup();
