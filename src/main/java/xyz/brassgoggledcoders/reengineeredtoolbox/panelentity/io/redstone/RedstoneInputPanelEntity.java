@@ -4,10 +4,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.ListeningConnection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneTypedSlot;
 
@@ -22,14 +22,18 @@ public class RedstoneInputPanelEntity extends RedstoneIOPanelEntity {
     }
 
     @Override
-    protected void afterConnection(IRedstoneTypedSlot typedSlot) {
-        typedSlot.addSupplier(this.getIdentifier(), this::getPower);
+    protected ListeningConnection<IRedstoneTypedSlot, Integer> createConnection() {
+        return ListeningConnection.redstoneSupplier(
+                this.getFrameEntity().getTypedSlotHolder(),
+                this.getPort(),
+                this::getPower
+        );
     }
 
     @Override
     public IRedstoneTypedSlot getSlotForMenu() {
         IRedstoneTypedSlot redstoneTypedSlot = new RedstoneTypedSlot();
-        redstoneTypedSlot.addSupplier(this.getIdentifier(), this::getPower);
+        redstoneTypedSlot.addSupplier(this.getPort(), this::getPower);
         return redstoneTypedSlot;
     }
 
@@ -40,15 +44,7 @@ public class RedstoneInputPanelEntity extends RedstoneIOPanelEntity {
             int newPower = this.getLevel().getSignal(this.getBlockPos().relative(direction), direction);
             if (this.getPower() != newPower) {
                 this.setPower(newPower);
-                if (this.getConnectedSlotId() >= 0) {
-                    ITypedSlot<?> typedSlot = this.getFrameEntity()
-                            .getTypedSlotHolder()
-                            .getSlot(this.getConnectedSlotId());
-
-                    if (typedSlot instanceof IRedstoneTypedSlot redstoneTypedSlot) {
-                        redstoneTypedSlot.checkUpdate();
-                    }
-                }
+                this.getConnection().checkUpdate();
                 if (this.getPower() > 0 != this.getPanelState().getValue(BlockStateProperties.POWERED)) {
                     this.getFrameEntity()
                             .putPanelState(direction, this.getPanelState().setValue(BlockStateProperties.POWERED, this.getPower() > 0), true);

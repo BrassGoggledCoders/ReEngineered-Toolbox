@@ -1,9 +1,12 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.MovingConnection;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.MovingConnection.ConnectionDirection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
@@ -20,14 +23,12 @@ public class ItemInputPanelEntity extends ItemIOPanelEntity {
     }
 
     @Override
-    public void serverTick() {
-        super.serverTick();
-        if (!this.getSlotForMenu().isEmpty() && this.isConnected()) {
-            IItemTypedSlot connectedSlot = this.getConnectedSlot();
-            if (connectedSlot != null) {
-                ItemStack notInserted = ItemHandlerHelper.insertItem(connectedSlot, this.getSlotForMenu().getContent(), false);
-                this.getSlotForMenu().setContent(notInserted);
-            }
-        }
+    protected MovingConnection<IItemTypedSlot, ItemStack, IItemHandler> createConnection() {
+        return MovingConnection.itemConnection(
+                this.getFrameEntity().getTypedSlotHolder(),
+                this.getPort(),
+                this::getSlotForMenu,
+                ConnectionDirection.TO_SLOT
+        );
     }
 }

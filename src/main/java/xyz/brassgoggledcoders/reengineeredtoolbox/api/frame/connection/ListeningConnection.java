@@ -27,9 +27,16 @@ public class ListeningConnection<T extends IListeningSlot<U>, U> extends Connect
     protected void afterConnection(T typedSlot) {
         super.afterConnection(typedSlot);
         if (this.supplier != null) {
-            typedSlot.addSupplier(this.getPort().identifier(), this.supplier);
+            typedSlot.addSupplier(this.getPort(), this.supplier);
         } else if (this.consumer != null) {
-            typedSlot.addConsumer(this.getPort().identifier(), this.consumer);
+            typedSlot.addConsumer(this.getPort(), this.consumer);
+        }
+    }
+
+    public void checkUpdate() {
+        if (this.isConnected()) {
+            this.getConnectedSlot()
+                    .checkUpdate();
         }
     }
 
@@ -37,7 +44,7 @@ public class ListeningConnection<T extends IListeningSlot<U>, U> extends Connect
     public void clear() {
         T connectedSlot = this.getConnectedSlot();
         if (connectedSlot != null) {
-            connectedSlot.removeHandler(this.getPort().identifier());
+            connectedSlot.removeHandler(this.getPort());
         }
     }
 

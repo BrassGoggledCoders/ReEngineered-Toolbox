@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone;
 
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.Port;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,8 +11,8 @@ import java.util.function.Supplier;
 
 public class RedstoneTypedSlot implements IRedstoneTypedSlot {
 
-    private final Map<String, Consumer<Integer>> consumers;
-    private final Map<String, Supplier<Integer>> suppliers;
+    private final Map<Port, Consumer<Integer>> consumers;
+    private final Map<Port, Supplier<Integer>> suppliers;
 
     private Runnable onChange = null;
     private int lastPower = -1;
@@ -55,23 +56,24 @@ public class RedstoneTypedSlot implements IRedstoneTypedSlot {
     }
 
     @Override
-    public void addSupplier(String identifier, Supplier<Integer> supplier) {
-        this.suppliers.put(identifier, supplier);
+    public void addSupplier(Port port, Supplier<Integer> supplier) {
+        this.suppliers.put(port, supplier);
     }
 
     @Override
-    public void addConsumer(String identifier, Consumer<Integer> consumer) {
-        this.consumers.put(identifier, consumer);
+    public void addConsumer(Port port, Consumer<Integer> consumer) {
+        this.consumers.put(port, consumer);
     }
 
     @Override
-    public boolean containsHandler(String identifier) {
-        return this.suppliers.containsKey(identifier) || this.consumers.containsKey(identifier);
+    public boolean containsHandler(Port port) {
+        return this.suppliers.containsKey(port) || this.consumers.containsKey(port);
     }
 
     @Override
-    public void removeHandler(String identifier) {
-
+    public void removeHandler(Port port) {
+        this.suppliers.remove(port);
+        this.consumers.remove(port);
     }
 
     @Override

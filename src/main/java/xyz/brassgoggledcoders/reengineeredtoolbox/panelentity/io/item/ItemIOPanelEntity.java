@@ -11,19 +11,17 @@ import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.MovingConnection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.panel.ItemIOPanelMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.IOPanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.IItemTypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.ItemTypedSlot;
 
-import java.util.Optional;
-
-public class ItemIOPanelEntity extends IOPanelEntity<IItemTypedSlot, ItemStack> {
+public abstract class ItemIOPanelEntity extends IOPanelEntity<IItemTypedSlot, ItemStack, MovingConnection<IItemTypedSlot, ItemStack, IItemHandler>> {
 
     private final IItemTypedSlot panelTypedSlot;
     private final LazyOptional<IItemHandler> lazyOptional;
@@ -35,12 +33,9 @@ public class ItemIOPanelEntity extends IOPanelEntity<IItemTypedSlot, ItemStack> 
     }
 
     @Override
-    protected Optional<IItemTypedSlot> getTypedSlot(ITypedSlot<?> typedSlot) {
-        if (typedSlot instanceof IItemTypedSlot itemTypedSlot) {
-            return Optional.of(itemTypedSlot);
-        }
-
-        return Optional.empty();
+    public void serverTick() {
+        super.serverTick();
+        this.getConnection().tick();
     }
 
     @Override

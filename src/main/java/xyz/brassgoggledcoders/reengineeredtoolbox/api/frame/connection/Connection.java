@@ -34,7 +34,7 @@ public class Connection<T extends ITypedSlot<U>, U> implements INBTSerializable<
 
     }
 
-    protected T getConnectedSlot() {
+    public T getConnectedSlot() {
         ITypedSlot<?> typedSlot = this.slotHolder.getSlot(slotId);
         if (this.matches(typedSlot)) {
             return tClass.cast(typedSlot);

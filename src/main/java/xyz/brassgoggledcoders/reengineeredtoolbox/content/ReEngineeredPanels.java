@@ -7,10 +7,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.MovingConnection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.IOPanel;
@@ -52,22 +54,24 @@ public class ReEngineeredPanels {
             .build()
             .register();
 
-    public static final PanelEntry<IOPanel<IItemTypedSlot, ItemStack>> ITEM_INPUT = ReEngineeredToolbox.getRegistrateAddon()
-            .object("item_input")
-            .panel(() -> new IOPanel<>(ItemInputPanelEntity::new))
-            .panelEntity(ItemInputPanelEntity::new)
-            .item()
-            .build()
-            .register();
+    public static final PanelEntry<IOPanel<IItemTypedSlot, ItemStack, MovingConnection<IItemTypedSlot, ItemStack, IItemHandler>>> ITEM_INPUT =
+            ReEngineeredToolbox.getRegistrateAddon()
+                    .object("item_input")
+                    .panel(() -> new IOPanel<>(ItemInputPanelEntity::new))
+                    .panelEntity(ItemInputPanelEntity::new)
+                    .item()
+                    .build()
+                    .register();
 
 
-    public static final PanelEntry<IOPanel<IItemTypedSlot, ItemStack>> ITEM_OUTPUT = ReEngineeredToolbox.getRegistrateAddon()
-            .object("item_output")
-            .panel(() -> new IOPanel<>(ItemOutputPanelEntity::new))
-            .panelEntity(ItemOutputPanelEntity::new)
-            .item()
-            .build()
-            .register();
+    public static final PanelEntry<IOPanel<IItemTypedSlot, ItemStack, MovingConnection<IItemTypedSlot, ItemStack, IItemHandler>>> ITEM_OUTPUT =
+            ReEngineeredToolbox.getRegistrateAddon()
+                    .object("item_output")
+                    .panel(() -> new IOPanel<>(ItemOutputPanelEntity::new))
+                    .panelEntity(ItemOutputPanelEntity::new)
+                    .item()
+                    .build()
+                    .register();
 
     public static final PanelEntry<RedstoneIOPanel> REDSTONE_INPUT = ReEngineeredToolbox.getRegistrateAddon()
             .object("redstone_input")
@@ -129,7 +133,6 @@ public class ReEngineeredPanels {
             .item()
             .build()
             .register();
-
 
 
     public static ForgeRegistry<Panel> getRegistry() {

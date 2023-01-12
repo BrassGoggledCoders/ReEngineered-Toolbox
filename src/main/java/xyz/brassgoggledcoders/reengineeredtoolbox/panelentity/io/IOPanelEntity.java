@@ -5,21 +5,20 @@ import net.minecraft.world.inventory.MenuConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.Connection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.Port;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlotHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotType;
 
 import java.util.Map;
-import java.util.Optional;
 
-public abstract class IOPanelEntity<T extends ITypedSlot<U>, U> extends PanelEntity {
+public abstract class IOPanelEntity<T extends ITypedSlot<U>, U, V extends Connection<T, U>> extends PanelEntity {
 
     private final Port ioPort;
-    private int connectedSlotId = -1;
+    private V connection;
 
     public IOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(type, frameEntity, panelState);
@@ -28,72 +27,47 @@ public abstract class IOPanelEntity<T extends ITypedSlot<U>, U> extends PanelEnt
                 this.getPanelState().getPanel().getName(),
                 this.getTypedSlotType()
         );
+        this.connection = this.createConnection();
     }
-
-    protected abstract Optional<T> getTypedSlot(ITypedSlot<?> typedSlot);
 
     @NotNull
     protected abstract String getIdentifier();
 
+    protected abstract V createConnection();
+
+    public V getConnection() {
+        return this.connection;
+    }
+
     @Override
     public void setPortConnection(Port port, int slotNumber) {
-        if (port.identifier().equals(this.getIdentifier())) {
-            ITypedSlotHolder typedSlotHolder = this.getFrameEntity()
-                    .getTypedSlotHolder();
-
-            this.getTypedSlot(typedSlotHolder.getSlot(slotNumber))
-                    .ifPresent(typedSlot -> {
-                        this.setConnectedSlotId(slotNumber);
-                        afterConnection(typedSlot);
-                    });
-        }
-    }
-
-    public int getConnectedSlotId() {
-        return connectedSlotId;
-    }
-
-    public void setConnectedSlotId(int connectedSlotId) {
-        this.connectedSlotId = connectedSlotId;
-    }
-
-    protected void afterConnection(T typedSlot) {
-
+        this.getConnection().setSlotConnector(port, slotNumber);
     }
 
     @Nullable
     public T getConnectedSlot() {
-        if (this.getConnectedSlotId() >= 0) {
-            ITypedSlot<?> slot = this.getFrameEntity()
-                    .getTypedSlotHolder()
-                    .getSlot(this.getConnectedSlotId());
-
-            return this.getTypedSlot(slot)
-                    .orElse(null);
-        }
-
-        return null;
+        return this.getConnection().getConnectedSlot();
     }
 
     @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);
-        this.connectedSlotId = pTag.getInt("ConnectedSlotId");
+        this.connection.deserializeNBT(pTag.getCompound("Connection"));
     }
 
     @Override
     public void save(CompoundTag pTag) {
         super.save(pTag);
-        pTag.putInt("ConnectedSlotId", this.connectedSlotId);
+        pTag.put("Connection", this.connection.serializeNBT());
+    }
+
+    public Port getPort() {
+        return this.ioPort;
     }
 
     @Override
     public Map<Port, Integer> getPorts() {
-        return Map.of(ioPort, this.getConnectedSlotId());
-    }
-
-    public boolean isConnected() {
-        return this.getConnectedSlotId() >= 0;
+        return Map.of(ioPort, this.getConnection().getSlotId());
     }
 
     public abstract T getSlotForMenu();
