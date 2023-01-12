@@ -3,12 +3,11 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.ListeningConnection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneSupplier;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneTypedSlot;
 
 import java.util.Optional;
@@ -24,20 +23,20 @@ public class RedstoneOutputPanelEntity extends RedstoneIOPanelEntity {
     }
 
     @Override
-    public void slotUpdated(int slot) {
-        if (slot == this.getConnectedSlotId()) {
-            ITypedSlot<?> typedSlot = this.getFrameEntity()
-                    .getTypedSlotHolder()
-                    .getSlot(this.getConnectedSlotId());
+    protected ListeningConnection<IRedstoneTypedSlot, Integer> createConnection() {
+        return ListeningConnection.redstoneConsumer(
+                this.getFrameEntity().getTypedSlotHolder(),
+                this.getPort(),
+                this::setPowerAndUpdate
+        );
+    }
 
-            if (typedSlot instanceof IRedstoneTypedSlot redstoneTypedSlot) {
-                int newPower = redstoneTypedSlot.getContent().getAsInt();
-                this.setPower(newPower);
-                if (newPower > 0 != this.getPanelState().getValue(BlockStateProperties.POWERED)) {
-                    this.getFrameEntity()
-                            .putPanelState(this.getFacing(), this.getPanelState().setValue(BlockStateProperties.POWERED, this.getPower() > 0), true);
-                }
-            }
+    public void setPowerAndUpdate(int power) {
+        this.setPower(power);
+        if (this.getPower() > 0 != this.getPanelState().getValue(BlockStateProperties.POWERED)) {
+            PanelState panelState = this.getPanelState().setValue(BlockStateProperties.POWERED, this.getPower() > 0);
+            this.getFrameEntity()
+                    .putPanelState(this.getFacing(), panelState, true);
         }
     }
 
@@ -51,7 +50,6 @@ public class RedstoneOutputPanelEntity extends RedstoneIOPanelEntity {
     public int getSignal() {
         return Optional.ofNullable(this.getConnectedSlot())
                 .map(IRedstoneTypedSlot::getContent)
-                .map(RedstoneSupplier::getAsInt)
                 .orElse(0);
     }
 }

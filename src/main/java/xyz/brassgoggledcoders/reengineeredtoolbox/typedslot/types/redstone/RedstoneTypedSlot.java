@@ -1,38 +1,39 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone;
 
 import net.minecraft.nbt.CompoundTag;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.Port;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class RedstoneTypedSlot implements IRedstoneTypedSlot {
-    private final RedstoneSupplier EMPTY = new RedstoneSupplier(
-            () -> 0,
-            identifier -> true,
-            "empty"
-    );
-    private final Map<Object, RedstoneSupplier> supplierMap;
+
+    private final Map<Port, Consumer<Integer>> consumers;
+    private final Map<Port, Supplier<Integer>> suppliers;
 
     private Runnable onChange = null;
     private int lastPower = -1;
 
     public RedstoneTypedSlot() {
-        this.supplierMap = new HashMap<>();
+        this.consumers = new HashMap<>();
+        this.suppliers = new HashMap<>();
     }
 
     @Override
-    public RedstoneSupplier getContent() {
-        RedstoneSupplier redstoneSupplier = this.supplierMap.values()
-                .stream()
-                .filter(RedstoneSupplier::isValid)
-                .max(RedstoneSupplier::compareTo)
-                .orElse(EMPTY);
-        if (this.lastPower != redstoneSupplier.getAsInt()) {
-            this.lastPower = redstoneSupplier.getAsInt();
-            this.onChange();
+    @NotNull
+    public Integer getContent() {
+        if (this.lastPower < 0) {
+            this.checkUpdate();
         }
-        return redstoneSupplier;
+        return lastPower;
+    }
+
+    @Override
+    public void setContent(@NotNull Integer content) {
+        this.lastPower = content;
     }
 
     @Override
@@ -48,14 +49,6 @@ public class RedstoneTypedSlot implements IRedstoneTypedSlot {
     }
 
     @Override
-    public void setContent(@Nullable RedstoneSupplier content) {
-        if (content != null) {
-            this.supplierMap.put(content.identifier(), content);
-        }
-        this.supplierMap.entrySet().removeIf(entry -> !entry.getValue().isValid());
-    }
-
-    @Override
     public CompoundTag toNBT() {
         return new CompoundTag();
     }
@@ -66,12 +59,44 @@ public class RedstoneTypedSlot implements IRedstoneTypedSlot {
     }
 
     @Override
-    public boolean containsIdentifier(Object o) {
-        return this.supplierMap.containsKey(o);
+    public void addSupplier(Port port, Supplier<Integer> supplier) {
+        this.suppliers.put(port, supplier);
     }
 
     @Override
-    public void checkPower() {
-        this.getContent();
+    public void addConsumer(Port port, Consumer<Integer> consumer) {
+        this.consumers.put(port, consumer);
+        if (!this.checkUpdate()) {
+            consumer.accept(this.lastPower);
+        }
+    }
+
+    @Override
+    public boolean containsHandler(Port port) {
+        return this.suppliers.containsKey(port) || this.consumers.containsKey(port);
+    }
+
+    @Override
+    public void removeHandler(Port port) {
+        this.suppliers.remove(port);
+        this.consumers.remove(port);
+        this.checkUpdate();
+    }
+
+    @Override
+    public boolean checkUpdate() {
+        int newPower = this.suppliers.values()
+                .stream()
+                .mapToInt(Supplier::get)
+                .max()
+                .orElse(0);
+
+        if (this.lastPower != newPower) {
+            this.lastPower = newPower;
+            this.consumers.values().forEach(consumer -> consumer.accept(this.lastPower));
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -40,7 +40,7 @@ public class RedstoneSlotType extends TypedSlotType {
 
                 int power = 0;
                 if (typedSlot instanceof IRedstoneTypedSlot redstoneTypedSlot) {
-                    power = redstoneTypedSlot.getContent().getAsInt();
+                    power = redstoneTypedSlot.getContent();
                 }
                 Color color = new Color(RedStoneWireBlock.getColorForPower(power));
 

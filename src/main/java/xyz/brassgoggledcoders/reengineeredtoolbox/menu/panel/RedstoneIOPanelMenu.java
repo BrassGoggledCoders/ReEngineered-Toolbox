@@ -14,31 +14,26 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredMenus;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.SingleTypedSlotMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneSupplier;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneTypedSlot;
 import xyz.brassgoggledcoders.shadyskies.containersyncing.property.PropertyTypes;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-public class RedstoneIOPanelMenu extends SingleTypedSlotMenu<IRedstoneTypedSlot, RedstoneSupplier> implements IPanelMenu {
+public class RedstoneIOPanelMenu extends SingleTypedSlotMenu<IRedstoneTypedSlot, Integer> implements IPanelMenu {
     public RedstoneIOPanelMenu(MenuType<?> pMenuType, int pContainerId, Inventory inventory) {
         super(pMenuType, pContainerId, inventory, ContainerLevelAccess.NULL, Suppliers.memoize(RedstoneTypedSlot::new), null, null);
         this.getPropertyManager().addTrackedProperty(PropertyTypes.INTEGER.create(
-                () -> this.getTypedSlot().getContent().getAsInt(),
-                value -> this.getTypedSlot().setContent(new RedstoneSupplier(
-                        () -> value,
-                        o -> true,
-                        "update"
-                ))
-        ));
+                () -> this.getTypedSlot().getContent(),
+                value -> this.getTypedSlot().setContent(value))
+        );
     }
 
     public RedstoneIOPanelMenu(int pContainerId, Inventory inventory, Supplier<IRedstoneTypedSlot> typedSlot,
                                ContainerLevelAccess access, Direction panelSide, Panel panel) {
         super(ReEngineeredMenus.REDSTONE_IO.get(), pContainerId, inventory, access, typedSlot, panelSide, panel);
         this.getPropertyManager().addTrackedProperty(PropertyTypes.INTEGER.create(
-                () -> this.getTypedSlot().getContent().getAsInt()
+                () -> this.getTypedSlot().getContent()
         ));
     }
 

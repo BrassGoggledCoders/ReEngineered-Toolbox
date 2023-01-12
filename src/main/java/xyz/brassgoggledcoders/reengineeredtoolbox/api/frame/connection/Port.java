@@ -5,6 +5,9 @@ import net.minecraft.network.chat.Component;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
 
+import java.util.UUID;
+import java.util.function.Supplier;
+
 public record Port(
         String identifier,
         Component description,

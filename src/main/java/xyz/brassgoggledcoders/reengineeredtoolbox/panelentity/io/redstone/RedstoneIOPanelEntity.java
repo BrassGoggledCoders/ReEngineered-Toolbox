@@ -5,19 +5,16 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuConstructor;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.ListeningConnection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.panel.RedstoneIOPanelMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.IOPanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneSupplier;
 
-import java.util.Optional;
-
-public abstract class RedstoneIOPanelEntity extends IOPanelEntity<IRedstoneTypedSlot, RedstoneSupplier> {
+public abstract class RedstoneIOPanelEntity extends IOPanelEntity<IRedstoneTypedSlot, Integer, ListeningConnection<IRedstoneTypedSlot, Integer>> {
     private int power;
 
     public RedstoneIOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
@@ -46,15 +43,6 @@ public abstract class RedstoneIOPanelEntity extends IOPanelEntity<IRedstoneTyped
 
     public int getSignal() {
         return 0;
-    }
-
-    @Override
-    protected Optional<IRedstoneTypedSlot> getTypedSlot(ITypedSlot<?> typedSlot) {
-        if (typedSlot instanceof IRedstoneTypedSlot redstoneTypedSlot) {
-            return Optional.of(redstoneTypedSlot);
-        } else {
-            return Optional.empty();
-        }
     }
 
     @Override

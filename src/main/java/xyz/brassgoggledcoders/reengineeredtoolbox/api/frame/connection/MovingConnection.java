@@ -1,9 +1,8 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.util;
+package xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.Port;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlotHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.IItemTypedSlot;
@@ -12,27 +11,20 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class MovingConnection<T extends ITypedSlot<U>, U, V> {
-    private final Class<T> tClass;
-    private final ITypedSlotHolder slotHolder;
+public class MovingConnection<T extends ITypedSlot<U>, U, V> extends Connection<T, U> {
     private final Supplier<V> externalPoint;
-    private final Port port;
     private final Function<T, V> convertSlot;
     private final BiPredicate<V, V> mover;
     private final ConnectionDirection direction;
     private final int maxCoolDown;
     private final int tickWait;
-
-    private int slotId = -1;
     private int coolDown;
     private int ticks;
 
     public MovingConnection(Class<T> tClass, ITypedSlotHolder slotHolder, Port port, Supplier<V> externalPoint, Function<T, V> convertTo,
                             BiPredicate<V, V> mover, ConnectionDirection direction, int maxCoolDown, int tickWait) {
-        this.tClass = tClass;
-        this.slotHolder = slotHolder;
+        super(tClass, slotHolder, port);
         this.externalPoint = externalPoint;
-        this.port = port;
         this.convertSlot = convertTo;
         this.mover = mover;
         this.direction = direction;
@@ -67,38 +59,6 @@ public class MovingConnection<T extends ITypedSlot<U>, U, V> {
                 this.ticks = this.tickWait;
             }
         }
-    }
-
-    public void setSlotConnector(Port port, int slotId) {
-        if (this.port.equals(port)) {
-            if (this.matches(this.slotHolder.getSlot(slotId))) {
-                this.slotId = slotId;
-            }
-        }
-    }
-
-    private T getConnectedSlot() {
-        ITypedSlot<?> typedSlot = this.slotHolder.getSlot(slotId);
-        if (this.matches(typedSlot)) {
-            return tClass.cast(typedSlot);
-        }
-        return null;
-    }
-
-    public boolean isConnected() {
-        return slotId >= 0 && this.matches(slotHolder.getSlot(slotId));
-    }
-
-    private boolean matches(ITypedSlot<?> typedSlot) {
-        return tClass.isInstance(typedSlot);
-    }
-
-    public int getSlotId() {
-        return slotId;
-    }
-
-    public boolean isConnectedTo(int slot) {
-        return this.getSlotId() == slot;
     }
 
     public static MovingConnection<IItemTypedSlot, ItemStack, IItemHandler> itemConnection(

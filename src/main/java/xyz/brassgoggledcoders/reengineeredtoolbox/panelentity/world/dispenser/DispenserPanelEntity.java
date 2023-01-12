@@ -25,17 +25,17 @@ import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.ListeningConnection;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.MovingConnection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.Port;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.mixin.DispenserBlockAccessor;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.world.DispenserPanel;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.IItemTypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.util.MovingConnection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.wrapper.PanelStillValidContainerWrapper;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -48,7 +48,7 @@ public class DispenserPanelEntity extends PanelEntity implements MenuProvider {
     private final Port itemPort;
     private final Port redstonePort;
     private final MovingConnection<IItemTypedSlot, ItemStack, IItemHandler> itemConnection;
-    private int redstoneConnection = -1;
+    private final ListeningConnection<IRedstoneTypedSlot, Integer> redstoneConnection;
 
     public DispenserPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(type, frameEntity, panelState);
@@ -71,6 +71,11 @@ public class DispenserPanelEntity extends PanelEntity implements MenuProvider {
                         .orElseThrow(() -> new IllegalStateException("Stored Dispenser has No Inventory")),
                 MovingConnection.ConnectionDirection.FROM_SLOT
         );
+        this.redstoneConnection = ListeningConnection.redstoneConsumer(
+                frameEntity.getTypedSlotHolder(),
+                redstonePort,
+                this::setPowerAndUpdate
+        );
     }
 
     @Override
@@ -82,30 +87,17 @@ public class DispenserPanelEntity extends PanelEntity implements MenuProvider {
     @Override
     public void setPortConnection(Port port, int slotNumber) {
         this.itemConnection.setSlotConnector(port, slotNumber);
-        if (port.equals(redstonePort)) {
-            this.redstoneConnection = slotNumber;
-        }
+        this.redstoneConnection.setSlotConnector(port, slotNumber);
     }
 
-    @Override
-    public void slotUpdated(int slot) {
-        super.slotUpdated(slot);
-        if (slot == redstoneConnection) {
-            ITypedSlot<?> typedSlot = this.getFrameEntity()
-                    .getTypedSlotHolder()
-                    .getSlot(redstoneConnection);
-
-            if (typedSlot instanceof IRedstoneTypedSlot redstoneTypedSlot) {
-                int newPower = redstoneTypedSlot.getContent().getAsInt();
-                if (newPower > 0 != this.getPanelState().getValue(BlockStateProperties.TRIGGERED)) {
-                    if (newPower > 0) {
-                        this.getFrameEntity()
-                                .scheduleTick(this.getFacing(), this.getPanel(), 4);
-                    }
-                    this.getFrameEntity()
-                            .putPanelState(this.getFacing(), this.getPanelState().setValue(BlockStateProperties.TRIGGERED, newPower > 0), true);
-                }
+    private void setPowerAndUpdate(int power) {
+        if (power > 0 != this.getPanelState().getValue(BlockStateProperties.TRIGGERED)) {
+            if (power > 0) {
+                this.getFrameEntity()
+                        .scheduleTick(this.getFacing(), this.getPanel(), 4);
             }
+            this.getFrameEntity()
+                    .putPanelState(this.getFacing(), this.getPanelState().setValue(BlockStateProperties.TRIGGERED, power > 0), true);
         }
     }
 
@@ -143,7 +135,7 @@ public class DispenserPanelEntity extends PanelEntity implements MenuProvider {
     public Map<Port, Integer> getPorts() {
         return Map.of(
                 this.itemPort, this.itemConnection.getSlotId(),
-                this.redstonePort, this.redstoneConnection
+                this.redstonePort, this.redstoneConnection.getSlotId()
         );
     }
 
@@ -176,16 +168,16 @@ public class DispenserPanelEntity extends PanelEntity implements MenuProvider {
     public void save(CompoundTag pTag) {
         super.save(pTag);
         pTag.put("Dispenser", this.getDispenserEntity().saveWithoutMetadata());
-        pTag.putInt("ItemConnection", this.itemConnection.getSlotId());
-        pTag.putInt("RedstoneConnection", this.redstoneConnection);
+        pTag.put("ItemConnection", this.itemConnection.serializeNBT());
+        pTag.put("RedstoneConnection", this.redstoneConnection.serializeNBT());
     }
 
     @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);
         this.internalDispenser.get().load(pTag.getCompound("Dispenser"));
-        this.itemConnection.setSlotConnector(this.itemPort, pTag.getInt("ItemConnection"));
-        this.redstoneConnection = pTag.getInt("RedstoneConnection");
+        this.itemConnection.deserializeNBT(pTag.getCompound("ItemConnection"));
+        this.redstoneConnection.deserializeNBT(pTag.getCompound("RedstoneConnection"));
     }
 
     @Override
