@@ -14,5 +14,5 @@ public interface IListeningSlot<T> extends ITypedSlot<T> {
 
     void removeHandler(Port port);
 
-    void checkUpdate();
+    boolean checkUpdate();
 }

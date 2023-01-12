@@ -202,13 +202,15 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     public void load(@NotNull CompoundTag pTag) {
         super.load(pTag);
 
+        if (pTag.contains("TypedSlotHolder")) {
+            this.typedSlotHolder.deserializeNBT(pTag.getCompound("TypedSlotHolder"));
+        }
+
         if (pTag.contains("Panels")) {
             CompoundTag panelsTag = pTag.getCompound("Panels");
             readPanels(panelsTag);
         }
-        if (pTag.contains("TypedSlotHolder")) {
-            this.typedSlotHolder.deserializeNBT(pTag.getCompound("TypedSlotHolder"));
-        }
+
     }
 
     private void readPanels(CompoundTag panelsTag) {

@@ -25,6 +25,9 @@ public class RedstoneTypedSlot implements IRedstoneTypedSlot {
     @Override
     @NotNull
     public Integer getContent() {
+        if (this.lastPower < 0) {
+            this.checkUpdate();
+        }
         return lastPower;
     }
 
@@ -63,6 +66,9 @@ public class RedstoneTypedSlot implements IRedstoneTypedSlot {
     @Override
     public void addConsumer(Port port, Consumer<Integer> consumer) {
         this.consumers.put(port, consumer);
+        if (!this.checkUpdate()) {
+            consumer.accept(this.lastPower);
+        }
     }
 
     @Override
@@ -74,10 +80,23 @@ public class RedstoneTypedSlot implements IRedstoneTypedSlot {
     public void removeHandler(Port port) {
         this.suppliers.remove(port);
         this.consumers.remove(port);
+        this.checkUpdate();
     }
 
     @Override
-    public void checkUpdate() {
+    public boolean checkUpdate() {
+        int newPower = this.suppliers.values()
+                .stream()
+                .mapToInt(Supplier::get)
+                .max()
+                .orElse(0);
 
+        if (this.lastPower != newPower) {
+            this.lastPower = newPower;
+            this.consumers.values().forEach(consumer -> consumer.accept(this.lastPower));
+            return true;
+        } else {
+            return false;
+        }
     }
 }
