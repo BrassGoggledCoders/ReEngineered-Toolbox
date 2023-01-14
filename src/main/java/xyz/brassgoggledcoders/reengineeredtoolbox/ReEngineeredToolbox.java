@@ -39,6 +39,8 @@ public class ReEngineeredToolbox {
             ReEngineeredRegistrateAddon.of(REGISTRATE.get())
     );
 
+    private static ContainerSyncing containerSyncing;
+
 
     public ReEngineeredToolbox() {
         NetworkHandler.setup();
@@ -48,7 +50,7 @@ public class ReEngineeredToolbox {
         ReEngineeredPanels.setup();
         ReEngineeredRecipes.setup();
 
-        ContainerSyncing.setup(ID, LOGGER);
+        containerSyncing = ContainerSyncing.setup(ID, LOGGER);
         TypedSlotTypes.setup();
     }
 
@@ -62,5 +64,9 @@ public class ReEngineeredToolbox {
 
     public static ReEngineeredRegistrateAddon<Registrate> getRegistrateAddon() {
         return REENGINEERED_REGISTRATE.get();
+    }
+
+    public static ContainerSyncing getSyncing() {
+        return containerSyncing;
     }
 }

@@ -10,6 +10,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.slot.TypedMenuSlot;
@@ -33,7 +34,7 @@ public class SingleTypedSlotMenu<T extends ITypedSlot<U>, U> extends AbstractCon
     public SingleTypedSlotMenu(@Nullable MenuType<?> pMenuType, int pContainerId, Inventory inventory, ContainerLevelAccess access,
                                Supplier<T> typedSlot, Direction panelSide, Panel panel) {
         super(pMenuType, pContainerId);
-        this.propertyManager = new PropertyManager((short) pContainerId);
+        this.propertyManager = ReEngineeredToolbox.getSyncing().createManager(pContainerId);
         this.access = access;
         this.typedSlot = typedSlot;
         this.panelSide = panelSide;
