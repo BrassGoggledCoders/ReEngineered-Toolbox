@@ -15,8 +15,12 @@ public abstract class PanelModelProvider extends ModelProvider<PanelModelBuilder
     }
 
     public PanelModelBuilder flatPanel(String name) {
+        return this.flatPanel(name, new ResourceLocation(this.modid, "panel/" + name));
+    }
+
+    public PanelModelBuilder flatPanel(String name, ResourceLocation textureName) {
         return this.withExistingParent(name, new ResourceLocation(ReEngineeredToolboxAPI.ID, "panel/flat_panel"))
-                .texture("panel", new ResourceLocation(this.modid, "panel/" + name));
+                .texture("panel", textureName);
     }
 
     public PanelModelBuilder openPanel(String name) {

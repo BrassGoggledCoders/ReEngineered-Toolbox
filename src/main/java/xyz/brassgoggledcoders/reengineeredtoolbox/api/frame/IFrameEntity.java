@@ -15,6 +15,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlotHolder;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 public interface IFrameEntity {
@@ -23,6 +24,17 @@ public interface IFrameEntity {
     }
 
     InteractionResultHolder<PanelState> putPanelState(@NotNull Direction direction, @Nullable PanelState panelState, boolean replace);
+
+    @SuppressWarnings("UnusedReturnValue")
+    default InteractionResultHolder<PanelState> updatePanelState(@NotNull Direction direction, Function<PanelState, PanelState> update) {
+        PanelState panelState = this.getPanelState(direction);
+        PanelState newState = update.apply(panelState);
+        if (panelState != newState) {
+            return putPanelState(direction, newState, true);
+        } else {
+            return InteractionResultHolder.fail(panelState);
+        }
+    }
 
     @NotNull
     PanelState getPanelState(@NotNull Direction direction);

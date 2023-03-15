@@ -7,7 +7,6 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.IGeneratedBlockState;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -82,6 +81,10 @@ public abstract class PanelStateProvider implements DataProvider {
         return ReEngineeredPanels.getRegistry().getKey(block);
     }
 
+    public ResourceLocation mcLoc(String name) {
+        return new ResourceLocation("minecraft", name);
+    }
+
     public ResourceLocation modLoc(String name) {
         return new ResourceLocation(modid, name);
     }
@@ -128,6 +131,19 @@ public abstract class PanelStateProvider implements DataProvider {
         );
     }
 
+    public void singleDirectionPanel(Panel panel, Direction dir, ModelFile modelFile) {
+        singleDirectionPanel(panel, dir, panelState -> modelFile);
+    }
+
+    public void singleDirectionPanel(Panel panel, Direction dir, Function<PanelState, ModelFile> modelFile) {
+        getVariantBuilder(panel)
+                .forAllStates(state -> ConfiguredModel.builder()
+                        .modelFile(modelFile.apply(state))
+                        .rotationX(dir == Direction.DOWN ? 180 : dir.getAxis().isHorizontal() ? 90 : 0)
+                        .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + DEFAULT_ANGLE_OFFSET) % 360)
+                        .build());
+    }
+
     public void directionalPanel(Panel panel, ModelFile model) {
         directionalPanel(panel, model, DEFAULT_ANGLE_OFFSET);
     }
@@ -140,10 +156,10 @@ public abstract class PanelStateProvider implements DataProvider {
         directionalPanel(panel, modelFunc, DEFAULT_ANGLE_OFFSET);
     }
 
-    public void directionalPanel(Panel block, Function<PanelState, ModelFile> modelFunc, int angleOffset) {
-        getVariantBuilder(block)
+    public void directionalPanel(Panel panel, Function<PanelState, ModelFile> modelFunc, int angleOffset) {
+        getVariantBuilder(panel)
                 .forAllStates(state -> {
-                    Direction dir = state.getValue(BlockStateProperties.FACING);
+                    Direction dir = state.getValue(Objects.requireNonNull(panel.getFacingProperty()));
                     return ConfiguredModel.builder()
                             .modelFile(modelFunc.apply(state))
                             .rotationX(dir == Direction.DOWN ? 180 : dir.getAxis().isHorizontal() ? 90 : 0)

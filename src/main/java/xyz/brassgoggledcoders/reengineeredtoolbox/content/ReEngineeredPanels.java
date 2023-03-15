@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.content;
 
 import com.google.common.base.Suppliers;
 import com.tterrag.registrate.providers.RegistrateRecipeProvider;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceKey;
@@ -21,11 +22,13 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.MovingCon
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.PanelWithMenu;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.DaylightDetectorPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.IOPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.RedstoneIOPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.world.DispenserPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemInputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemOutputPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.DaylightDetectorPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneInputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.FreezerPanelEntity;
@@ -151,6 +154,31 @@ public class ReEngineeredPanels {
                     .pattern("D")
                     .pattern("P")
                     .define('D', Items.DISPENSER)
+                    .define('P', BLANK.asPanel())
+                    .unlockedBy("has_item", RegistrateRecipeProvider.has(BLANK.asPanel()))
+                    .save(provider)
+            )
+            .build()
+            .register();
+
+    public static final PanelEntry<DaylightDetectorPanel> DAYLIGHT_DETECTOR = ReEngineeredToolbox.getRegistrateAddon()
+            .object("daylight_detector")
+            .panel(DaylightDetectorPanel::new)
+            .panelState((context, provider) -> {
+                provider.singleDirectionPanel(
+                        context.get(),
+                        Direction.UP,
+                        provider.models()
+                                .flatPanel(context.getName(), provider.mcLoc("block/daylight_detector_top"))
+                );
+            })
+            .panelEntity(DaylightDetectorPanelEntity::new)
+            .item()
+            .model((context, provider) -> provider.generated(context, provider.mcLoc("block/daylight_sensor_top")))
+            .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())
+                    .pattern("D")
+                    .pattern("P")
+                    .define('D', Items.DAYLIGHT_DETECTOR)
                     .define('P', BLANK.asPanel())
                     .unlockedBy("has_item", RegistrateRecipeProvider.has(BLANK.asPanel()))
                     .save(provider)
