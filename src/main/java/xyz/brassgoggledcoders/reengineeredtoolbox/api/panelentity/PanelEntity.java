@@ -15,12 +15,10 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.Port;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 
 public class PanelEntity implements ICapabilityProvider {
@@ -39,10 +37,6 @@ public class PanelEntity implements ICapabilityProvider {
     }
 
     public void neighborChanged() {
-
-    }
-
-    public void setPortConnection(Port port, int slotNumber) {
 
     }
 
@@ -108,14 +102,6 @@ public class PanelEntity implements ICapabilityProvider {
         } else {
             pTag.putString("id", resourcelocation.toString());
         }
-    }
-
-    public void slotUpdated(int slot) {
-
-    }
-
-    public Map<Port, Integer> getPorts() {
-        return Collections.emptyMap();
     }
 
     public void serverTick() {

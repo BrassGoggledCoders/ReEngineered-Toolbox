@@ -30,10 +30,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.FrameMenuProvider;
-import xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab.PlayerConnectionTabManager;
-import xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab.ServerConnectionTabManager;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlotHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.NbtHelper;
 
 import java.util.*;
@@ -53,20 +49,13 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
     private final Map<Direction, PanelState> panelStateMap;
     private final Map<Direction, PanelEntity> panelEntityMap;
-    private final TypedSlotHolder typedSlotHolder;
     private final TreeMap<Long, Set<Direction>> scheduledTicks;
 
     public FrameBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
         this.panelStateMap = new ConcurrentHashMap<>();
         this.panelEntityMap = new EnumMap<>(Direction.class);
-        this.typedSlotHolder = new TypedSlotHolder(this::getFrameLevel, pPos, this::slotUpdated);
         this.scheduledTicks = new TreeMap<>(Long::compareTo);
-    }
-
-    private void slotUpdated(int slot) {
-        this.setChanged();
-        this.panelEntityMap.forEach((direction, panelEntity) -> panelEntity.slotUpdated(slot));
     }
 
     @NotNull
@@ -142,19 +131,11 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     }
 
     @Override
-    public ITypedSlotHolder getTypedSlotHolder() {
-        return this.typedSlotHolder;
-    }
-
-    @Override
     public void openMenu(Player player, PanelEntity panelEntity, MenuProvider menuProvider, @NotNull Consumer<FriendlyByteBuf> friendlyByteBuf) {
         if (player instanceof ServerPlayer serverPlayer) {
-            PlayerConnectionTabManager tabManager = ServerConnectionTabManager.getInstance()
-                    .startSession(serverPlayer, this, panelEntity);
-
             NetworkHooks.openScreen(
                     serverPlayer,
-                    new FrameMenuProvider(tabManager, menuProvider),
+                    new FrameMenuProvider(menuProvider),
                     friendlyByteBuf
             );
         }
@@ -195,16 +176,11 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         CompoundTag panelsTag = new CompoundTag();
         writePanels(panelsTag);
         pTag.put("Panels", panelsTag);
-        pTag.put("TypedSlotHolder", this.typedSlotHolder.serializeNBT());
     }
 
     @Override
     public void load(@NotNull CompoundTag pTag) {
         super.load(pTag);
-
-        if (pTag.contains("TypedSlotHolder")) {
-            this.typedSlotHolder.deserializeNBT(pTag.getCompound("TypedSlotHolder"));
-        }
 
         if (pTag.contains("Panels")) {
             CompoundTag panelsTag = pTag.getCompound("Panels");
@@ -276,7 +252,6 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
-        this.typedSlotHolder.invalidateCaps();
         this.panelEntityMap.values().forEach(PanelEntity::invalidate);
     }
 
@@ -291,8 +266,8 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         LazyOptional<T> lazyOptional = LazyOptional.empty();
         if (side == null) {
-            lazyOptional = this.getTypedSlotHolder()
-                    .getCapability(cap);
+            //TODO Handle Frame Storage
+            lazyOptional = LazyOptional.empty();
         } else {
             PanelEntity panelEntity = this.getPanelEntity(side);
             if (panelEntity != null) {
