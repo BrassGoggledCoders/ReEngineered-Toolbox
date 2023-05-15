@@ -11,7 +11,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.menu.IPanelMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.Port;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredMenus;
-import xyz.brassgoggledcoders.reengineeredtoolbox.menu.SingleTypedSlotMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneTypedSlot;
