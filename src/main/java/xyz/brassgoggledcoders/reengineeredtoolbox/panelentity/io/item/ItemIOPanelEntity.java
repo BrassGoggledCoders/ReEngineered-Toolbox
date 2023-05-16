@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item;
 
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +15,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.MovingConnection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.panel.ItemIOPanelMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.IOPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotType;
@@ -23,47 +25,12 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.ItemTyped
 
 public abstract class ItemIOPanelEntity extends IOPanelEntity<IItemTypedSlot, ItemStack, MovingConnection<IItemTypedSlot, ItemStack, IItemHandler>> {
 
-    private final IItemTypedSlot panelTypedSlot;
     private final LazyOptional<IItemHandler> lazyOptional;
 
     public ItemIOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(type, frameEntity, panelState);
         this.panelTypedSlot = new ItemTypedSlot();
         this.lazyOptional = LazyOptional.of(this::getSlotForMenu);
-    }
-
-    @Override
-    public void serverTick() {
-        super.serverTick();
-        this.getConnection().tick();
-    }
-
-    @Override
-    @NotNull
-    protected String getIdentifier() {
-        return "item";
-    }
-
-    @Override
-    public IItemTypedSlot getSlotForMenu() {
-        return this.panelTypedSlot;
-    }
-
-    @Override
-    public MenuConstructor getMenuCreator() {
-        return (menuId, inventory, player) -> new ItemIOPanelMenu(
-                menuId,
-                inventory,
-                this::getSlotForMenu,
-                ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()),
-                this.getFacing(),
-                this.getPanelState().getPanel()
-        );
-    }
-
-    @Override
-    public TypedSlotType getTypedSlotType() {
-        return TypedSlotTypes.ITEM.get();
     }
 
     @Override

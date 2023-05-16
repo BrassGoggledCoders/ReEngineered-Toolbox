@@ -8,17 +8,14 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.MovingConnection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.PanelWithMenu;
@@ -31,12 +28,10 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemOutput
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.DaylightDetectorPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneInputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneOutputPanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.FreezerPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.dispenser.DispenserPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.freezer.FreezerRecipeBuilder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.ingredient.FluidIngredient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelEntry;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.IItemTypedSlot;
 
 import java.util.function.Supplier;
 
@@ -73,20 +68,20 @@ public class ReEngineeredPanels {
             .build()
             .register();
 
-    public static final PanelEntry<IOPanel<IItemTypedSlot, ItemStack, MovingConnection<IItemTypedSlot, ItemStack, IItemHandler>>> ITEM_INPUT =
+    public static final PanelEntry<IOPanel> ITEM_INPUT =
             ReEngineeredToolbox.getRegistrateAddon()
                     .object("item_input")
-                    .panel(() -> new IOPanel<>(ItemInputPanelEntity::new))
+                    .panel(() -> new IOPanel(ItemInputPanelEntity::new))
                     .panelEntity(ItemInputPanelEntity::new)
                     .item()
                     .build()
                     .register();
 
 
-    public static final PanelEntry<IOPanel<IItemTypedSlot, ItemStack, MovingConnection<IItemTypedSlot, ItemStack, IItemHandler>>> ITEM_OUTPUT =
+    public static final PanelEntry<IOPanel> ITEM_OUTPUT =
             ReEngineeredToolbox.getRegistrateAddon()
                     .object("item_output")
-                    .panel(() -> new IOPanel<>(ItemOutputPanelEntity::new))
+                    .panel(() -> new IOPanel(ItemOutputPanelEntity::new))
                     .panelEntity(ItemOutputPanelEntity::new)
                     .item()
                     .build()
@@ -185,35 +180,6 @@ public class ReEngineeredPanels {
             )
             .build()
             .register();
-
-    public static final PanelEntry<PanelWithMenu<FreezerPanelEntity>> FREEZER = ReEngineeredToolbox.getRegistrateAddon()
-            .object("freezer")
-            .panel(() -> new PanelWithMenu<>(FreezerPanelEntity::new))
-            .panelEntity(FreezerPanelEntity::new)
-            .item()
-            .recipe((context, provider) -> {
-                ShapedRecipeBuilder.shaped(context.get())
-                        .pattern(" I ")
-                        .pattern("IFI")
-                        .pattern(" P ")
-                        .define('I', Items.ICE)
-                        .define('F', Items.FURNACE)
-                        .define('P', BLANK.asPanel())
-                        .unlockedBy("has_item", RegistrateRecipeProvider.has(BLANK.asPanel()))
-                        .save(provider);
-
-                FreezerRecipeBuilder.of(Items.ICE, 4)
-                        .withFluidInput(FluidIngredient.of(FluidTags.WATER))
-                        .save(provider);
-
-                FreezerRecipeBuilder.of(Items.BLUE_ICE)
-                        .withItemInput(Ingredient.of(Items.ICE))
-                        .withFluidInput(FluidIngredient.of(FluidTags.WATER))
-                        .save(provider);
-            })
-            .build()
-            .register();
-
 
     public static ForgeRegistry<Panel> getRegistry() {
         return PANEL_REGISTRY.get();

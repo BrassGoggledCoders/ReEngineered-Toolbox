@@ -8,13 +8,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredBlocks;
-import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredMenus;
-import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
-import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredRecipes;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.*;
 import xyz.brassgoggledcoders.reengineeredtoolbox.network.NetworkHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.ReEngineeredRegistrateAddon;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
 import xyz.brassgoggledcoders.shadyskies.containersyncing.ContainerSyncing;
 
 import javax.annotation.Nonnull;
@@ -49,9 +45,9 @@ public class ReEngineeredToolbox {
         ReEngineeredMenus.setup();
         ReEngineeredPanels.setup();
         ReEngineeredRecipes.setup();
+        ReEngineeredText.setup();
 
         containerSyncing = ContainerSyncing.setup(ID, LOGGER);
-        TypedSlotTypes.setup();
     }
 
     public static ResourceLocation rl(String path) {

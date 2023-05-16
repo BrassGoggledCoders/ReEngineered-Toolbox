@@ -9,9 +9,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.Port;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneTypedSlot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,21 +67,6 @@ public class DaylightDetectorPanelEntity extends RedstoneIOPanelEntity {
             this.getConnection()
                     .checkUpdate();
         }
-    }
-
-    @Override
-    public IRedstoneTypedSlot getSlotForMenu() {
-        IRedstoneTypedSlot redstoneTypedSlot = new RedstoneTypedSlot();
-        redstoneTypedSlot.addSupplier(this.getPort(), this::getPower);
-        return redstoneTypedSlot;
-    }
-
-    @Override
-    @NotNull
-    public Map<Port, Integer> getPorts() {
-        Map<Port, Integer> ports = new HashMap<>(super.getPorts());
-        ports.put(this.invertedPort, this.invertedConnection.getSlotId());
-        return ports;
     }
 
     public int getInvertedPower() {

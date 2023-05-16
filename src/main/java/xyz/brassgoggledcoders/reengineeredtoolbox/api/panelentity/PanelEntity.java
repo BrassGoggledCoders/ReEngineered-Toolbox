@@ -18,7 +18,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.Optional;
 
 public class PanelEntity implements ICapabilityProvider {
@@ -43,7 +42,6 @@ public class PanelEntity implements ICapabilityProvider {
     public void scheduledTick() {
 
     }
-
 
     public void load(CompoundTag pTag) {
     }
