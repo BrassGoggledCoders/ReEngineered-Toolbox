@@ -27,6 +27,7 @@ public class IOPanel extends Panel {
     @NotNull
     public InteractionResult use(IFrameEntity frameEntity, PanelState panelState, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (frameEntity.getPanelEntity(pHit.getDirection()) instanceof IOPanelEntity ioPanelEntity) {
+            /* TODO UI?
             if (pPlayer instanceof ServerPlayer serverPlayer) {
                 frameEntity.openMenu(
                         serverPlayer,
@@ -37,6 +38,7 @@ public class IOPanel extends Panel {
                         )
                 );
             }
+            */
             return InteractionResult.sidedSuccess(frameEntity.getFrameLevel().isClientSide());
         }
         return InteractionResult.PASS;

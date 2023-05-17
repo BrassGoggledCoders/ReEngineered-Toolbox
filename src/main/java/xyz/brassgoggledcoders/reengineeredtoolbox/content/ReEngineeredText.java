@@ -7,6 +7,7 @@ public class ReEngineeredText {
 
     public static final Component REDSTONE_SLOT_IN = frameSlotLang("redstone_in", "Redstone Input");
     public static final Component REDSTONE_SLOT_OUT = frameSlotLang("redstone_out", "Redstone Output");
+    public static final Component REDSTONE_SLOT_INVERTED_OUT = frameSlotLang("redstone_inverted_out", "Redstone Output (Inverted)");
 
     public static final Component ITEM_SLOT_IN = frameSlotLang("item_in", "Item Input");
     public static final Component ITEM_SLOT_OUT = frameSlotLang("item_out", "Item Output");

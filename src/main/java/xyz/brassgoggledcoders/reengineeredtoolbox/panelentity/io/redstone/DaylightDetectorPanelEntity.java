@@ -1,47 +1,32 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.LightLayer;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.ListeningConnection;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.Port;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
-
-import java.util.HashMap;
-import java.util.Map;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 
 public class DaylightDetectorPanelEntity extends RedstoneIOPanelEntity {
-    private final Port invertedPort;
-    private final ListeningConnection<IRedstoneTypedSlot, Integer> invertedConnection;
+    private final FrameSlot invertedPort;
 
     public DaylightDetectorPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(type, frameEntity, panelState);
-        this.invertedPort = new Port(
-                "invertedRedstone",
-                null,
-                TypedSlotTypes.REDSTONE.get()
-        );
-        this.invertedConnection = ListeningConnection.redstoneSupplier(
-                this.getFrameEntity().getTypedSlotHolder(),
-                this.invertedPort,
-                this::getInvertedPower
-        );
+        this.invertedPort = new FrameSlot(ReEngineeredText.REDSTONE_SLOT_INVERTED_OUT);
+    }
+
+    @Override
+    @NotNull
+    protected Component getIdentifier() {
+        return ReEngineeredText.REDSTONE_SLOT_OUT;
     }
 
     public DaylightDetectorPanelEntity(IFrameEntity iFrameEntity, PanelState panelState) {
         this(ReEngineeredPanels.DAYLIGHT_DETECTOR.getPanelEntityType(), iFrameEntity, panelState);
-    }
-
-    @Override
-    protected ListeningConnection<IRedstoneTypedSlot, Integer> createConnection() {
-        return ListeningConnection.redstoneSupplier(
-                this.getFrameEntity().getTypedSlotHolder(),
-                this.getPort(),
-                this::getPower
-        );
     }
 
     @Override
@@ -64,8 +49,8 @@ public class DaylightDetectorPanelEntity extends RedstoneIOPanelEntity {
 
         if (newPower != this.getPower()) {
             this.setPower(newPower);
-            this.getConnection()
-                    .checkUpdate();
+            //this.getConnection()
+            //        .checkUpdate();
         }
     }
 

@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.MenuConstructor;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
@@ -33,6 +32,4 @@ public abstract class IOPanelEntity extends PanelEntity {
         super.save(pTag);
         pTag.put("IOPort", this.ioPort.serializeNBT());
     }
-
-    public abstract MenuConstructor getMenuCreator();
 }
