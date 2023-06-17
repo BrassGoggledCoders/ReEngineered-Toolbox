@@ -22,7 +22,7 @@ public class FreezerRecipeSerializer implements RecipeSerializer<FreezerRecipe> 
         return new FreezerRecipe(
                 pRecipeId,
                 jsonObject.has("itemInput") ? CraftingHelper.getIngredient(jsonObject.get("itemInput")) : Ingredient.EMPTY,
-                jsonObject.has("fluidInput") ? FluidIngredient.fromJson(jsonObject.getAsJsonObject("")) : FluidIngredient.EMPTY,
+                jsonObject.has("fluidInput") ? FluidIngredient.fromJson(jsonObject.getAsJsonObject("fluidInput")) : FluidIngredient.EMPTY,
                 CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(jsonObject, "result"), true),
                 GsonHelper.getAsInt(jsonObject, "time", 100)
         );
