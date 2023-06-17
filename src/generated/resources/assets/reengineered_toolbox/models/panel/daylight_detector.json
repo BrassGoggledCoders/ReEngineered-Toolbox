@@ -1,6 +1,6 @@
 {
   "parent": "reengineered_toolbox:panel/flat_panel",
   "textures": {
-    "panel": "reengineered_toolbox:panel/freezer"
+    "panel": "minecraft:block/daylight_detector_top"
   }
 }
