@@ -169,7 +169,7 @@ public class ReEngineeredPanels {
             })
             .panelEntity(DaylightDetectorPanelEntity::new)
             .item()
-            .model((context, provider) -> provider.generated(context, provider.mcLoc("block/daylight_sensor_top")))
+            .model((context, provider) -> provider.generated(context, provider.mcLoc("block/daylight_detector_top")))
             .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())
                     .pattern("D")
                     .pattern("P")
