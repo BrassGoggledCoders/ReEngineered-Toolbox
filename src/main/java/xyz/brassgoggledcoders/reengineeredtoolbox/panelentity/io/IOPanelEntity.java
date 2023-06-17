@@ -21,6 +21,10 @@ public abstract class IOPanelEntity extends PanelEntity {
     @NotNull
     protected abstract Component getIdentifier();
 
+    public FrameSlot getIoPort() {
+        return ioPort;
+    }
+
     @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);

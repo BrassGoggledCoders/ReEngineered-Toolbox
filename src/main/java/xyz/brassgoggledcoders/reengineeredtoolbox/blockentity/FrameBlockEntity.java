@@ -24,10 +24,13 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencySlotItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.item.FrequencySlotItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.FrameMenuProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.NbtHelper;
@@ -51,11 +54,17 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     private final Map<Direction, PanelEntity> panelEntityMap;
     private final TreeMap<Long, Set<Direction>> scheduledTicks;
 
+    private final FrequencySlotItemHandler frequencySlotItemHandler;
+    private final LazyOptional<IFrequencySlotItemHandler> frequencySlotItemHandlerLazy;
+
     public FrameBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
         this.panelStateMap = new ConcurrentHashMap<>();
         this.panelEntityMap = new EnumMap<>(Direction.class);
         this.scheduledTicks = new TreeMap<>(Long::compareTo);
+
+        this.frequencySlotItemHandler = new FrequencySlotItemHandler(this::setChanged);
+        this.frequencySlotItemHandlerLazy = LazyOptional.of(() -> frequencySlotItemHandler);
     }
 
     @NotNull
@@ -253,6 +262,8 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     public void invalidateCaps() {
         super.invalidateCaps();
         this.panelEntityMap.values().forEach(PanelEntity::invalidate);
+
+        this.frequencySlotItemHandlerLazy.invalidate();
     }
 
     @Nullable
@@ -267,7 +278,9 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         LazyOptional<T> lazyOptional = LazyOptional.empty();
         if (side == null) {
             //TODO Handle Frame Storage
-            lazyOptional = LazyOptional.empty();
+            if (cap == ReEngineeredCapabilities.FREQUENCY_ITEM_HANDLER) {
+                lazyOptional = this.frequencySlotItemHandlerLazy.cast();
+            }
         } else {
             PanelEntity panelEntity = this.getPanelEntity(side);
             if (panelEntity != null) {
