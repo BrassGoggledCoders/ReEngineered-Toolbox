@@ -32,12 +32,30 @@ public enum Frequency {
         return color;
     }
 
+    public Frequency next() {
+        int index = this.ordinal();
+        int nextIndex = index + 1;
+        Frequency[] frequencies = Frequency.values();
+        nextIndex %= frequencies.length;
+        return frequencies[nextIndex];
+    }
+
     public static Optional<Frequency> getByName(String name) {
         for (Frequency frequency : Frequency.values()) {
             if (frequency.name().equalsIgnoreCase(name)) {
                 return Optional.of(frequency);
             }
         }
+        return Optional.empty();
+    }
+
+    public static Optional<Frequency> getByDye(DyeColor toolStackDye) {
+        for (Frequency frequency : Frequency.values()) {
+            if (frequency.getColor() == toolStackDye) {
+                return Optional.of(frequency);
+            }
+        }
+
         return Optional.empty();
     }
 }

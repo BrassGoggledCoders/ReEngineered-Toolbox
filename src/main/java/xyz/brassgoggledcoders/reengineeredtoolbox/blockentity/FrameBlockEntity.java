@@ -13,12 +13,16 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.NetworkHooks;
@@ -27,6 +31,8 @@ import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencySlotItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.Frequency;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
@@ -164,6 +170,31 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
             this.scheduledTicks.computeIfAbsent(this.getFrameLevel().getGameTime() + ticks, key -> new HashSet<>())
                     .add(direction);
         }
+    }
+
+    @Override
+    public boolean changeFrameSlot(@NotNull BlockHitResult result, ItemStack toolStack) {
+        PanelEntity panelEntity = this.getPanelEntity(result.getDirection());
+        if (panelEntity != null) {
+            List<FrameSlot> frameSlots = panelEntity.getFrameSlots();
+            if (!frameSlots.isEmpty()) {
+                Optional<DyeColor> toolStackDye = Optional.empty();
+                if (toolStack.is(Tags.Items.DYES)) {
+                    toolStackDye = Optional.ofNullable(DyeColor.getColor(toolStack));
+                }
+
+                for (FrameSlot frameSlot : frameSlots) {
+                    if (frameSlot.getView().isInside(result.getLocation(), result.getDirection())) {
+                        frameSlot.setFrequency(toolStackDye.flatMap(Frequency::getByDye)
+                                .orElse(frameSlot.getFrequency().next())
+                        );
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     public void doScheduledTick() {

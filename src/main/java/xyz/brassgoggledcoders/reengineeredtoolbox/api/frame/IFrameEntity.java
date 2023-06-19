@@ -6,7 +6,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,4 +60,6 @@ public interface IFrameEntity extends ICapabilityProvider {
     boolean isValid();
 
     void scheduleTick(@NotNull Direction direction, Panel panel, int ticks);
+
+    boolean changeFrameSlot(@NotNull BlockHitResult hitResult, ItemStack toolStack);
 }

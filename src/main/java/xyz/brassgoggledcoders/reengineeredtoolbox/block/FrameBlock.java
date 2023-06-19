@@ -7,6 +7,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -22,6 +23,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.blockentity.FrameBlockEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredBlocks;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredItemTags;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -65,6 +67,13 @@ public class FrameBlock extends Block implements EntityBlock {
     @ParametersAreNonnullByDefault
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (pLevel.getBlockEntity(pPos) instanceof IFrameEntity frameEntity) {
+            ItemStack heldItem = pPlayer.getItemInHand(pHand);
+            if (heldItem.is(ReEngineeredItemTags.CAN_ALTER_FRAME_SLOT)) {
+                if (frameEntity.changeFrameSlot(pHit, heldItem)) {
+                    return InteractionResult.sidedSuccess(pLevel.isClientSide());
+                }
+            }
+
             return frameEntity.getPanelState(pHit.getDirection())
                     .use(frameEntity, pPlayer, pHand, pHit);
         }
