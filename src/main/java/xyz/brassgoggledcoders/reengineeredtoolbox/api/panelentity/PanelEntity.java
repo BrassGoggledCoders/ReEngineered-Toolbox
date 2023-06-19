@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotView;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
@@ -133,7 +133,7 @@ public class PanelEntity implements ICapabilityProvider {
         return this.getPanelState().getPanel();
     }
 
-    public List<FrameSlotView> getFrameSlotViews() {
+    public List<FrameSlot> getFrameSlots() {
         return Collections.emptyList();
     }
 

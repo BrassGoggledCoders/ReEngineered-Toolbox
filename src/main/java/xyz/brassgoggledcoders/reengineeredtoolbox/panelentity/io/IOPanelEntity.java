@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotView;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotViews;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
@@ -16,10 +17,12 @@ import java.util.List;
 public abstract class IOPanelEntity extends PanelEntity {
 
     private final FrameSlot ioPort;
+    private final List<FrameSlot> frameSlots;
 
     public IOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(type, frameEntity, panelState);
-        this.ioPort = new FrameSlot(this.getIdentifier());
+        this.ioPort = new FrameSlot(this.getIdentifier(), FrameSlotViews.CENTERED_4X4);
+        this.frameSlots = Collections.singletonList(this.ioPort);
     }
 
     @NotNull
@@ -42,13 +45,7 @@ public abstract class IOPanelEntity extends PanelEntity {
     }
 
     @Override
-    public List<FrameSlotView> getFrameSlotViews() {
-        return Collections.singletonList(new FrameSlotView(
-                this.ioPort,
-                3,
-                5,
-                3,
-                4
-        ));
+    public List<FrameSlot> getFrameSlots() {
+        return this.frameSlots;
     }
 }

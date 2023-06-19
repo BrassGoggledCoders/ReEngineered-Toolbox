@@ -8,11 +8,13 @@ import org.jetbrains.annotations.Nullable;
 public class FrameSlot {
     @NotNull
     private final Component name;
+    private final FrameSlotView view;
     @NotNull
     private Frequency frequency;
 
-    public FrameSlot(@NotNull Component name) {
+    public FrameSlot(@NotNull Component name, FrameSlotView view) {
         this.name = name;
+        this.view = view;
         this.frequency = Frequency.BLACK;
     }
 
@@ -32,6 +34,11 @@ public class FrameSlot {
         return this.frequency;
     }
 
+    @NotNull
+    public FrameSlotView getView() {
+        return view;
+    }
+
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.putString("Frequency", this.frequency.name());
@@ -42,4 +49,6 @@ public class FrameSlot {
         Frequency.getByName(tag.getString("Frequency"))
                 .ifPresent(this::setFrequency);
     }
+
+
 }

@@ -24,6 +24,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.textures.UnitTextureAtlasSprite;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotView;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.blockentity.FrameBlockEntity;
@@ -48,18 +49,19 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
                 Direction direction = blockHitResult.getDirection();
                 PanelEntity panelEntity = pBlockEntity.getPanelEntity(direction);
                 if (panelEntity != null) {
-                    List<FrameSlotView> frameSlotViewList = panelEntity.getFrameSlotViews();
-                    if (!frameSlotViewList.isEmpty()) {
-                        pPoseStack.pushPose();
+                    List<FrameSlot> frameSlotView = panelEntity.getFrameSlots();
+                    if (!frameSlotView.isEmpty()) {
+
                         BlockPos offset = panelEntity.getBlockPos().relative(direction, 1);
                         int packed = LightTexture.pack(
                                 panelEntity.getLevel().getBrightness(LightLayer.BLOCK, offset),
                                 panelEntity.getLevel().getBrightness(LightLayer.SKY, offset)
                         );
 
-                        for (FrameSlotView frameSlotView : frameSlotViewList) {
-                            Pair<Vector3f, Vector3f> toFrom = cubeLocation(frameSlotView, direction);
+                        for (FrameSlot frameSlot : frameSlotView) {
+                            Pair<Vector3f, Vector3f> toFrom = cubeLocation(frameSlot.getView(), direction);
                             if (toFrom != null) {
+                                pPoseStack.pushPose();
                                 putTexturedQuad(
                                         pBufferSource.getBuffer(RenderType.entityTranslucent(BUTTONS)),
                                         pPoseStack.last().pose(),
@@ -68,15 +70,14 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
                                         toFrom.getFirst(),
                                         toFrom.getSecond(),
                                         direction,
-                                        adjustAlpha(frameSlotView.frameSlot().getFrequency().getColor().getTextColor(), 192),
+                                        adjustAlpha(frameSlot.getFrequency().getColor().getTextColor(), 192),
                                         packed,
                                         0,
                                         false
                                 );
+                                pPoseStack.popPose();
                             }
-
                         }
-                        pPoseStack.popPose();
                     }
                 }
             }

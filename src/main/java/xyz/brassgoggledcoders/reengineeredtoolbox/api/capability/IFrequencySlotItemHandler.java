@@ -18,4 +18,6 @@ public interface IFrequencySlotItemHandler {
     ItemStack extractItem(@NotNull Frequency frequency, int amount, boolean simulate);
 
     boolean isItemValid(@NotNull Frequency frequency, @NotNull ItemStack stack);
+
+    void setStackInSlot(@NotNull Frequency frequency, @NotNull ItemStack stack);
 }

@@ -4,8 +4,6 @@ import com.google.common.base.Suppliers;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
@@ -24,8 +22,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencySlotItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotViews;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
@@ -35,23 +36,24 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.panel.world.DispenserPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.wrapper.PanelStillValidContainerWrapper;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class DispenserPanelEntity extends PanelEntity implements MenuProvider {
     private final Supplier<DispenserBlockEntity> internalDispenser;
 
-    private final FrameSlot[] itemSlots;
+    private final FrameSlot itemSlot;
     private final FrameSlot redstoneSlot;
+    private final List<FrameSlot> frameSlotList;
+    private final LazyOptional<IFrequencySlotItemHandler> itemHandlerLazyOptional;
 
     public DispenserPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(type, frameEntity, panelState);
         this.internalDispenser = Suppliers.memoize(() -> new DispenserBlockEntity(this.getBlockPos(), this.asDispenser()));
-        this.itemSlots = new FrameSlot[]{
-                new FrameSlot(ReEngineeredText.ITEM_SLOT_IN),
-                new FrameSlot(ReEngineeredText.ITEM_SLOT_IN),
-                new FrameSlot(ReEngineeredText.ITEM_SLOT_IN)
-        };
-        this.redstoneSlot = new FrameSlot(ReEngineeredText.REDSTONE_SLOT_IN);
+        this.itemSlot = new FrameSlot(ReEngineeredText.ITEM_SLOT_IN, FrameSlotViews.LEFT_4X4);
+        this.redstoneSlot = new FrameSlot(ReEngineeredText.REDSTONE_SLOT_IN, FrameSlotViews.RIGHT_4X4);
+        this.frameSlotList = List.of(this.itemSlot, this.redstoneSlot);
+        this.itemHandlerLazyOptional = frameEntity.getCapability(ReEngineeredCapabilities.FREQUENCY_ITEM_HANDLER);
     }
 
     private void setPowerAndUpdate(int power) {
@@ -69,18 +71,20 @@ public class DispenserPanelEntity extends PanelEntity implements MenuProvider {
     public void scheduledTick() {
         super.scheduledTick();
         if (Blocks.DISPENSER instanceof DispenserBlockAccessor blockAccessor && this.getLevel() instanceof ServerLevel serverLevel) {
-            DispenserBlockEntity dispenserBlockEntity = this.getDispenserEntity();
-            int i = dispenserBlockEntity.getRandomSlot(this.getLevel().random);
-            if (i < 0) {
+            ItemStack itemStack = this.itemHandlerLazyOptional.map(itemHandler -> itemHandler.getStackInSlot(this.itemSlot.getFrequency()))
+                    .orElse(ItemStack.EMPTY);
+            if (itemStack.isEmpty()) {
                 this.getLevel().levelEvent(1001, this.getBlockPos(), 0);
                 this.getLevel().gameEvent(null, GameEvent.DISPENSE_FAIL, this.getBlockPos());
             } else {
-                ItemStack itemStack = dispenserBlockEntity.getItem(i);
                 DispenseItemBehavior dispenserBehavior = blockAccessor.callGetDispenseMethod(itemStack);
                 if (dispenserBehavior != DispenseItemBehavior.NOOP) {
-                    dispenserBlockEntity.setItem(i, dispenserBehavior.dispense(
-                            new PanelEntityBlockSource(this, serverLevel),
-                            itemStack
+                    this.itemHandlerLazyOptional.ifPresent(itemHandler -> itemHandler.setStackInSlot(
+                            this.itemSlot.getFrequency(),
+                            dispenserBehavior.dispense(
+                                    new PanelEntityBlockSource(this, serverLevel),
+                                    itemStack
+                            )
                     ));
                 }
             }
@@ -121,14 +125,15 @@ public class DispenserPanelEntity extends PanelEntity implements MenuProvider {
     }
 
     @Override
+    public List<FrameSlot> getFrameSlots() {
+        return this.frameSlotList;
+    }
+
+    @Override
     public void save(CompoundTag pTag) {
         super.save(pTag);
         pTag.put("Dispenser", this.getDispenserEntity().saveWithoutMetadata());
-        ListTag itemSlotsTag = new ListTag();
-        for (FrameSlot itemSlot : this.itemSlots) {
-            itemSlotsTag.add(itemSlot.serializeNBT());
-        }
-        pTag.put("ItemSlots", itemSlotsTag);
+        pTag.put("ItemSlot", this.itemSlot.serializeNBT());
         pTag.put("RedstoneSlot", this.redstoneSlot.serializeNBT());
     }
 
@@ -136,12 +141,7 @@ public class DispenserPanelEntity extends PanelEntity implements MenuProvider {
     public void load(CompoundTag pTag) {
         super.load(pTag);
         this.internalDispenser.get().load(pTag.getCompound("Dispenser"));
-        ListTag itemSlotsTag = pTag.getList("ItemSlots", Tag.TAG_COMPOUND);
-        for (int x = 0; x < this.itemSlots.length; x++) {
-            if (itemSlotsTag.size() > x) {
-                this.itemSlots[x].deserializeNBT(itemSlotsTag.getCompound(x));
-            }
-        }
+        this.itemSlot.deserializeNBT(pTag.getCompound("ItemSlot"));
         this.redstoneSlot.deserializeNBT(pTag.getCompound("RedstoneSlot"));
     }
 

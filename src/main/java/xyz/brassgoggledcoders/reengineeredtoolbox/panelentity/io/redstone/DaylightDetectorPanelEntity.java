@@ -6,6 +6,7 @@ import net.minecraft.world.level.LightLayer;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotViews;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
@@ -16,7 +17,7 @@ public class DaylightDetectorPanelEntity extends RedstoneIOPanelEntity {
 
     public DaylightDetectorPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(type, frameEntity, panelState);
-        this.invertedPort = new FrameSlot(ReEngineeredText.REDSTONE_SLOT_INVERTED_OUT);
+        this.invertedPort = new FrameSlot(ReEngineeredText.REDSTONE_SLOT_INVERTED_OUT, FrameSlotViews.CENTERED_4X4);
     }
 
     @Override

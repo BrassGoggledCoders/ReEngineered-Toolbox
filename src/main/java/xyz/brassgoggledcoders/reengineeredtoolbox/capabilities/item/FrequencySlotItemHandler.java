@@ -112,6 +112,12 @@ public class FrequencySlotItemHandler implements IFrequencySlotItemHandler, INBT
         return true;
     }
 
+    @Override
+    public void setStackInSlot(@NotNull Frequency frequency, @NotNull ItemStack stack) {
+        this.itemStacks.put(frequency, stack);
+        this.onContentsChanged();
+    }
+
     private void onContentsChanged() {
         onChanged.run();
     }

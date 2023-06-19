@@ -15,7 +15,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotView;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.blockentity.FrameBlockEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredItemTags;
@@ -36,10 +36,10 @@ public class ForgeClientEventHandler {
                         int scaledHeight = Minecraft.getInstance().getWindow().getGuiScaledHeight();
                         int scaledWidth = Minecraft.getInstance().getWindow().getGuiScaledWidth();
 
-                        List<FrameSlotView> viewList = panelEntity.getFrameSlotViews();
-                        for (FrameSlotView frameSlotView : viewList) {
-                            if (frameSlotView.isInside(blockHitResult.getLocation(), blockHitResult.getDirection())) {
-                                drawBlockOverlayText(event.getPoseStack(), new Component[]{frameSlotView.frameSlot().getName()}, scaledWidth, scaledHeight);
+                        List<FrameSlot> viewList = panelEntity.getFrameSlots();
+                        for (FrameSlot frameSlotView : viewList) {
+                            if (frameSlotView.getView().isInside(blockHitResult.getLocation(), blockHitResult.getDirection())) {
+                                drawBlockOverlayText(event.getPoseStack(), new Component[]{frameSlotView.getName()}, scaledWidth, scaledHeight);
                             }
                         }
                     }
@@ -47,6 +47,7 @@ public class ForgeClientEventHandler {
             }
         }
     }
+
     //From: https://github.com/BluSunrize/ImmersiveEngineering/blob/1.19.2/src/main/java/blusunrize/immersiveengineering/client/BlockOverlayUtils.java#L51
     public static void drawBlockOverlayText(PoseStack transform, Component[] text, int scaledWidth, int scaledHeight) {
         if (text != null && text.length > 0) {
