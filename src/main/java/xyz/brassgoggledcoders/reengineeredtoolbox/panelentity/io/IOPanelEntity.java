@@ -5,9 +5,13 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotView;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
+
+import java.util.Collections;
+import java.util.List;
 
 public abstract class IOPanelEntity extends PanelEntity {
 
@@ -35,5 +39,16 @@ public abstract class IOPanelEntity extends PanelEntity {
     public void save(CompoundTag pTag) {
         super.save(pTag);
         pTag.put("IOPort", this.ioPort.serializeNBT());
+    }
+
+    @Override
+    public List<FrameSlotView> getFrameSlotViews() {
+        return Collections.singletonList(new FrameSlotView(
+                this.ioPort,
+                4,
+                4,
+                4,
+                4
+        ));
     }
 }

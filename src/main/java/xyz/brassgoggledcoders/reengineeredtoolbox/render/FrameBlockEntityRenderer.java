@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
@@ -16,15 +17,17 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.textures.UnitTextureAtlasSprite;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotView;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.blockentity.FrameBlockEntity;
+
+import java.util.List;
 
 public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockEntity> {
     private final static ResourceLocation BUTTONS = ReEngineeredToolbox.rl("textures/block/frame_buttons.png");
@@ -42,23 +45,35 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
             Direction direction = blockHitResult.getDirection();
             PanelEntity panelEntity = pBlockEntity.getPanelEntity(direction);
             if (panelEntity != null) {
-                pPoseStack.pushPose();
-                BlockPos offset = panelEntity.getBlockPos().relative(direction, 1);
-                int packed = LightTexture.pack(panelEntity.getLevel().getBrightness(LightLayer.BLOCK, offset), panelEntity.getLevel().getBrightness(LightLayer.SKY, offset));
-                putTexturedQuad(
-                        pBufferSource.getBuffer(RenderType.entityCutout(BUTTONS)),
-                        pPoseStack.last().pose(),
-                        pPoseStack.last().normal(),
-                        UnitTextureAtlasSprite.INSTANCE,
-                        Vector3f.ZERO,
-                        new Vector3f(1.01F, 1.01F, 1.01F),
-                        direction,
-                        DyeColor.CYAN.getTextColor(),
-                        packed,
-                        0,
-                        false
-                );
+                List<FrameSlotView> frameSlotViewList = panelEntity.getFrameSlotViews();
+                if (!frameSlotViewList.isEmpty()) {
+                    pPoseStack.pushPose();
+                    BlockPos offset = panelEntity.getBlockPos().relative(direction, 1);
+                    int packed = LightTexture.pack(
+                            panelEntity.getLevel().getBrightness(LightLayer.BLOCK, offset),
+                            panelEntity.getLevel().getBrightness(LightLayer.SKY, offset)
+                    );
 
+                    for (FrameSlotView frameSlotView : frameSlotViewList) {
+                        Pair<Vector3f, Vector3f> toFrom = cubeLocation(frameSlotView, direction);
+                        if (toFrom != null) {
+                            putTexturedQuad(
+                                    pBufferSource.getBuffer(RenderType.entityCutout(BUTTONS)),
+                                    pPoseStack.last().pose(),
+                                    pPoseStack.last().normal(),
+                                    UnitTextureAtlasSprite.INSTANCE,
+                                    toFrom.getFirst(),
+                                    toFrom.getSecond(),
+                                    direction,
+                                    frameSlotView.frameSlot().getFrequency().getColor().getTextColor(),
+                                    packed,
+                                    0,
+                                    false
+                            );
+                        }
+
+                    }
+                }
                 pPoseStack.popPose();
             }
         }
@@ -66,7 +81,37 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
 
     @Override
     public int getViewDistance() {
-        return 8;
+        return 6;
+    }
+
+    private Pair<Vector3f, Vector3f> cubeLocation(FrameSlotView slotView, Direction direction) {
+        return switch (direction) {
+            default -> null;
+            case UP -> Pair.of(
+                    new Vector3f(slotView.xPos() / 16F, 1.0001F, slotView.yPos() / 16F),
+                    new Vector3f((slotView.xPos() + slotView.width()) / 16F, 1.0001F, (slotView.yPos() + slotView.height()) / 16F)
+            );
+            case DOWN -> Pair.of(
+                    new Vector3f(slotView.xPos() / 16F, -0.0001F, slotView.yPos() / 16F),
+                    new Vector3f((slotView.xPos() + slotView.width()) / 16F, -0.0001F, (slotView.yPos() + slotView.height()) / 16F)
+            );
+            case NORTH -> Pair.of(
+                    new Vector3f(slotView.xPos() / 16F, slotView.yPos() / 16F, -0.0001F),
+                    new Vector3f((slotView.xPos() + slotView.width()) / 16F, (slotView.yPos() + slotView.height()) / 16F, -0.0001F)
+            );
+            case SOUTH -> Pair.of(
+                    new Vector3f(slotView.xPos() / 16F, slotView.yPos() / 16F, 1.0001F),
+                    new Vector3f((slotView.xPos() + slotView.width()) / 16F, (slotView.yPos() + slotView.height()) / 16F, 1.0001F)
+            );
+            case WEST -> Pair.of(
+                    new Vector3f(-0.0001F, slotView.xPos() / 16F, slotView.yPos() / 16F),
+                    new Vector3f(-0.0001F, (slotView.xPos() + slotView.width()) / 16F, (slotView.yPos() + slotView.height()) / 16F)
+            );
+            case EAST -> Pair.of(
+                    new Vector3f(1.0001F, slotView.xPos() / 16F, slotView.yPos() / 16F),
+                    new Vector3f(1.0001F, (slotView.xPos() + slotView.width()) / 16F, (slotView.yPos() + slotView.height()) / 16F)
+            );
+        };
     }
 
     /* From: https://github.com/SlimeKnights/Mantle/blob/1.18.2/src/main/java/slimeknights/mantle/client/render/FluidRenderer.java*/
@@ -74,7 +119,7 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
     /**
      * Adds a quad to the renderer
      *
-     * @param renderer   Renderer instnace
+     * @param renderer   Renderer instance
      * @param matrix     Render matrix
      * @param sprite     Sprite to render
      * @param from       Quad start
@@ -219,34 +264,34 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
         int b = color & 0xFF;
         switch (face) {
             case DOWN -> {
-                renderer.vertex(matrix, x1, y1, z2).color(r, g, b, a).uv(u1, v1).uv2(light1, light2).endVertex();
-                renderer.vertex(matrix, x1, y1, z1).color(r, g, b, a).uv(u2, v2).uv2(light1, light2).endVertex();
-                renderer.vertex(matrix, x2, y1, z1).color(r, g, b, a).uv(u3, v3).uv2(light1, light2).endVertex();
-                renderer.vertex(matrix, x2, y1, z2).color(r, g, b, a).uv(u4, v4).uv2(light1, light2).endVertex();
+                renderer.vertex(matrix, x1, y1, z2).color(r, g, b, a).uv(u1, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
+                renderer.vertex(matrix, x1, y1, z1).color(r, g, b, a).uv(u2, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
+                renderer.vertex(matrix, x2, y1, z1).color(r, g, b, a).uv(u3, v3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
+                renderer.vertex(matrix, x2, y1, z2).color(r, g, b, a).uv(u4, v4).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
             }
             case UP -> {
-                renderer.vertex(matrix, x1, y2, z1).color(r, g, b, a).uv(u1, v1).uv2(light1, light2).endVertex();
-                renderer.vertex(matrix, x1, y2, z2).color(r, g, b, a).uv(u2, v2).uv2(light1, light2).endVertex();
-                renderer.vertex(matrix, x2, y2, z2).color(r, g, b, a).uv(u3, v3).uv2(light1, light2).endVertex();
-                renderer.vertex(matrix, x2, y2, z1).color(r, g, b, a).uv(u4, v4).uv2(light1, light2).endVertex();
+                renderer.vertex(matrix, x1, y2, z1).color(r, g, b, a).uv(u1, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
+                renderer.vertex(matrix, x1, y2, z2).color(r, g, b, a).uv(u2, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
+                renderer.vertex(matrix, x2, y2, z2).color(r, g, b, a).uv(u3, v3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
+                renderer.vertex(matrix, x2, y2, z1).color(r, g, b, a).uv(u4, v4).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
             }
             case NORTH -> {
-                renderer.vertex(matrix, x1, y1, z1).color(r, g, b, a).uv(u1, v1).uv2(light1, light2).endVertex();
-                renderer.vertex(matrix, x1, y2, z1).color(r, g, b, a).uv(u2, v2).uv2(light1, light2).endVertex();
-                renderer.vertex(matrix, x2, y2, z1).color(r, g, b, a).uv(u3, v3).uv2(light1, light2).endVertex();
-                renderer.vertex(matrix, x2, y1, z1).color(r, g, b, a).uv(u4, v4).uv2(light1, light2).endVertex();
+                renderer.vertex(matrix, x1, y1, z1).color(r, g, b, a).uv(u1, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
+                renderer.vertex(matrix, x1, y2, z1).color(r, g, b, a).uv(u2, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
+                renderer.vertex(matrix, x2, y2, z1).color(r, g, b, a).uv(u3, v3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
+                renderer.vertex(matrix, x2, y1, z1).color(r, g, b, a).uv(u4, v4).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
             }
             case SOUTH -> {
-                renderer.vertex(matrix, x2, y1, z2).color(r, g, b, a).uv(u1, v1).uv2(light1, light2).endVertex();
-                renderer.vertex(matrix, x2, y2, z2).color(r, g, b, a).uv(u2, v2).uv2(light1, light2).endVertex();
-                renderer.vertex(matrix, x1, y2, z2).color(r, g, b, a).uv(u3, v3).uv2(light1, light2).endVertex();
-                renderer.vertex(matrix, x1, y1, z2).color(r, g, b, a).uv(u4, v4).uv2(light1, light2).endVertex();
+                renderer.vertex(matrix, x2, y1, z2).color(r, g, b, a).uv(u1, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
+                renderer.vertex(matrix, x2, y2, z2).color(r, g, b, a).uv(u2, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
+                renderer.vertex(matrix, x1, y2, z2).color(r, g, b, a).uv(u3, v3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
+                renderer.vertex(matrix, x1, y1, z2).color(r, g, b, a).uv(u4, v4).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
             }
             case WEST -> {
-                renderer.vertex(matrix, x1, y1, z2).color(r, g, b, a).uv(u1, v1).uv2(light1, light2).endVertex();
-                renderer.vertex(matrix, x1, y2, z2).color(r, g, b, a).uv(u2, v2).uv2(light1, light2).endVertex();
-                renderer.vertex(matrix, x1, y2, z1).color(r, g, b, a).uv(u3, v3).uv2(light1, light2).endVertex();
-                renderer.vertex(matrix, x1, y1, z1).color(r, g, b, a).uv(u4, v4).uv2(light1, light2).endVertex();
+                renderer.vertex(matrix, x1, y1, z2).color(r, g, b, a).uv(u1, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
+                renderer.vertex(matrix, x1, y2, z2).color(r, g, b, a).uv(u2, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
+                renderer.vertex(matrix, x1, y2, z1).color(r, g, b, a).uv(u3, v3).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
+                renderer.vertex(matrix, x1, y1, z1).color(r, g, b, a).uv(u4, v4).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
             }
             case EAST -> {
                 renderer.vertex(matrix, x2, y1, z1).color(r, g, b, a).uv(u1, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light1, light2).normal(pNormal, 0.0F, 1.0F, 0.0F).endVertex();
