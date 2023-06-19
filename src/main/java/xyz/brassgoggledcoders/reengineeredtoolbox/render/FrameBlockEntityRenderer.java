@@ -58,14 +58,14 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
                         Pair<Vector3f, Vector3f> toFrom = cubeLocation(frameSlotView, direction);
                         if (toFrom != null) {
                             putTexturedQuad(
-                                    pBufferSource.getBuffer(RenderType.entityCutout(BUTTONS)),
+                                    pBufferSource.getBuffer(RenderType.entityTranslucent(BUTTONS)),
                                     pPoseStack.last().pose(),
                                     pPoseStack.last().normal(),
                                     UnitTextureAtlasSprite.INSTANCE,
                                     toFrom.getFirst(),
                                     toFrom.getSecond(),
                                     direction,
-                                    frameSlotView.frameSlot().getFrequency().getColor().getTextColor(),
+                                    adjustAlpha(frameSlotView.frameSlot().getFrequency().getColor().getTextColor(), 192),
                                     packed,
                                     0,
                                     false
@@ -73,8 +73,8 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
                         }
 
                     }
+                    pPoseStack.popPose();
                 }
-                pPoseStack.popPose();
             }
         }
     }
@@ -92,8 +92,8 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
                     new Vector3f((slotView.xPos() + slotView.width()) / 16F, 1.0001F, (slotView.yPos() + slotView.height()) / 16F)
             );
             case DOWN -> Pair.of(
-                    new Vector3f(slotView.xPos() / 16F, -0.0001F, slotView.yPos() / 16F),
-                    new Vector3f((slotView.xPos() + slotView.width()) / 16F, -0.0001F, (slotView.yPos() + slotView.height()) / 16F)
+                    new Vector3f((16 - slotView.xPos() - slotView.width()) / 16F, -0.0001F, slotView.yPos() / 16F),
+                    new Vector3f((16 - slotView.xPos()) / 16F, -0.0001F, (slotView.yPos() + slotView.height()) / 16F)
             );
             case NORTH -> Pair.of(
                     new Vector3f((16 - slotView.xPos() - slotView.width()) / 16F, (16 - slotView.yPos() - slotView.height()) / 16F, -0.0001F),
@@ -108,10 +108,14 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
                     new Vector3f(-0.0001F, (16 - slotView.yPos()) / 16F, (slotView.xPos() + slotView.width()) / 16F)
             );
             case EAST -> Pair.of(
-                    new Vector3f(1.0001F, (16 - slotView.yPos() - slotView.height()) / 16F,(16 - slotView.xPos() - slotView.width()) / 16F),
+                    new Vector3f(1.0001F, (16 - slotView.yPos() - slotView.height()) / 16F, (16 - slotView.xPos() - slotView.width()) / 16F),
                     new Vector3f(1.0001F, (16 - slotView.yPos()) / 16F, (16 - slotView.xPos()) / 16F)
             );
         };
+    }
+
+    public static int adjustAlpha(int color, int alpha) {
+        return (color & 0xffffff) | (alpha << 24);
     }
 
     /* From: https://github.com/SlimeKnights/Mantle/blob/1.18.2/src/main/java/slimeknights/mantle/client/render/FluidRenderer.java*/
