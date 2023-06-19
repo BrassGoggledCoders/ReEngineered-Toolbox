@@ -45,7 +45,6 @@ public class DispenserPanel extends Panel {
         } else {
             return InteractionResult.PASS;
         }
-
     }
 
     @Override

@@ -29,14 +29,16 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencySlotItemHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.Frequency;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.item.FrequencySlotItemHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.item.FrequencyItemHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.redstone.FrequencyRedstoneHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.FrameMenuProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.NbtHelper;
@@ -60,8 +62,11 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     private final Map<Direction, PanelEntity> panelEntityMap;
     private final TreeMap<Long, Set<Direction>> scheduledTicks;
 
-    private final FrequencySlotItemHandler frequencySlotItemHandler;
-    private final LazyOptional<IFrequencySlotItemHandler> frequencySlotItemHandlerLazy;
+    private final FrequencyItemHandler frequencyItemHandler;
+    private final LazyOptional<IFrequencyItemHandler> frequencyItemHandlerLazy;
+
+    private final FrequencyRedstoneHandler frequencyRedstoneHandler;
+    private final LazyOptional<IFrequencyRedstoneHandler> frequencyRedstoneHandlerLazy;
 
     public FrameBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
@@ -69,8 +74,12 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         this.panelEntityMap = new EnumMap<>(Direction.class);
         this.scheduledTicks = new TreeMap<>(Long::compareTo);
 
-        this.frequencySlotItemHandler = new FrequencySlotItemHandler(this::setChanged);
-        this.frequencySlotItemHandlerLazy = LazyOptional.of(() -> frequencySlotItemHandler);
+        this.frequencyItemHandler = new FrequencyItemHandler(this::setChanged);
+        this.frequencyItemHandlerLazy = LazyOptional.of(() -> frequencyItemHandler);
+
+        this.frequencyRedstoneHandler = new FrequencyRedstoneHandler(this);
+        this.frequencyRedstoneHandlerLazy = LazyOptional.of(() -> this.frequencyRedstoneHandler);
+
     }
 
     @NotNull
@@ -197,6 +206,13 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         return false;
     }
 
+    @Override
+    public <T> void notifyStorageChange(Capability<T> frequencyCapability) {
+        for (PanelEntity panelEntity : this.panelEntityMap.values()) {
+            panelEntity.notifyStorageChanged(frequencyCapability);
+        }
+    }
+
     public void doScheduledTick() {
         long gameTime = this.getFrameLevel().getGameTime();
         Map.Entry<Long, Set<Direction>> scheduledTick = this.scheduledTicks.lowerEntry(gameTime);
@@ -216,6 +232,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         CompoundTag panelsTag = new CompoundTag();
         writePanels(panelsTag);
         pTag.put("Panels", panelsTag);
+        pTag.put("FrequencyItemHandler", this.frequencyItemHandler.serializeNBT());
     }
 
     @Override
@@ -226,7 +243,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
             CompoundTag panelsTag = pTag.getCompound("Panels");
             readPanels(panelsTag);
         }
-
+        this.frequencyItemHandler.deserializeNBT(pTag.getCompound("FrequencyItemHandler"));
     }
 
     private void readPanels(CompoundTag panelsTag) {
@@ -294,7 +311,8 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         super.invalidateCaps();
         this.panelEntityMap.values().forEach(PanelEntity::invalidate);
 
-        this.frequencySlotItemHandlerLazy.invalidate();
+        this.frequencyItemHandlerLazy.invalidate();
+        this.frequencyRedstoneHandlerLazy.invalidate();
     }
 
     @Nullable
@@ -310,7 +328,9 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         if (side == null) {
             //TODO Handle Frame Storage
             if (cap == ReEngineeredCapabilities.FREQUENCY_ITEM_HANDLER) {
-                lazyOptional = this.frequencySlotItemHandlerLazy.cast();
+                lazyOptional = this.frequencyItemHandlerLazy.cast();
+            } else if (cap == ReEngineeredCapabilities.FREQUENCY_REDSTONE_HANDLER) {
+                lazyOptional = this.frequencyRedstoneHandlerLazy.cast();
             }
         } else {
             PanelEntity panelEntity = this.getPanelEntity(side);
@@ -327,5 +347,6 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
     public void serverTick() {
         this.panelEntityMap.values().forEach(PanelEntity::serverTick);
+        this.frequencyRedstoneHandler.tick();
     }
 }

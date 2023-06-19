@@ -4,13 +4,7 @@ import com.google.common.base.Suppliers;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.DispenserMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -23,7 +17,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencySlotItemHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotViews;
@@ -33,19 +28,18 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityTyp
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 import xyz.brassgoggledcoders.reengineeredtoolbox.mixin.DispenserBlockAccessor;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.world.DispenserPanel;
-import xyz.brassgoggledcoders.reengineeredtoolbox.util.wrapper.PanelStillValidContainerWrapper;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class DispenserPanelEntity extends PanelEntity implements MenuProvider {
+public class DispenserPanelEntity extends PanelEntity {
     private final Supplier<DispenserBlockEntity> internalDispenser;
 
     private final FrameSlot itemSlot;
     private final FrameSlot redstoneSlot;
     private final List<FrameSlot> frameSlotList;
-    private final LazyOptional<IFrequencySlotItemHandler> itemHandlerLazyOptional;
+    private final LazyOptional<IFrequencyItemHandler> itemHandlerLazyOptional;
+    private final LazyOptional<IFrequencyRedstoneHandler> redstoneHandlerLazyOptional;
 
     public DispenserPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(type, frameEntity, panelState);
@@ -54,6 +48,7 @@ public class DispenserPanelEntity extends PanelEntity implements MenuProvider {
         this.redstoneSlot = new FrameSlot(ReEngineeredText.REDSTONE_SLOT_IN, FrameSlotViews.RIGHT_4X4);
         this.frameSlotList = List.of(this.itemSlot, this.redstoneSlot);
         this.itemHandlerLazyOptional = frameEntity.getCapability(ReEngineeredCapabilities.FREQUENCY_ITEM_HANDLER);
+        this.redstoneHandlerLazyOptional = frameEntity.getCapability(ReEngineeredCapabilities.FREQUENCY_REDSTONE_HANDLER);
     }
 
     private void setPowerAndUpdate(int power) {
@@ -64,6 +59,14 @@ public class DispenserPanelEntity extends PanelEntity implements MenuProvider {
             }
             this.getFrameEntity()
                     .putPanelState(this.getFacing(), this.getPanelState().setValue(BlockStateProperties.TRIGGERED, power > 0), true);
+        }
+    }
+
+    @Override
+    public <T> void notifyStorageChanged(Capability<T> frequencyCapability) {
+        if (frequencyCapability == ReEngineeredCapabilities.FREQUENCY_REDSTONE_HANDLER) {
+            this.redstoneHandlerLazyOptional.map(redstoneHandler -> redstoneHandler.getPower(redstoneSlot.getFrequency()))
+                    .ifPresent(this::setPowerAndUpdate);
         }
     }
 
@@ -143,25 +146,5 @@ public class DispenserPanelEntity extends PanelEntity implements MenuProvider {
         this.internalDispenser.get().load(pTag.getCompound("Dispenser"));
         this.itemSlot.deserializeNBT(pTag.getCompound("ItemSlot"));
         this.redstoneSlot.deserializeNBT(pTag.getCompound("RedstoneSlot"));
-    }
-
-    @Override
-    @NotNull
-    public Component getDisplayName() {
-        return this.getPanelState().getPanel().getName();
-    }
-
-    @Nullable
-    @Override
-    @ParametersAreNonnullByDefault
-    public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        return new DispenserMenu(
-                pContainerId,
-                pPlayerInventory,
-                new PanelStillValidContainerWrapper(
-                        this.getDispenserEntity(),
-                        this::stillValid
-                )
-        );
     }
 }

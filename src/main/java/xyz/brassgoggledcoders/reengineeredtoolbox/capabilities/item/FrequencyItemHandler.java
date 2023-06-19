@@ -6,18 +6,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencySlotItemHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.Frequency;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.collector.CompoundTagCollector;
 
 import java.util.Map;
 import java.util.Optional;
 
-public class FrequencySlotItemHandler implements IFrequencySlotItemHandler, INBTSerializable<CompoundTag> {
+public class FrequencyItemHandler implements IFrequencyItemHandler, INBTSerializable<CompoundTag> {
     private final Map<Frequency, ItemStack> itemStacks = Maps.newEnumMap(Frequency.class);
     private final Runnable onChanged;
 
-    public FrequencySlotItemHandler(Runnable onChanged) {
+    public FrequencyItemHandler(Runnable onChanged) {
         this.onChanged = onChanged;
     }
 

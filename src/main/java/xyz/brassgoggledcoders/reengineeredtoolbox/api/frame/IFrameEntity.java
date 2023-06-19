@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -62,4 +63,6 @@ public interface IFrameEntity extends ICapabilityProvider {
     void scheduleTick(@NotNull Direction direction, Panel panel, int ticks);
 
     boolean changeFrameSlot(@NotNull BlockHitResult hitResult, ItemStack toolStack);
+
+    <T> void notifyStorageChange(Capability<T> frequencyItemHandler);
 }

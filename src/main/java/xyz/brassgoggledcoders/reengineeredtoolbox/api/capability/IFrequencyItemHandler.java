@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.Frequency;
 
 @AutoRegisterCapability
-public interface IFrequencySlotItemHandler {
+public interface IFrequencyItemHandler {
 
     @NotNull
     ItemStack getStackInSlot(@NotNull Frequency frequency);

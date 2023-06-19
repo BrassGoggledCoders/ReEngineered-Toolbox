@@ -4,20 +4,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencySlotItemHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
 
 public class FrequencyBackedItemHandler implements IItemHandler {
     private final FrameSlot[] frameSlots;
-    private final LazyOptional<IFrequencySlotItemHandler> backingItemHandler;
+    private final LazyOptional<IFrequencyItemHandler> backingItemHandler;
     private final IOStyle ioStyle;
 
-    public FrequencyBackedItemHandler(FrameSlot frameSlot, LazyOptional<IFrequencySlotItemHandler> backingItemHandler, IOStyle ioStyle) {
+    public FrequencyBackedItemHandler(FrameSlot frameSlot, LazyOptional<IFrequencyItemHandler> backingItemHandler, IOStyle ioStyle) {
         this(new FrameSlot[]{frameSlot}, backingItemHandler, ioStyle);
     }
 
-    public FrequencyBackedItemHandler(FrameSlot[] frameSlots, LazyOptional<IFrequencySlotItemHandler> backingItemHandler, IOStyle ioStyle) {
+    public FrequencyBackedItemHandler(FrameSlot[] frameSlots, LazyOptional<IFrequencyItemHandler> backingItemHandler, IOStyle ioStyle) {
         this.frameSlots = frameSlots;
         this.backingItemHandler = backingItemHandler;
         this.ioStyle = ioStyle;

@@ -137,6 +137,10 @@ public class PanelEntity implements ICapabilityProvider {
         return Collections.emptyList();
     }
 
+    public <T> void notifyStorageChanged(Capability<T> frequencyCapability) {
+
+    }
+
     @Nullable
     public static PanelEntity loadStatic(IFrameEntity frame, PanelState pState, CompoundTag pTag) {
         String s = pTag.getString("id");
