@@ -28,14 +28,4 @@ hs_err_pid*
 .gradle
 
 
-.idea/runConfigurations.xml
-
-.idea/modules/ReEngineered-Toolbox.test.iml
-
-.idea/modules/ReEngineered-Toolbox.main.iml
-
-.idea/gradle.xml
-
-.idea/misc.xml
-
-.idea/runConfigurations/
+.idea/
