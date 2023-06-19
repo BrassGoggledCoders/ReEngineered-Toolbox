@@ -1,4 +1,4 @@
-// 1.19.2	2023-06-17T17:09:12.0568804	Registrate Provider for reengineered_toolbox [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud), PanelStates]
+// 1.19.2	2023-06-19T12:15:42.5289032	Registrate Provider for reengineered_toolbox [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud), PanelStates]
 336dbe86e88604bd24d9d5df1ff219e274f151ff assets/reengineered_toolbox/blockstates/iron_frame.json
 5b138a9de1748fa798bdf9e2496d459050f5f872 assets/reengineered_toolbox/lang/en_ud.json
 167f1c6a8b0deb23f46196c916577d132165568c assets/reengineered_toolbox/lang/en_us.json
@@ -35,3 +35,4 @@ dc4147b5ee26136a75e7392fae3e74ea4911b5a7 assets/reengineered_toolbox/panelstates
 46738edb0dd03de153a731a19afcfbd16b12afee data/reengineered_toolbox/loot_tables/blocks/iron_frame.json
 0517b5d7e060cd4798b7bee2753496a0f524e226 data/reengineered_toolbox/recipes/daylight_detector.json
 91f397a68b190b2f0e631ac0fdb4f6a6da75b246 data/reengineered_toolbox/recipes/dispenser.json
+0782b106200788eafed5a658dc6ba4997490305f data/reengineered_toolbox/tags/items/can_alter_frame_slot.json

@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -26,6 +27,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotView;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.blockentity.FrameBlockEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredItemTags;
 
 import java.util.List;
 
@@ -40,43 +42,46 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
     public void render(@NotNull FrameBlockEntity pBlockEntity, float pPartialTick, @NotNull PoseStack pPoseStack,
                        @NotNull MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
         HitResult hitResult = Minecraft.getInstance().hitResult;
+        Player player = Minecraft.getInstance().player;
+        if (player != null && player.getMainHandItem().is(ReEngineeredItemTags.CAN_ALTER_FRAME_SLOT)) {
+            if (hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getBlockPos().equals(pBlockEntity.getFramePos())) {
+                Direction direction = blockHitResult.getDirection();
+                PanelEntity panelEntity = pBlockEntity.getPanelEntity(direction);
+                if (panelEntity != null) {
+                    List<FrameSlotView> frameSlotViewList = panelEntity.getFrameSlotViews();
+                    if (!frameSlotViewList.isEmpty()) {
+                        pPoseStack.pushPose();
+                        BlockPos offset = panelEntity.getBlockPos().relative(direction, 1);
+                        int packed = LightTexture.pack(
+                                panelEntity.getLevel().getBrightness(LightLayer.BLOCK, offset),
+                                panelEntity.getLevel().getBrightness(LightLayer.SKY, offset)
+                        );
 
-        if (hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getBlockPos().equals(pBlockEntity.getFramePos())) {
-            Direction direction = blockHitResult.getDirection();
-            PanelEntity panelEntity = pBlockEntity.getPanelEntity(direction);
-            if (panelEntity != null) {
-                List<FrameSlotView> frameSlotViewList = panelEntity.getFrameSlotViews();
-                if (!frameSlotViewList.isEmpty()) {
-                    pPoseStack.pushPose();
-                    BlockPos offset = panelEntity.getBlockPos().relative(direction, 1);
-                    int packed = LightTexture.pack(
-                            panelEntity.getLevel().getBrightness(LightLayer.BLOCK, offset),
-                            panelEntity.getLevel().getBrightness(LightLayer.SKY, offset)
-                    );
+                        for (FrameSlotView frameSlotView : frameSlotViewList) {
+                            Pair<Vector3f, Vector3f> toFrom = cubeLocation(frameSlotView, direction);
+                            if (toFrom != null) {
+                                putTexturedQuad(
+                                        pBufferSource.getBuffer(RenderType.entityTranslucent(BUTTONS)),
+                                        pPoseStack.last().pose(),
+                                        pPoseStack.last().normal(),
+                                        UnitTextureAtlasSprite.INSTANCE,
+                                        toFrom.getFirst(),
+                                        toFrom.getSecond(),
+                                        direction,
+                                        adjustAlpha(frameSlotView.frameSlot().getFrequency().getColor().getTextColor(), 192),
+                                        packed,
+                                        0,
+                                        false
+                                );
+                            }
 
-                    for (FrameSlotView frameSlotView : frameSlotViewList) {
-                        Pair<Vector3f, Vector3f> toFrom = cubeLocation(frameSlotView, direction);
-                        if (toFrom != null) {
-                            putTexturedQuad(
-                                    pBufferSource.getBuffer(RenderType.entityTranslucent(BUTTONS)),
-                                    pPoseStack.last().pose(),
-                                    pPoseStack.last().normal(),
-                                    UnitTextureAtlasSprite.INSTANCE,
-                                    toFrom.getFirst(),
-                                    toFrom.getSecond(),
-                                    direction,
-                                    adjustAlpha(frameSlotView.frameSlot().getFrequency().getColor().getTextColor(), 192),
-                                    packed,
-                                    0,
-                                    false
-                            );
                         }
-
+                        pPoseStack.popPose();
                     }
-                    pPoseStack.popPose();
                 }
             }
         }
+
     }
 
     @Override
@@ -86,7 +91,6 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
 
     private Pair<Vector3f, Vector3f> cubeLocation(FrameSlotView slotView, Direction direction) {
         return switch (direction) {
-            default -> null;
             case UP -> Pair.of(
                     new Vector3f(slotView.xPos() / 16F, 1.0001F, slotView.yPos() / 16F),
                     new Vector3f((slotView.xPos() + slotView.width()) / 16F, 1.0001F, (slotView.yPos() + slotView.height()) / 16F)

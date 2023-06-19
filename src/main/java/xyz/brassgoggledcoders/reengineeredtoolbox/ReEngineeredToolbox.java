@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox;
 
 import com.google.common.base.Suppliers;
 import com.tterrag.registrate.Registrate;
+import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +23,7 @@ public class ReEngineeredToolbox {
     public static final Logger LOGGER = LoggerFactory.getLogger(ID);
 
     private final static Supplier<Registrate> REGISTRATE = Suppliers.memoize(() -> Registrate.create(ID)
+            .addDataGenerator(ProviderType.ITEM_TAGS, ReEngineeredItemTags::generate)
             .creativeModeTab(() -> new CreativeModeTab(ID) {
                 @Override
                 @Nonnull
@@ -42,6 +44,7 @@ public class ReEngineeredToolbox {
         NetworkHandler.setup();
 
         ReEngineeredBlocks.setup();
+        ReEngineeredItemTags.setup();
         ReEngineeredMenus.setup();
         ReEngineeredPanels.setup();
         ReEngineeredRecipes.setup();
