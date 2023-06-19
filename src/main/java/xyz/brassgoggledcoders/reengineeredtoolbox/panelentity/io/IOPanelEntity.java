@@ -17,12 +17,10 @@ import java.util.List;
 public abstract class IOPanelEntity extends PanelEntity {
 
     private final FrameSlot ioPort;
-    private final List<FrameSlot> frameSlots;
 
     public IOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(type, frameEntity, panelState);
-        this.ioPort = new FrameSlot(this.getIdentifier(), FrameSlotViews.CENTERED_4X4);
-        this.frameSlots = Collections.singletonList(this.ioPort);
+        this.ioPort = this.registerFrameSlot(new FrameSlot(this.getIdentifier(), FrameSlotViews.CENTERED_4X4));
     }
 
     @NotNull
@@ -42,10 +40,5 @@ public abstract class IOPanelEntity extends PanelEntity {
     public void save(CompoundTag pTag) {
         super.save(pTag);
         pTag.put("IOPort", this.ioPort.serializeNBT());
-    }
-
-    @Override
-    public List<FrameSlot> getFrameSlots() {
-        return this.frameSlots;
     }
 }

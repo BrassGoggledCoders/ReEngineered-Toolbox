@@ -29,7 +29,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 import xyz.brassgoggledcoders.reengineeredtoolbox.mixin.DispenserBlockAccessor;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.world.DispenserPanel;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public class DispenserPanelEntity extends PanelEntity {
@@ -37,16 +36,14 @@ public class DispenserPanelEntity extends PanelEntity {
 
     private final FrameSlot itemSlot;
     private final FrameSlot redstoneSlot;
-    private final List<FrameSlot> frameSlotList;
     private final LazyOptional<IFrequencyItemHandler> itemHandlerLazyOptional;
     private final LazyOptional<IFrequencyRedstoneHandler> redstoneHandlerLazyOptional;
 
     public DispenserPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(type, frameEntity, panelState);
         this.internalDispenser = Suppliers.memoize(() -> new DispenserBlockEntity(this.getBlockPos(), this.asDispenser()));
-        this.itemSlot = new FrameSlot(ReEngineeredText.ITEM_SLOT_IN, FrameSlotViews.LEFT_4X4);
-        this.redstoneSlot = new FrameSlot(ReEngineeredText.REDSTONE_SLOT_IN, FrameSlotViews.RIGHT_4X4);
-        this.frameSlotList = List.of(this.itemSlot, this.redstoneSlot);
+        this.itemSlot = this.registerFrameSlot(new FrameSlot(ReEngineeredText.ITEM_SLOT_IN, FrameSlotViews.LEFT_4X4));
+        this.redstoneSlot = this.registerFrameSlot(new FrameSlot(ReEngineeredText.REDSTONE_SLOT_IN, FrameSlotViews.RIGHT_4X4));
         this.itemHandlerLazyOptional = frameEntity.getCapability(ReEngineeredCapabilities.FREQUENCY_ITEM_HANDLER);
         this.redstoneHandlerLazyOptional = frameEntity.getCapability(ReEngineeredCapabilities.FREQUENCY_REDSTONE_HANDLER);
     }
@@ -125,11 +122,6 @@ public class DispenserPanelEntity extends PanelEntity {
         } else {
             return super.getCapability(cap, side);
         }
-    }
-
-    @Override
-    public List<FrameSlot> getFrameSlots() {
-        return this.frameSlotList;
     }
 
     @Override

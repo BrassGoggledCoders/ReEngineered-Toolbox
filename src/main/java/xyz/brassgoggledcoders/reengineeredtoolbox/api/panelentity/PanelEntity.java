@@ -19,7 +19,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +28,7 @@ public class PanelEntity implements ICapabilityProvider {
     private final IFrameEntity frameEntity;
     @NotNull
     private final PanelEntityType<?> type;
+    private final List<FrameSlot> frameSlots;
 
     @NotNull
     private PanelState panelState;
@@ -36,6 +37,7 @@ public class PanelEntity implements ICapabilityProvider {
         this.frameEntity = frameEntity;
         this.panelState = panelState;
         this.type = type;
+        this.frameSlots = new ArrayList<>();
     }
 
     public void neighborChanged() {
@@ -133,8 +135,13 @@ public class PanelEntity implements ICapabilityProvider {
         return this.getPanelState().getPanel();
     }
 
+    public FrameSlot registerFrameSlot(FrameSlot frameSlot) {
+        this.frameSlots.add(frameSlot);
+        return frameSlot;
+    }
+
     public List<FrameSlot> getFrameSlots() {
-        return Collections.emptyList();
+        return this.frameSlots;
     }
 
     public <T> void notifyStorageChanged(Capability<T> frequencyCapability) {
