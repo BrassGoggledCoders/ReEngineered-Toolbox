@@ -6,6 +6,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.Frequency;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,17 @@ public class FrequencyRedstoneHandler implements IFrequencyRedstoneHandler {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> void addPowerProvider(T provider, BiConsumer<T, ObjIntConsumer<Frequency>> powerProviding) {
-        this.redstoneProviderList.add(new RedstoneProvider<T>(provider, powerProviding));
+        if (provider instanceof PanelEntity panelEntity) {
+            this.redstoneProviderList.add(new RedstoneProvider<>(
+                    panelEntity,
+                    Predicate.not(PanelEntity::isRemoved),
+                    (BiConsumer<PanelEntity, ObjIntConsumer<Frequency>>) powerProviding)
+            );
+        } else {
+            this.redstoneProviderList.add(new RedstoneProvider<>(provider, powerProviding));
+        }
     }
 
     @Override

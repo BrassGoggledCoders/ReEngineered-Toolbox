@@ -105,6 +105,9 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
             if (existingPanelState != null) {
                 PanelEntity panelEntity = this.getPanelEntity(direction);
                 if (panelEntity == null || existingPanelState.getPanel() != panelState.getPanel()) {
+                    if (panelEntity != null) {
+                        panelEntity.onRemove();
+                    }
                     panelEntity = panelState.createPanelEntity(this);
                 }
                 if (panelEntity != null) {

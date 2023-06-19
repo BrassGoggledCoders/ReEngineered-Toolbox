@@ -32,6 +32,7 @@ public class PanelEntity implements ICapabilityProvider {
 
     @NotNull
     private PanelState panelState;
+    private boolean removed;
 
     public PanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         this.frameEntity = frameEntity;
@@ -146,6 +147,14 @@ public class PanelEntity implements ICapabilityProvider {
 
     public <T> void notifyStorageChanged(Capability<T> frequencyCapability) {
 
+    }
+
+    public void onRemove() {
+        this.removed = true;
+    }
+
+    public boolean isRemoved() {
+        return this.removed;
     }
 
     @Nullable

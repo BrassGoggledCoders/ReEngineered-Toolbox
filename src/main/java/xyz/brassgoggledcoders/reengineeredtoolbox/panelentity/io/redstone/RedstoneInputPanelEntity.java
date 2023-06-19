@@ -37,6 +37,12 @@ public class RedstoneInputPanelEntity extends RedstoneIOPanelEntity {
     }
 
     @Override
+    public void onRemove() {
+        super.onRemove();
+        this.redstoneHandlerLazyOptional.ifPresent(IFrequencyRedstoneHandler::markRequiresUpdate);
+    }
+
+    @Override
     public void neighborChanged() {
         Direction direction = this.getFacing();
         if (direction != null) {
