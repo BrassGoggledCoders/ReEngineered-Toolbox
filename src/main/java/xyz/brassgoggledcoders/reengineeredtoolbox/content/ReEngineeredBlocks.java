@@ -6,6 +6,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.block.FrameBlock;
 import xyz.brassgoggledcoders.reengineeredtoolbox.blockentity.FrameBlockEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.model.frame.FrameModelBuilder;
+import xyz.brassgoggledcoders.reengineeredtoolbox.render.FrameBlockEntityRenderer;
 
 public class ReEngineeredBlocks {
     public static BlockEntry<FrameBlock> IRON_FRAME = ReEngineeredToolbox.getRegistrate()
@@ -33,6 +34,7 @@ public class ReEngineeredBlocks {
     public static BlockEntityEntry<FrameBlockEntity> IRON_FRAME_ENTITY = ReEngineeredToolbox.getRegistrate()
             .object("iron_frame")
             .blockEntity(FrameBlockEntity::new)
+            .renderer(() -> FrameBlockEntityRenderer::new)
             .validBlock(IRON_FRAME)
             .register();
 

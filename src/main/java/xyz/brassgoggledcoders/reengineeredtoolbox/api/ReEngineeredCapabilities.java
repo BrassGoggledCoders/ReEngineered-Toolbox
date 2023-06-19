@@ -1,0 +1,12 @@
+package xyz.brassgoggledcoders.reengineeredtoolbox.api;
+
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
+
+public class ReEngineeredCapabilities {
+    public static Capability<IFrequencyItemHandler> FREQUENCY_ITEM_HANDLER = CapabilityManager.get(new CapabilityToken<>() {});
+    public static Capability<IFrequencyRedstoneHandler> FREQUENCY_REDSTONE_HANDLER = CapabilityManager.get(new CapabilityToken<>() {});
+}

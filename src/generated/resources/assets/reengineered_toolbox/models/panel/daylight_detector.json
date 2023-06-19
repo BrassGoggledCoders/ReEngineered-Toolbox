@@ -1,0 +1,6 @@
+{
+  "parent": "reengineered_toolbox:panel/flat_panel",
+  "textures": {
+    "panel": "minecraft:block/daylight_detector_top"
+  }
+}

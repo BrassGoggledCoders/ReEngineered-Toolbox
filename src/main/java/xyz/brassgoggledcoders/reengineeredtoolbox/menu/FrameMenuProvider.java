@@ -7,16 +7,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab.PlayerConnectionTabManager;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class FrameMenuProvider implements MenuProvider {
-    private final PlayerConnectionTabManager tabManager;
     private final MenuProvider panelMenuProvider;
 
-    public FrameMenuProvider(PlayerConnectionTabManager tabManager, MenuProvider panelMenuProvider) {
-        this.tabManager = tabManager;
+    public FrameMenuProvider(MenuProvider panelMenuProvider) {
         this.panelMenuProvider = panelMenuProvider;
     }
 
@@ -30,7 +27,6 @@ public class FrameMenuProvider implements MenuProvider {
     @Override
     @ParametersAreNonnullByDefault
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        tabManager.setActiveMenuId(pContainerId);
         return panelMenuProvider.createMenu(pContainerId, pPlayerInventory, pPlayer);
     }
 }

@@ -1,6 +1,0 @@
-{
-  "parent": "reengineered_toolbox:panel/flat_panel",
-  "textures": {
-    "panel": "reengineered_toolbox:panel/freezer"
-  }
-}

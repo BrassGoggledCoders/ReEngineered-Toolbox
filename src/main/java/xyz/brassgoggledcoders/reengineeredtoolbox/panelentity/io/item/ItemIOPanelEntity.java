@@ -1,70 +1,38 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item;
 
 import net.minecraft.core.Direction;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.MenuConstructor;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.MovingConnection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
-import xyz.brassgoggledcoders.reengineeredtoolbox.menu.panel.ItemIOPanelMenu;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.item.FrequencyBackedItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.IOPanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotType;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.IItemTypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.ItemTypedSlot;
 
-public abstract class ItemIOPanelEntity extends IOPanelEntity<IItemTypedSlot, ItemStack, MovingConnection<IItemTypedSlot, ItemStack, IItemHandler>> {
+public abstract class ItemIOPanelEntity extends IOPanelEntity {
 
-    private final IItemTypedSlot panelTypedSlot;
     private final LazyOptional<IItemHandler> lazyOptional;
 
     public ItemIOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(type, frameEntity, panelState);
-        this.panelTypedSlot = new ItemTypedSlot();
-        this.lazyOptional = LazyOptional.of(this::getSlotForMenu);
+        this.lazyOptional = LazyOptional.of(this::createItemHandler);
     }
 
-    @Override
-    public void serverTick() {
-        super.serverTick();
-        this.getConnection().tick();
-    }
-
-    @Override
-    @NotNull
-    protected String getIdentifier() {
-        return "item";
-    }
-
-    @Override
-    public IItemTypedSlot getSlotForMenu() {
-        return this.panelTypedSlot;
-    }
-
-    @Override
-    public MenuConstructor getMenuCreator() {
-        return (menuId, inventory, player) -> new ItemIOPanelMenu(
-                menuId,
-                inventory,
-                this::getSlotForMenu,
-                ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()),
-                this.getFacing(),
-                this.getPanelState().getPanel()
+    private FrequencyBackedItemHandler createItemHandler() {
+        return new FrequencyBackedItemHandler(
+                this.getIoPort(),
+                this.getFrameEntity().getCapability(ReEngineeredCapabilities.FREQUENCY_ITEM_HANDLER),
+                this.getIOStyle()
         );
     }
 
-    @Override
-    public TypedSlotType getTypedSlotType() {
-        return TypedSlotTypes.ITEM.get();
-    }
+    protected abstract IOStyle getIOStyle();
 
     @Override
     @NotNull

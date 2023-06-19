@@ -1,15 +1,13 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item;
 
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.MovingConnection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.item.IItemTypedSlot;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 
 public class ItemOutputPanelEntity extends ItemIOPanelEntity {
 
@@ -22,12 +20,13 @@ public class ItemOutputPanelEntity extends ItemIOPanelEntity {
     }
 
     @Override
-    protected MovingConnection<IItemTypedSlot, ItemStack, IItemHandler> createConnection() {
-        return MovingConnection.itemConnection(
-                this.getFrameEntity().getTypedSlotHolder(),
-                this.getPort(),
-                this::getSlotForMenu,
-                MovingConnection.ConnectionDirection.FROM_SLOT
-        );
+    protected IOStyle getIOStyle() {
+        return IOStyle.ONLY_EXTRACT;
+    }
+
+    @Override
+    @NotNull
+    protected Component getIdentifier() {
+        return ReEngineeredText.ITEM_SLOT_OUT;
     }
 }

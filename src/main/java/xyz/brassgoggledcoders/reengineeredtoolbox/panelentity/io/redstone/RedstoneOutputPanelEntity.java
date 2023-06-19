@@ -1,16 +1,13 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.ListeningConnection;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.IRedstoneTypedSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.types.redstone.RedstoneTypedSlot;
-
-import java.util.Optional;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 
 public class RedstoneOutputPanelEntity extends RedstoneIOPanelEntity {
 
@@ -20,15 +17,6 @@ public class RedstoneOutputPanelEntity extends RedstoneIOPanelEntity {
 
     public RedstoneOutputPanelEntity(@NotNull PanelEntityType<RedstoneOutputPanelEntity> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(type, frameEntity, panelState);
-    }
-
-    @Override
-    protected ListeningConnection<IRedstoneTypedSlot, Integer> createConnection() {
-        return ListeningConnection.redstoneConsumer(
-                this.getFrameEntity().getTypedSlotHolder(),
-                this.getPort(),
-                this::setPowerAndUpdate
-        );
     }
 
     public void setPowerAndUpdate(int power) {
@@ -41,15 +29,15 @@ public class RedstoneOutputPanelEntity extends RedstoneIOPanelEntity {
     }
 
     @Override
-    public IRedstoneTypedSlot getSlotForMenu() {
-        return Optional.ofNullable(this.getConnectedSlot())
-                .orElseGet(RedstoneTypedSlot::new);
+    public int getSignal() {
+        return 0;//Optional.ofNullable(this.getConnectedSlot())
+        //.map(IRedstoneTypedSlot::getContent)
+        //.orElse(0);
     }
 
     @Override
-    public int getSignal() {
-        return Optional.ofNullable(this.getConnectedSlot())
-                .map(IRedstoneTypedSlot::getContent)
-                .orElse(0);
+    @NotNull
+    protected Component getIdentifier() {
+        return ReEngineeredText.REDSTONE_SLOT_OUT;
     }
 }

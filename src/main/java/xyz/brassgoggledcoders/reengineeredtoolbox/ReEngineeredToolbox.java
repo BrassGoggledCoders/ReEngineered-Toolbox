@@ -2,19 +2,16 @@ package xyz.brassgoggledcoders.reengineeredtoolbox;
 
 import com.google.common.base.Suppliers;
 import com.tterrag.registrate.Registrate;
+import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredBlocks;
-import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredMenus;
-import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
-import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredRecipes;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.*;
 import xyz.brassgoggledcoders.reengineeredtoolbox.network.NetworkHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.ReEngineeredRegistrateAddon;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotTypes;
 import xyz.brassgoggledcoders.shadyskies.containersyncing.ContainerSyncing;
 
 import javax.annotation.Nonnull;
@@ -26,6 +23,7 @@ public class ReEngineeredToolbox {
     public static final Logger LOGGER = LoggerFactory.getLogger(ID);
 
     private final static Supplier<Registrate> REGISTRATE = Suppliers.memoize(() -> Registrate.create(ID)
+            .addDataGenerator(ProviderType.ITEM_TAGS, ReEngineeredItemTags::generate)
             .creativeModeTab(() -> new CreativeModeTab(ID) {
                 @Override
                 @Nonnull
@@ -46,12 +44,13 @@ public class ReEngineeredToolbox {
         NetworkHandler.setup();
 
         ReEngineeredBlocks.setup();
+        ReEngineeredItemTags.setup();
         ReEngineeredMenus.setup();
         ReEngineeredPanels.setup();
         ReEngineeredRecipes.setup();
+        ReEngineeredText.setup();
 
         containerSyncing = ContainerSyncing.setup(ID, LOGGER);
-        TypedSlotTypes.setup();
     }
 
     public static ResourceLocation rl(String path) {

@@ -13,14 +13,14 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.connection.Port;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class PanelEntity implements ICapabilityProvider {
@@ -28,28 +28,26 @@ public class PanelEntity implements ICapabilityProvider {
     private final IFrameEntity frameEntity;
     @NotNull
     private final PanelEntityType<?> type;
+    private final List<FrameSlot> frameSlots;
 
     @NotNull
     private PanelState panelState;
+    private boolean removed;
 
     public PanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         this.frameEntity = frameEntity;
         this.panelState = panelState;
         this.type = type;
+        this.frameSlots = new ArrayList<>();
     }
 
     public void neighborChanged() {
 
     }
 
-    public void setPortConnection(Port port, int slotNumber) {
-
-    }
-
     public void scheduledTick() {
 
     }
-
 
     public void load(CompoundTag pTag) {
     }
@@ -110,14 +108,6 @@ public class PanelEntity implements ICapabilityProvider {
         }
     }
 
-    public void slotUpdated(int slot) {
-
-    }
-
-    public Map<Port, Integer> getPorts() {
-        return Collections.emptyMap();
-    }
-
     public void serverTick() {
 
     }
@@ -144,6 +134,27 @@ public class PanelEntity implements ICapabilityProvider {
 
     protected Panel getPanel() {
         return this.getPanelState().getPanel();
+    }
+
+    public FrameSlot registerFrameSlot(FrameSlot frameSlot) {
+        this.frameSlots.add(frameSlot);
+        return frameSlot;
+    }
+
+    public List<FrameSlot> getFrameSlots() {
+        return this.frameSlots;
+    }
+
+    public <T> void notifyStorageChanged(Capability<T> frequencyCapability) {
+
+    }
+
+    public void onRemove() {
+        this.removed = true;
+    }
+
+    public boolean isRemoved() {
+        return this.removed;
     }
 
     @Nullable

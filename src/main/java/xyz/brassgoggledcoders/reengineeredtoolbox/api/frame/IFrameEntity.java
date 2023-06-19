@@ -6,19 +6,22 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlotHolder;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 
-public interface IFrameEntity {
+public interface IFrameEntity extends ICapabilityProvider {
     default InteractionResultHolder<PanelState> putPanelState(@NotNull Direction direction, @Nullable PanelState panelState) {
         return putPanelState(direction, panelState, false);
     }
@@ -48,8 +51,6 @@ public interface IFrameEntity {
     @NotNull
     Level getFrameLevel();
 
-    ITypedSlotHolder getTypedSlotHolder();
-
     default void openMenu(Player player, PanelEntity panelEntity, MenuProvider menuProvider) {
         this.openMenu(player, panelEntity, menuProvider, friendlyByteBuf -> {
         });
@@ -60,4 +61,8 @@ public interface IFrameEntity {
     boolean isValid();
 
     void scheduleTick(@NotNull Direction direction, Panel panel, int ticks);
+
+    boolean changeFrameSlot(@NotNull BlockHitResult hitResult, ItemStack toolStack);
+
+    <T> void notifyStorageChange(Capability<T> frequencyItemHandler);
 }

@@ -13,27 +13,34 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.Frequency;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.item.FrequencyItemHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.redstone.FrequencyRedstoneHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.FrameMenuProvider;
-import xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab.PlayerConnectionTabManager;
-import xyz.brassgoggledcoders.reengineeredtoolbox.menu.tab.ServerConnectionTabManager;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.ITypedSlotHolder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.typedslot.TypedSlotHolder;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.NbtHelper;
 
 import java.util.*;
@@ -53,20 +60,26 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
     private final Map<Direction, PanelState> panelStateMap;
     private final Map<Direction, PanelEntity> panelEntityMap;
-    private final TypedSlotHolder typedSlotHolder;
     private final TreeMap<Long, Set<Direction>> scheduledTicks;
+
+    private final FrequencyItemHandler frequencyItemHandler;
+    private final LazyOptional<IFrequencyItemHandler> frequencyItemHandlerLazy;
+
+    private final FrequencyRedstoneHandler frequencyRedstoneHandler;
+    private final LazyOptional<IFrequencyRedstoneHandler> frequencyRedstoneHandlerLazy;
 
     public FrameBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
         this.panelStateMap = new ConcurrentHashMap<>();
         this.panelEntityMap = new EnumMap<>(Direction.class);
-        this.typedSlotHolder = new TypedSlotHolder(this::getFrameLevel, pPos, this::slotUpdated);
         this.scheduledTicks = new TreeMap<>(Long::compareTo);
-    }
 
-    private void slotUpdated(int slot) {
-        this.setChanged();
-        this.panelEntityMap.forEach((direction, panelEntity) -> panelEntity.slotUpdated(slot));
+        this.frequencyItemHandler = new FrequencyItemHandler(this::setChanged);
+        this.frequencyItemHandlerLazy = LazyOptional.of(() -> frequencyItemHandler);
+
+        this.frequencyRedstoneHandler = new FrequencyRedstoneHandler(this);
+        this.frequencyRedstoneHandlerLazy = LazyOptional.of(() -> this.frequencyRedstoneHandler);
+
     }
 
     @NotNull
@@ -92,6 +105,9 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
             if (existingPanelState != null) {
                 PanelEntity panelEntity = this.getPanelEntity(direction);
                 if (panelEntity == null || existingPanelState.getPanel() != panelState.getPanel()) {
+                    if (panelEntity != null) {
+                        panelEntity.onRemove();
+                    }
                     panelEntity = panelState.createPanelEntity(this);
                 }
                 if (panelEntity != null) {
@@ -142,19 +158,11 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     }
 
     @Override
-    public ITypedSlotHolder getTypedSlotHolder() {
-        return this.typedSlotHolder;
-    }
-
-    @Override
     public void openMenu(Player player, PanelEntity panelEntity, MenuProvider menuProvider, @NotNull Consumer<FriendlyByteBuf> friendlyByteBuf) {
         if (player instanceof ServerPlayer serverPlayer) {
-            PlayerConnectionTabManager tabManager = ServerConnectionTabManager.getInstance()
-                    .startSession(serverPlayer, this, panelEntity);
-
             NetworkHooks.openScreen(
                     serverPlayer,
-                    new FrameMenuProvider(tabManager, menuProvider),
+                    new FrameMenuProvider(menuProvider),
                     friendlyByteBuf
             );
         }
@@ -173,6 +181,38 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
             this.scheduledTicks.computeIfAbsent(this.getFrameLevel().getGameTime() + ticks, key -> new HashSet<>())
                     .add(direction);
+        }
+    }
+
+    @Override
+    public boolean changeFrameSlot(@NotNull BlockHitResult result, ItemStack toolStack) {
+        PanelEntity panelEntity = this.getPanelEntity(result.getDirection());
+        if (panelEntity != null) {
+            List<FrameSlot> frameSlots = panelEntity.getFrameSlots();
+            if (!frameSlots.isEmpty()) {
+                Optional<DyeColor> toolStackDye = Optional.empty();
+                if (toolStack.is(Tags.Items.DYES)) {
+                    toolStackDye = Optional.ofNullable(DyeColor.getColor(toolStack));
+                }
+
+                for (FrameSlot frameSlot : frameSlots) {
+                    if (frameSlot.getView().isInside(result.getLocation(), result.getDirection())) {
+                        frameSlot.setFrequency(toolStackDye.flatMap(Frequency::getByDye)
+                                .orElse(frameSlot.getFrequency().next())
+                        );
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public <T> void notifyStorageChange(Capability<T> frequencyCapability) {
+        for (PanelEntity panelEntity : this.panelEntityMap.values()) {
+            panelEntity.notifyStorageChanged(frequencyCapability);
         }
     }
 
@@ -195,22 +235,18 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         CompoundTag panelsTag = new CompoundTag();
         writePanels(panelsTag);
         pTag.put("Panels", panelsTag);
-        pTag.put("TypedSlotHolder", this.typedSlotHolder.serializeNBT());
+        pTag.put("FrequencyItemHandler", this.frequencyItemHandler.serializeNBT());
     }
 
     @Override
     public void load(@NotNull CompoundTag pTag) {
         super.load(pTag);
 
-        if (pTag.contains("TypedSlotHolder")) {
-            this.typedSlotHolder.deserializeNBT(pTag.getCompound("TypedSlotHolder"));
-        }
-
         if (pTag.contains("Panels")) {
             CompoundTag panelsTag = pTag.getCompound("Panels");
             readPanels(panelsTag);
         }
-
+        this.frequencyItemHandler.deserializeNBT(pTag.getCompound("FrequencyItemHandler"));
     }
 
     private void readPanels(CompoundTag panelsTag) {
@@ -276,8 +312,10 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
-        this.typedSlotHolder.invalidateCaps();
         this.panelEntityMap.values().forEach(PanelEntity::invalidate);
+
+        this.frequencyItemHandlerLazy.invalidate();
+        this.frequencyRedstoneHandlerLazy.invalidate();
     }
 
     @Nullable
@@ -291,8 +329,12 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         LazyOptional<T> lazyOptional = LazyOptional.empty();
         if (side == null) {
-            lazyOptional = this.getTypedSlotHolder()
-                    .getCapability(cap);
+            //TODO Handle Frame Storage
+            if (cap == ReEngineeredCapabilities.FREQUENCY_ITEM_HANDLER) {
+                lazyOptional = this.frequencyItemHandlerLazy.cast();
+            } else if (cap == ReEngineeredCapabilities.FREQUENCY_REDSTONE_HANDLER) {
+                lazyOptional = this.frequencyRedstoneHandlerLazy.cast();
+            }
         } else {
             PanelEntity panelEntity = this.getPanelEntity(side);
             if (panelEntity != null) {
@@ -308,5 +350,6 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
     public void serverTick() {
         this.panelEntityMap.values().forEach(PanelEntity::serverTick);
+        this.frequencyRedstoneHandler.tick();
     }
 }
