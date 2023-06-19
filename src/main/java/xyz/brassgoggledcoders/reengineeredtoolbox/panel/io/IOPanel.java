@@ -24,27 +24,6 @@ public class IOPanel extends Panel {
     }
 
     @Override
-    @NotNull
-    public InteractionResult use(IFrameEntity frameEntity, PanelState panelState, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        if (frameEntity.getPanelEntity(pHit.getDirection()) instanceof IOPanelEntity ioPanelEntity) {
-            /* TODO UI?
-            if (pPlayer instanceof ServerPlayer serverPlayer) {
-                frameEntity.openMenu(
-                        serverPlayer,
-                        ioPanelEntity,
-                        new SimpleMenuProvider(
-                                ioPanelEntity.getMenuCreator(),
-                                this.getName()
-                        )
-                );
-            }
-            */
-            return InteractionResult.sidedSuccess(frameEntity.getFrameLevel().isClientSide());
-        }
-        return InteractionResult.PASS;
-    }
-
-    @Override
     @Nullable
     public PanelEntity createPanelEntity(IFrameEntity frame, PanelState panelState) {
         return panelEntityConstructor.apply(frame, panelState);
