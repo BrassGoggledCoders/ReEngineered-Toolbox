@@ -100,16 +100,16 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
                     new Vector3f((slotView.xPos() + slotView.width()) / 16F, (slotView.yPos() + slotView.height()) / 16F, -0.0001F)
             );
             case SOUTH -> Pair.of(
-                    new Vector3f(slotView.xPos() / 16F, slotView.yPos() / 16F, 1.0001F),
-                    new Vector3f((slotView.xPos() + slotView.width()) / 16F, (slotView.yPos() + slotView.height()) / 16F, 1.0001F)
+                    new Vector3f(slotView.xPos() / 16F, (16 - slotView.yPos() - slotView.height()) / 16F, 1.0001F),
+                    new Vector3f((slotView.xPos() + slotView.width()) / 16F, (16 - slotView.yPos()) / 16F, 1.0001F)
             );
             case WEST -> Pair.of(
-                    new Vector3f(-0.0001F, slotView.xPos() / 16F, slotView.yPos() / 16F),
-                    new Vector3f(-0.0001F, (slotView.xPos() + slotView.width()) / 16F, (slotView.yPos() + slotView.height()) / 16F)
+                    new Vector3f(-0.0001F, slotView.yPos() / 16F, slotView.xPos() / 16F),
+                    new Vector3f(-0.0001F, (slotView.yPos() + slotView.height()) / 16F, (slotView.xPos() + slotView.width()) / 16F)
             );
             case EAST -> Pair.of(
-                    new Vector3f(1.0001F, slotView.xPos() / 16F, slotView.yPos() / 16F),
-                    new Vector3f(1.0001F, (slotView.xPos() + slotView.width()) / 16F, (slotView.yPos() + slotView.height()) / 16F)
+                    new Vector3f(1.0001F, slotView.yPos() / 16F, slotView.xPos() / 16F),
+                    new Vector3f(1.0001F, (slotView.yPos() + slotView.height()) / 16F, (slotView.xPos() + slotView.width()) / 16F)
             );
         };
     }

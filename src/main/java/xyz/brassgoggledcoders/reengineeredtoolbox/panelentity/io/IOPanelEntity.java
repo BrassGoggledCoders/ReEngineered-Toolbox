@@ -45,9 +45,9 @@ public abstract class IOPanelEntity extends PanelEntity {
     public List<FrameSlotView> getFrameSlotViews() {
         return Collections.singletonList(new FrameSlotView(
                 this.ioPort,
-                4,
-                4,
-                4,
+                3,
+                5,
+                3,
                 4
         ));
     }
