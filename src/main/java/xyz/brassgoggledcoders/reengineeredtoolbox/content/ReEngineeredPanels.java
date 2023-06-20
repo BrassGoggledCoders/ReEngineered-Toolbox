@@ -7,9 +7,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.registries.ForgeRegistry;
@@ -18,19 +16,17 @@ import net.minecraftforge.registries.RegistryManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panel.PanelWithMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.DaylightDetectorPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.IOPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.RedstoneIOPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.world.DispenserPanel;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.FluidIOPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemInputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.DaylightDetectorPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneInputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.dispenser.DispenserPanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.freezer.FreezerRecipeBuilder;
-import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.ingredient.FluidIngredient;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelEntry;
 
 import java.util.function.Supplier;
@@ -83,6 +79,25 @@ public class ReEngineeredPanels {
                     .object("item_output")
                     .panel(() -> new IOPanel(ItemOutputPanelEntity::new))
                     .panelEntity(ItemOutputPanelEntity::new)
+                    .item()
+                    .build()
+                    .register();
+
+    public static final PanelEntry<IOPanel> FLUID_INPUT =
+            ReEngineeredToolbox.getRegistrateAddon()
+                    .object("fluid_input")
+                    .panel(() -> new IOPanel(FluidIOPanelEntity.fluidInput()))
+                    .panelEntity(FluidIOPanelEntity.fluidInputFactory())
+                    .item()
+                    .build()
+                    .register();
+
+
+    public static final PanelEntry<IOPanel> FLUID_OUTPUT =
+            ReEngineeredToolbox.getRegistrateAddon()
+                    .object("fluid_output")
+                    .panel(() -> new IOPanel(FluidIOPanelEntity.fluidOutput()))
+                    .panelEntity(FluidIOPanelEntity.fluidOutputFactory())
                     .item()
                     .build()
                     .register();
@@ -159,14 +174,12 @@ public class ReEngineeredPanels {
     public static final PanelEntry<DaylightDetectorPanel> DAYLIGHT_DETECTOR = ReEngineeredToolbox.getRegistrateAddon()
             .object("daylight_detector")
             .panel(DaylightDetectorPanel::new)
-            .panelState((context, provider) -> {
-                provider.singleDirectionPanel(
-                        context.get(),
-                        Direction.UP,
-                        provider.models()
-                                .flatPanel(context.getName(), provider.mcLoc("block/daylight_detector_top"))
-                );
-            })
+            .panelState((context, provider) -> provider.singleDirectionPanel(
+                    context.get(),
+                    Direction.UP,
+                    provider.models()
+                            .flatPanel(context.getName(), provider.mcLoc("block/daylight_detector_top"))
+            ))
             .panelEntity(DaylightDetectorPanelEntity::new)
             .item()
             .model((context, provider) -> provider.generated(context, provider.mcLoc("block/daylight_detector_top")))
