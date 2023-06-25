@@ -24,6 +24,7 @@ public class ReEngineeredToolbox {
 
     private final static Supplier<Registrate> REGISTRATE = Suppliers.memoize(() -> Registrate.create(ID)
             .addDataGenerator(ProviderType.ITEM_TAGS, ReEngineeredItemTags::generate)
+            .addDataGenerator(ProviderType.RECIPE, ReEngineeredRecipeData::generateRecipes)
             .creativeModeTab(() -> new CreativeModeTab(ID) {
                 @Override
                 @Nonnull

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "I": {
+      "item": "minecraft:packed_ice"
+    },
+    "P": {
+      "item": "reengineered_toolbox:blank"
+    }
+  },
+  "pattern": [
+    "IFI",
+    "IPI"
+  ],
+  "result": {
+    "item": "reengineered_toolbox:freezer"
+  }
+}

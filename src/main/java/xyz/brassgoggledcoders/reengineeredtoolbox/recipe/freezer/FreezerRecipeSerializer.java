@@ -17,14 +17,15 @@ public class FreezerRecipeSerializer implements RecipeSerializer<FreezerRecipe> 
     @NotNull
     public FreezerRecipe fromJson(@NotNull ResourceLocation pRecipeId, @NotNull JsonObject jsonObject) {
         if (!jsonObject.has("itemInput") && !jsonObject.has("fluidInput")) {
-            throw new JsonParseException("Recipe must at least one of 'itemInput' or 'fluidInput'");
+            throw new JsonParseException("Recipe must have at least one of 'itemInput' or 'fluidInput'");
         }
         return new FreezerRecipe(
                 pRecipeId,
                 jsonObject.has("itemInput") ? CraftingHelper.getIngredient(jsonObject.get("itemInput")) : Ingredient.EMPTY,
                 jsonObject.has("fluidInput") ? FluidIngredient.fromJson(jsonObject.getAsJsonObject("fluidInput")) : FluidIngredient.EMPTY,
                 CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(jsonObject, "result"), true),
-                GsonHelper.getAsInt(jsonObject, "time", 100)
+                GsonHelper.getAsInt(jsonObject, "time", 100),
+                GsonHelper.getAsInt(jsonObject, "power", 100)
         );
     }
 
@@ -36,6 +37,7 @@ public class FreezerRecipeSerializer implements RecipeSerializer<FreezerRecipe> 
                 Ingredient.fromNetwork(pBuffer),
                 FluidIngredient.fromNetwork(pBuffer),
                 pBuffer.readItem(),
+                pBuffer.readInt(),
                 pBuffer.readInt()
         );
     }
@@ -46,5 +48,6 @@ public class FreezerRecipeSerializer implements RecipeSerializer<FreezerRecipe> 
         pRecipe.fluidInput().toNetwork(pBuffer);
         pBuffer.writeItem(pRecipe.result());
         pBuffer.writeInt(pRecipe.time());
+        pBuffer.writeInt(pRecipe.power());
     }
 }

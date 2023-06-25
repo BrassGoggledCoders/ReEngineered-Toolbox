@@ -1,7 +1,9 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.energy;
 
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyEnergyHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
@@ -16,6 +18,10 @@ public class FrequencyBackedEnergyHandler implements IEnergyStorage {
         this.frameSlot = frameSlot;
         this.ioStyle = ioStyle;
         this.backingEnergyStorage = Option.ofLazy(backingEnergyStorage);
+    }
+
+    public FrequencyBackedEnergyHandler(FrameSlot frameSlot, IOStyle ioStyle, ICapabilityProvider provider) {
+        this(frameSlot, ioStyle, provider.getCapability(ReEngineeredCapabilities.FREQUENCY_ENERGY_HANDLER));
     }
 
     @Override

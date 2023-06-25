@@ -16,17 +16,19 @@ import net.minecraftforge.registries.RegistryManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panel.PanelWithEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.DaylightDetectorPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.IOPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.RedstoneIOPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.world.DispenserPanel;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.energy.EnergyIOPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.FluidIOPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.energy.EnergyIOPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemInputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.DaylightDetectorPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneInputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneOutputPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.FreezerPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.dispenser.DispenserPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelEntry;
 
@@ -207,6 +209,23 @@ public class ReEngineeredPanels {
                     .pattern("D")
                     .pattern("P")
                     .define('D', Items.DAYLIGHT_DETECTOR)
+                    .define('P', BLANK.asPanel())
+                    .unlockedBy("has_item", RegistrateRecipeProvider.has(BLANK.asPanel()))
+                    .save(provider)
+            )
+            .build()
+            .register();
+
+    public static final PanelEntry<PanelWithEntity> FREEZER = ReEngineeredToolbox.getRegistrateAddon()
+            .object("freezer")
+            .panel(() -> new PanelWithEntity(FreezerPanelEntity::new))
+            .panelEntity(FreezerPanelEntity::new)
+            .item()
+            .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())
+                    .pattern("IFI")
+                    .pattern("IPI")
+                    .define('I', Items.PACKED_ICE)
+                    .define('F', Items.FURNACE)
                     .define('P', BLANK.asPanel())
                     .unlockedBy("has_item", RegistrateRecipeProvider.has(BLANK.asPanel()))
                     .save(provider)

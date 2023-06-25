@@ -22,6 +22,7 @@ public class FreezerRecipeBuilder {
     private Ingredient itemInput;
     private FluidIngredient fluidInput;
     private int time;
+    private int power;
 
     public FreezerRecipeBuilder(ItemStack result) {
         this.result = result;
@@ -42,6 +43,11 @@ public class FreezerRecipeBuilder {
 
     public FreezerRecipeBuilder withTime(int time) {
         this.time = time;
+        return this;
+    }
+
+    public FreezerRecipeBuilder withPower(int power) {
+        this.power = power;
         return this;
     }
 

@@ -1,0 +1,11 @@
+{
+  "type": "reengineered_toolbox:freezer",
+  "fluidInput": {
+    "amount": 1000,
+    "fluid": "#minecraft:water"
+  },
+  "result": {
+    "item": "minecraft:ice"
+  },
+  "time": 200
+}

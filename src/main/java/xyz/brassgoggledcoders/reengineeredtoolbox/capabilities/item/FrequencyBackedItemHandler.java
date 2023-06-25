@@ -1,14 +1,16 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.item;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
 
-public class FrequencyBackedItemHandler implements IItemHandler {
+public class FrequencyBackedItemHandler implements IItemHandlerModifiable {
     private final FrameSlot[] frameSlots;
     private final LazyOptional<IFrequencyItemHandler> backingItemHandler;
     private final IOStyle ioStyle;
@@ -20,6 +22,12 @@ public class FrequencyBackedItemHandler implements IItemHandler {
     public FrequencyBackedItemHandler(FrameSlot[] frameSlots, LazyOptional<IFrequencyItemHandler> backingItemHandler, IOStyle ioStyle) {
         this.frameSlots = frameSlots;
         this.backingItemHandler = backingItemHandler;
+        this.ioStyle = ioStyle;
+    }
+
+    public FrequencyBackedItemHandler(FrameSlot[] frameSlots, IOStyle ioStyle, ICapabilityProvider provider) {
+        this.frameSlots = frameSlots;
+        this.backingItemHandler = provider.getCapability(ReEngineeredCapabilities.FREQUENCY_ITEM_HANDLER);
         this.ioStyle = ioStyle;
     }
 
@@ -66,5 +74,10 @@ public class FrequencyBackedItemHandler implements IItemHandler {
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return this.backingItemHandler.map(itemHandler -> itemHandler.isItemValid(frameSlots[slot].getFrequency(), stack))
                 .orElse(false);
+    }
+
+    @Override
+    public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+        this.backingItemHandler.ifPresent(itemHandler -> itemHandler.setStackInSlot(frameSlots[slot].getFrequency(), stack));
     }
 }

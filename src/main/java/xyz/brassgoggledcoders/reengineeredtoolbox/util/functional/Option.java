@@ -3,6 +3,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.util.functional;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -22,6 +23,12 @@ public interface Option<T> {
         } else {
             return EMPTY.cast();
         }
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    static <U> Option<U> fromOptional(Optional<U> optional) {
+        return optional.<Option<U>>map(Some::new)
+                .orElse(empty());
     }
 
     @SuppressWarnings("unchecked")

@@ -1,9 +1,11 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.fluid;
 
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyFluidHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
@@ -16,6 +18,12 @@ public class FrequencyBackedFluidHandler implements IFluidHandler {
     public FrequencyBackedFluidHandler(FrameSlot frameSlot, LazyOptional<IFrequencyFluidHandler> backingFluidHandler, IOStyle ioStyle) {
         this.frameSlot = frameSlot;
         this.backingFluidHandler = backingFluidHandler;
+        this.ioStyle = ioStyle;
+    }
+
+    public FrequencyBackedFluidHandler(FrameSlot frameSlot, IOStyle ioStyle, ICapabilityProvider capabilityProvider) {
+        this.frameSlot = frameSlot;
+        this.backingFluidHandler = capabilityProvider.getCapability(ReEngineeredCapabilities.FREQUENCY_FLUID_HANDLER);
         this.ioStyle = ioStyle;
     }
 
