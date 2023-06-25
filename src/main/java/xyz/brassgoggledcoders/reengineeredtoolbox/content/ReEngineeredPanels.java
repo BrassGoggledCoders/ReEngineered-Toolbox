@@ -20,6 +20,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.DaylightDetectorPanel
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.IOPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.RedstoneIOPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.world.DispenserPanel;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.energy.EnergyIOPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.FluidIOPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemInputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemOutputPanelEntity;
@@ -98,6 +99,25 @@ public class ReEngineeredPanels {
                     .object("fluid_output")
                     .panel(() -> new IOPanel(FluidIOPanelEntity.fluidOutput()))
                     .panelEntity(FluidIOPanelEntity.fluidOutputFactory())
+                    .item()
+                    .build()
+                    .register();
+
+    public static final PanelEntry<IOPanel> ENERGY_INPUT =
+            ReEngineeredToolbox.getRegistrateAddon()
+                    .object("energy_input")
+                    .panel(() -> new IOPanel(EnergyIOPanelEntity.energyInput()))
+                    .panelEntity(EnergyIOPanelEntity.energyInputFactory())
+                    .item()
+                    .build()
+                    .register();
+
+
+    public static final PanelEntry<IOPanel> ENERGY_OUTPUT =
+            ReEngineeredToolbox.getRegistrateAddon()
+                    .object("energy_output")
+                    .panel(() -> new IOPanel(EnergyIOPanelEntity.energyOutput()))
+                    .panelEntity(EnergyIOPanelEntity.energyOutputFactory())
                     .item()
                     .build()
                     .register();

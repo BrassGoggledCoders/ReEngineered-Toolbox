@@ -29,6 +29,7 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyEnergyHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyFluidHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;
@@ -38,6 +39,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.Frequency;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.energy.FrequencyEnergyHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.fluid.FrequencyFluidHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.item.FrequencyItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.redstone.FrequencyRedstoneHandler;
@@ -73,6 +75,9 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     private final FrequencyFluidHandler frequencyFluidHandler;
     private final LazyOptional<IFrequencyFluidHandler> frequencyFluidHandlerLazy;
 
+    private final FrequencyEnergyHandler frequencyEnergyHandler;
+    private final LazyOptional<IFrequencyEnergyHandler> frequencyEnergyHandlerLazy;
+
     public FrameBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
         this.panelStateMap = new ConcurrentHashMap<>();
@@ -87,6 +92,9 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
         this.frequencyFluidHandler = new FrequencyFluidHandler(this::setChanged);
         this.frequencyFluidHandlerLazy = LazyOptional.of(() -> this.frequencyFluidHandler);
+
+        this.frequencyEnergyHandler = new FrequencyEnergyHandler(10000, this::setChanged);
+        this.frequencyEnergyHandlerLazy = LazyOptional.of(() -> this.frequencyEnergyHandler);
 
     }
 
@@ -245,6 +253,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         pTag.put("Panels", panelsTag);
         pTag.put("FrequencyItemHandler", this.frequencyItemHandler.serializeNBT());
         pTag.put("FrequencyFluidHandler", this.frequencyFluidHandler.serializeNBT());
+        pTag.put("FrequencyEnergyHandler", this.frequencyEnergyHandler.serializeNBT());
     }
 
     @Override
@@ -257,6 +266,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         }
         this.frequencyItemHandler.deserializeNBT(pTag.getCompound("FrequencyItemHandler"));
         this.frequencyFluidHandler.deserializeNBT(pTag.getCompound("FrequencyFluidHandler"));
+        this.frequencyEnergyHandler.deserializeNBT(pTag.getCompound("FrequencyEnergyHandler"));
     }
 
     private void readPanels(CompoundTag panelsTag) {
@@ -326,6 +336,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         this.frequencyItemHandlerLazy.invalidate();
         this.frequencyRedstoneHandlerLazy.invalidate();
         this.frequencyFluidHandlerLazy.invalidate();
+        this.frequencyEnergyHandlerLazy.invalidate();
     }
 
     @Nullable
@@ -339,13 +350,14 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         LazyOptional<T> lazyOptional = LazyOptional.empty();
         if (side == null) {
-            //TODO Handle Frame Storage
             if (cap == ReEngineeredCapabilities.FREQUENCY_ITEM_HANDLER) {
                 lazyOptional = this.frequencyItemHandlerLazy.cast();
             } else if (cap == ReEngineeredCapabilities.FREQUENCY_REDSTONE_HANDLER) {
                 lazyOptional = this.frequencyRedstoneHandlerLazy.cast();
             } else if (cap == ReEngineeredCapabilities.FREQUENCY_FLUID_HANDLER) {
                 lazyOptional = this.frequencyFluidHandlerLazy.cast();
+            } else if (cap == ReEngineeredCapabilities.FREQUENCY_ENERGY_HANDLER) {
+                lazyOptional = this.frequencyEnergyHandlerLazy.cast();
             }
         } else {
             PanelEntity panelEntity = this.getPanelEntity(side);

@@ -1,11 +1,13 @@
-// 1.19.2	2023-06-20T18:12:21.1243547	Registrate Provider for reengineered_toolbox [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud), PanelStates]
+// 1.19.2	2023-06-25T16:17:49.6883024	Registrate Provider for reengineered_toolbox [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud), PanelStates]
 336dbe86e88604bd24d9d5df1ff219e274f151ff assets/reengineered_toolbox/blockstates/iron_frame.json
-54f7300d68331fb5c54bbc91b7b05f9766122383 assets/reengineered_toolbox/lang/en_ud.json
-e6c70479200f3483a28f476ddbae525d9051c943 assets/reengineered_toolbox/lang/en_us.json
+e61a5ca844ad2981ab830f81515dc88a80e6152c assets/reengineered_toolbox/lang/en_ud.json
+005b1f7e9af128fab44b7350ac47b6d56d257833 assets/reengineered_toolbox/lang/en_us.json
 47ac3450b674baa4a258df663c208426ce1e8e89 assets/reengineered_toolbox/models/block/iron_frame.json
 5548e69b5c9b7699f732ee72e48986a74a771d58 assets/reengineered_toolbox/models/item/blank.json
 f252f2237c0cf64ab41b0168b9812ee564fe022b assets/reengineered_toolbox/models/item/daylight_detector.json
 be1d9967662fbacbbe504c7eb627ef84963b31f3 assets/reengineered_toolbox/models/item/dispenser.json
+2f0106e2a0863b7d5a9059660ec3e9941b7e2296 assets/reengineered_toolbox/models/item/energy_input.json
+52314ea1af292a634861d74cdd20e6a16481209d assets/reengineered_toolbox/models/item/energy_output.json
 a8ccf0c583ce839d8cf3df5afc096567b568f300 assets/reengineered_toolbox/models/item/fluid_input.json
 b329125656806d795d2fd5e3a2a8d6f03d2e38f0 assets/reengineered_toolbox/models/item/fluid_output.json
 ad77085ae8ecdf70bfdb109f192ce30a90e5c5f3 assets/reengineered_toolbox/models/item/iron_frame.json
@@ -17,6 +19,8 @@ b8609b63bbc371f1eefaf336e8e84d50b137c898 assets/reengineered_toolbox/models/item
 cae4ccccd8ae9d0870e5fd3ae2d1a8c5a3699cc1 assets/reengineered_toolbox/models/panel/blank.json
 b329a9d6b818e4962989d1238e72eefec99e9480 assets/reengineered_toolbox/models/panel/daylight_detector.json
 fdce959afaec29dc20eb31e4234e4eff5d9c617f assets/reengineered_toolbox/models/panel/dispenser.json
+43fa12473b674015f58389508b8c4aa2d342193c assets/reengineered_toolbox/models/panel/energy_input.json
+10f23e5e32aecc976af25319ea458bdcd55b2b26 assets/reengineered_toolbox/models/panel/energy_output.json
 04ef64b1356ed5471643572e19f1cef2f5295d2c assets/reengineered_toolbox/models/panel/fluid_input.json
 8002272dcd17ddecfe4efc15e9d875c2a78689d1 assets/reengineered_toolbox/models/panel/fluid_output.json
 2cd1562a8c960ebdee5d1052744536af89b2926c assets/reengineered_toolbox/models/panel/item_input.json
@@ -29,6 +33,8 @@ de01f8b4cbe1374af53cb7f7a1677bce0d64fadc assets/reengineered_toolbox/models/pane
 8fbf5f299754a73617bd09ad5008ec320abeb2bf assets/reengineered_toolbox/panelstates/blank.json
 b2875a613ac229875a8f156b56268be4a0796cb2 assets/reengineered_toolbox/panelstates/daylight_detector.json
 a500ab849bb91bc9f1d6a0721746b9124ad74901 assets/reengineered_toolbox/panelstates/dispenser.json
+0b9b71d4d4a22414888e101d0b557cc4846f4c18 assets/reengineered_toolbox/panelstates/energy_input.json
+c1b190415ece2fe8eba739b9f63b5021fded1ba3 assets/reengineered_toolbox/panelstates/energy_output.json
 05e01929b6c081f450319a8d30035247b6ef5398 assets/reengineered_toolbox/panelstates/fluid_input.json
 7f3d757a516910555d402fb7384428ed8972a795 assets/reengineered_toolbox/panelstates/fluid_output.json
 12bb997a054d2e4725d7f0977c49bd281560f118 assets/reengineered_toolbox/panelstates/item_input.json
