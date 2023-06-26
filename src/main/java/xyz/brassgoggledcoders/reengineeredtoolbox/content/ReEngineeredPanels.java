@@ -16,7 +16,7 @@ import net.minecraftforge.registries.RegistryManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panel.PanelWithEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panel.PanelWithMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.DaylightDetectorPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.IOPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.RedstoneIOPanel;
@@ -216,9 +216,9 @@ public class ReEngineeredPanels {
             .build()
             .register();
 
-    public static final PanelEntry<PanelWithEntity> FREEZER = ReEngineeredToolbox.getRegistrateAddon()
+    public static final PanelEntry<PanelWithMenu<FreezerPanelEntity>> FREEZER = ReEngineeredToolbox.getRegistrateAddon()
             .object("freezer")
-            .panel(() -> new PanelWithEntity(FreezerPanelEntity::new))
+            .panel(() -> new PanelWithMenu<>(FreezerPanelEntity::new))
             .panelEntity(FreezerPanelEntity::new)
             .item()
             .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())

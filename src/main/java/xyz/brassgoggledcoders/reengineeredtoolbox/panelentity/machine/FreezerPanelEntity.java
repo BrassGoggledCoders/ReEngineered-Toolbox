@@ -1,9 +1,15 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotViews;
@@ -14,23 +20,26 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.energy.FrequencyBackedEnergyHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.fluid.FrequencyBackedFluidHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.item.FrequencyBackedItemHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredMenus;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredRecipes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
+import xyz.brassgoggledcoders.reengineeredtoolbox.menu.FreezerMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.freezer.FreezerRecipe;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.freezer.FreezerRecipeContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.CachedRecipe;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.functional.Option;
+import xyz.brassgoggledcoders.shadyskies.containersyncing.object.ProgressView;
 
-import java.util.function.BiFunction;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-public class FreezerPanelEntity extends PanelEntity {
+public class FreezerPanelEntity extends PanelEntity implements MenuProvider {
 
     private final FrameSlot energyIn;
     private final FrameSlot fluidIn;
     private final FrameSlot itemIn;
     private final FrameSlot itemOut;
-    private final BiFunction<Level, FreezerRecipeContainer, Option<FreezerRecipe>> cachedRecipe;
+    private final CachedRecipe<FreezerRecipe, FreezerRecipeContainer> cachedRecipe;
     private final FrequencyBackedItemHandler itemHandler;
     private final FrequencyBackedFluidHandler fluidHandler;
     private final FrequencyBackedEnergyHandler energyHandler;
@@ -46,7 +55,7 @@ public class FreezerPanelEntity extends PanelEntity {
         this.itemIn = this.registerFrameSlot(new FrameSlot(ReEngineeredText.ITEM_SLOT_IN, FrameSlotViews.BOTTOM_LEFT_4X4));
         this.itemOut = this.registerFrameSlot(new FrameSlot(ReEngineeredText.ITEM_SLOT_OUT, FrameSlotViews.BOTTOM_RIGHT_4X4));
 
-        this.cachedRecipe = CachedRecipe.cached(ReEngineeredRecipes.FREEZER_TYPE.get());
+        this.cachedRecipe = new CachedRecipe<>(ReEngineeredRecipes.FREEZER_TYPE.get());
 
         this.fluidHandler = new FrequencyBackedFluidHandler(fluidIn, IOStyle.ONLY_EXTRACT, frameEntity);
         this.itemHandler = new FrequencyBackedItemHandler(new FrameSlot[]{itemIn, itemOut}, IOStyle.BOTH, frameEntity);
@@ -63,7 +72,7 @@ public class FreezerPanelEntity extends PanelEntity {
     public void serverTick() {
         super.serverTick();
         if (coolDown <= 0 && this.energyHandler.getEnergyStored() > 0) {
-            Option<FreezerRecipe> recipe = this.cachedRecipe.apply(this.getLevel(), this.recipeContainer);
+            Option<FreezerRecipe> recipe = this.cachedRecipe.getRecipe(this.getLevel(), this.recipeContainer);
 
             if (!recipe.exists(this::handleFreezeRecipe)) {
                 this.coolDown = 20;
@@ -109,5 +118,31 @@ public class FreezerPanelEntity extends PanelEntity {
         pTag.put("FluidIn", this.fluidIn.serializeNBT());
         pTag.put("ItemIn", this.itemIn.serializeNBT());
         pTag.put("ItemOut", this.itemOut.serializeNBT());
+    }
+
+    @Override
+    @NotNull
+    public Component getDisplayName() {
+        return this.getPanel().getName();
+    }
+
+    @Nullable
+    @Override
+    @ParametersAreNonnullByDefault
+    public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
+        return new FreezerMenu(
+                ReEngineeredMenus.FREEZER.get(),
+                pContainerId,
+                pPlayerInventory,
+                ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()),
+                this.itemHandler,
+                this.fluidHandler::getTankView,
+                () -> this.cachedRecipe.getRecipe()
+                        .map(freezerRecipe -> new ProgressView(
+                                this.progress,
+                                freezerRecipe.time()
+                        ))
+                        .orElse(ProgressView.NULL)
+        );
     }
 }

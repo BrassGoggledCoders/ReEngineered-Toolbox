@@ -7,22 +7,27 @@ import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.mutable.MutableObject;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.functional.Option;
 
-import java.util.function.BiFunction;
+public class CachedRecipe<REC extends Recipe<INV>, INV extends Container> {
+    private final RecipeType<REC> recipeType;
+    private final MutableObject<Option<REC>> recipeCache;
 
-public class CachedRecipe {
-    public static <REC extends Recipe<INV>, INV extends Container> BiFunction<Level, INV, Option<REC>> cached(
-            RecipeType<REC> recipeType
-    ) {
-        MutableObject<Option<REC>> recipeCache = new MutableObject<>(Option.empty());
-        return (level, inventory) -> {
-            Option<REC> recipe = recipeCache.getValue();
-            if (!recipe.exists(value -> value.matches(inventory, level))) {
-                recipe = Option.fromOptional(level.getRecipeManager()
-                        .getRecipeFor(recipeType, inventory, level)
-                );
-                recipeCache.setValue(recipe);
-            }
-            return recipe;
-        };
+    public CachedRecipe(RecipeType<REC> recipeType) {
+        this.recipeType = recipeType;
+        this.recipeCache = new MutableObject<>(Option.empty());
+    }
+
+    public Option<REC> getRecipe() {
+        return recipeCache.getValue();
+    }
+
+    public Option<REC> getRecipe(Level level, INV inventory) {
+        Option<REC> recipe = recipeCache.getValue();
+        if (!recipe.exists(value -> value.matches(inventory, level))) {
+            recipe = Option.fromOptional(level.getRecipeManager()
+                    .getRecipeFor(recipeType, inventory, level)
+            );
+            recipeCache.setValue(recipe);
+        }
+        return recipe;
     }
 }

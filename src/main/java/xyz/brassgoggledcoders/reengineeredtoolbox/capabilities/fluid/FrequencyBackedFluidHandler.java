@@ -1,14 +1,17 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.fluid;
 
+import net.minecraft.world.level.block.TntBlock;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyFluidHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
+import xyz.brassgoggledcoders.shadyskies.containersyncing.object.TankView;
 
 public class FrequencyBackedFluidHandler implements IFluidHandler {
     private final FrameSlot frameSlot;
@@ -87,5 +90,12 @@ public class FrequencyBackedFluidHandler implements IFluidHandler {
                     .orElse(FluidStack.EMPTY);
         }
         return FluidStack.EMPTY;
+    }
+
+    public TankView getTankView() {
+        return this.backingFluidHandler.map(fluidHandler -> new TankView(
+                fluidHandler.getFluid(frameSlot.getFrequency()),
+                fluidHandler.getCapacity(frameSlot.getFrequency())
+        )).orElseGet(() -> new TankView(FluidStack.EMPTY, FluidType.BUCKET_VOLUME));
     }
 }
