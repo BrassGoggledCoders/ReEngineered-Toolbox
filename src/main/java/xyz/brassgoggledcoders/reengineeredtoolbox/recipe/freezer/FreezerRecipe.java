@@ -16,7 +16,8 @@ public record FreezerRecipe(
         Ingredient itemInput,
         FluidIngredient fluidInput,
         ItemStack result,
-        int time
+        int time,
+        int power
 ) implements Recipe<FreezerRecipeContainer> {
     @Override
     public boolean matches(@NotNull FreezerRecipeContainer pContainer, @NotNull Level pLevel) {

@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -155,6 +156,19 @@ public class PanelEntity implements ICapabilityProvider {
 
     public boolean isRemoved() {
         return this.removed;
+    }
+
+
+    @Nullable
+    public BlockEntity getAdjacantBlockEntity() {
+        Direction facing = this.getFacing();
+        if (facing != null) {
+            BlockPos offsetPos = this.getBlockPos().relative(facing);
+            if (this.getLevel().isLoaded(offsetPos)) {
+                return this.getLevel().getBlockEntity(offsetPos);
+            }
+        }
+        return null;
     }
 
     @Nullable

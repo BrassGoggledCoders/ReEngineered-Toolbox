@@ -12,6 +12,12 @@ public class ReEngineeredText {
     public static final Component ITEM_SLOT_IN = frameSlotLang("item_in", "Item Input");
     public static final Component ITEM_SLOT_OUT = frameSlotLang("item_out", "Item Output");
 
+    public static final Component FLUID_SLOT_IN = frameSlotLang("fluid_in", "Fluid Input");
+    public static final Component FLUID_SLOT_OUT = frameSlotLang("fluid_out", "Fluid Output");
+
+    public static final Component ENERGY_SLOT_IN = frameSlotLang("energy_in", "Energy Input");
+    public static final Component ENERGY_SLOT_OUT = frameSlotLang("energy_out", "Energy Output");
+
     public static void setup() {
 
     }

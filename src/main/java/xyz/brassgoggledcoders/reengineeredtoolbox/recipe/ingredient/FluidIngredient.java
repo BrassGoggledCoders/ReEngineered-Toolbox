@@ -35,6 +35,10 @@ public class FluidIngredient implements Predicate<FluidStack> {
         this.nbt = nbt;
     }
 
+    public int getAmount() {
+        return this.amount;
+    }
+
     @Override
     @SuppressWarnings("deprecation")
     public boolean test(FluidStack fluidStack) {
@@ -74,9 +78,9 @@ public class FluidIngredient implements Predicate<FluidStack> {
 
     public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("fluid", String.valueOf(this.fluid.<ResourceLocation>map(
-                value -> Objects.requireNonNull(ForgeRegistries.FLUIDS.getKey(value)),
-                TagKey::location
+        jsonObject.addProperty("fluid", String.valueOf(this.fluid.<String>map(
+                value -> Objects.requireNonNull(ForgeRegistries.FLUIDS.getKey(value)).toString(),
+                value -> "#" + value.location()
         )));
         jsonObject.addProperty("amount", this.amount);
         if (this.nbt != null) {
