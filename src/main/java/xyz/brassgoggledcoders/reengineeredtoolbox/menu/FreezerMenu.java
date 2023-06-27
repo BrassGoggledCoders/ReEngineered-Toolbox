@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.menu;
 
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -15,6 +16,9 @@ import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
+import xyz.brassgoggledcoders.reengineeredtoolbox.util.MenuHelper;
 import xyz.brassgoggledcoders.shadyskies.containersyncing.object.ProgressView;
 import xyz.brassgoggledcoders.shadyskies.containersyncing.object.TankView;
 import xyz.brassgoggledcoders.shadyskies.containersyncing.property.IPropertyManaged;
@@ -26,28 +30,38 @@ import java.util.function.Supplier;
 
 public class FreezerMenu extends AbstractContainerMenu implements IPropertyManaged {
     private final ContainerLevelAccess levelAccess;
+    private final Panel panel;
+    private final Direction direction;
     private final PropertyManager propertyManager;
     private final Inventory inventory;
     private final Property<TankView> tankView;
     private final Property<ProgressView> progressView;
+    private final Property<ProgressView> energyView;
 
     public FreezerMenu(MenuType<FreezerMenu> type, int windowId, Inventory inventory) {
         super(type, windowId);
         this.levelAccess = ContainerLevelAccess.NULL;
+        this.panel = ReEngineeredPanels.BLANK.asPanel();
+        this.direction = Direction.UP;
+
         this.inventory = inventory;
         this.propertyManager = ReEngineeredToolbox.getSyncing()
                 .createManager(windowId);
 
         this.tankView = this.propertyManager.addTrackedProperty(PropertyTypes.TANK_VIEW.create());
         this.progressView = this.propertyManager.addTrackedProperty(PropertyTypes.PROGRESS_VIEW.create());
+        this.energyView = this.propertyManager.addTrackedProperty(PropertyTypes.PROGRESS_VIEW.create());
 
         addSlots(new ItemStackHandler(2), inventory);
     }
 
     public FreezerMenu(@Nullable MenuType<?> pMenuType, int pContainerId, Inventory inventory, ContainerLevelAccess levelAccess,
-                       IItemHandlerModifiable itemHandler, Supplier<TankView> tankViewSupplier, Supplier<ProgressView> progressSupplier) {
+                       Panel panel, Direction direction, IItemHandlerModifiable itemHandler, Supplier<TankView> tankViewSupplier,
+                       Supplier<ProgressView> progressSupplier, Supplier<ProgressView> energySupplier) {
         super(pMenuType, pContainerId);
         this.levelAccess = levelAccess;
+        this.panel = panel;
+        this.direction = direction;
         this.inventory = inventory;
         this.propertyManager = ReEngineeredToolbox.getSyncing()
                 .createManager(pContainerId);
@@ -57,6 +71,9 @@ public class FreezerMenu extends AbstractContainerMenu implements IPropertyManag
         ));
         this.progressView = this.propertyManager.addTrackedProperty(PropertyTypes.PROGRESS_VIEW.create(
                 progressSupplier
+        ));
+        this.energyView = this.propertyManager.addTrackedProperty(PropertyTypes.PROGRESS_VIEW.create(
+                energySupplier
         ));
 
         addSlots(itemHandler, inventory);
@@ -85,17 +102,20 @@ public class FreezerMenu extends AbstractContainerMenu implements IPropertyManag
 
     @Override
     public boolean stillValid(@NotNull Player pPlayer) {
-        return true;
+        return MenuHelper.checkPanelMenuValid(this.levelAccess, pPlayer, direction, panel);
     }
 
     public TankView getTankView() {
         return this.tankView.getOrElse(TankView.NULL);
     }
 
+    public ProgressView getEnergy() {
+        return this.energyView.getOrElse(ProgressView.NULL);
+    }
+
     public ProgressView getProgress() {
         return this.progressView.getOrElse(ProgressView.NULL);
     }
-
 
     @Override
     public PropertyManager getPropertyManager() {

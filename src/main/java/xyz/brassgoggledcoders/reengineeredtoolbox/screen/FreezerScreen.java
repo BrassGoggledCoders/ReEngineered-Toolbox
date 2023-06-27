@@ -43,6 +43,7 @@ public class FreezerScreen extends AbstractContainerScreen<FreezerMenu> {
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
         this.renderFluid(pPoseStack);
         this.renderProgressBar(pPoseStack);
+        this.renderEnergyBar(pPoseStack);
     }
 
     private void renderFluid(@NotNull PoseStack poseStack) {
@@ -51,7 +52,7 @@ public class FreezerScreen extends AbstractContainerScreen<FreezerMenu> {
         int y = topPos + 17;
         int height = 52;
         int capacity = tankView.capacity();
-        FluidStack fluidStack = tankView.fluidStack();
+        FluidStack fluidStack = this.getMenu().getFluidStack();
         if (!fluidStack.isEmpty()) {
             int stored = fluidStack.getAmount();
             if (stored > capacity) {
@@ -94,6 +95,14 @@ public class FreezerScreen extends AbstractContainerScreen<FreezerMenu> {
         if (progress.current() > 0) {
             int offset = progress.getOffset(22);
             this.blit(poseStack, this.leftPos + 95, this.topPos + 35, 176, 57, offset + 1, 16);
+        }
+    }
+
+    private void renderEnergyBar(@NotNull PoseStack poseStack) {
+        ProgressView energy = this.menu.getEnergy();
+        if (energy.current() > 0) {
+            int offset = energy.getOffset(50);
+            this.blit(poseStack, this.leftPos + 10, this.topPos + 18 + (50 - offset), 176, 50 - offset, 12, offset + 1);
         }
     }
 }

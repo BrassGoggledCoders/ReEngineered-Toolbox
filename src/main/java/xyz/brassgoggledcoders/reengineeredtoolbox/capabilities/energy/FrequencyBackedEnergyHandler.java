@@ -8,6 +8,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyEnerg
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.functional.Option;
+import xyz.brassgoggledcoders.shadyskies.containersyncing.object.ProgressView;
 
 public class FrequencyBackedEnergyHandler implements IEnergyStorage {
     private final FrameSlot frameSlot;
@@ -64,5 +65,12 @@ public class FrequencyBackedEnergyHandler implements IEnergyStorage {
     @Override
     public boolean canReceive() {
         return this.ioStyle.isAllowInsert() && this.backingEnergyStorage.exists(energyStorage -> energyStorage.canReceive(frameSlot.getFrequency()));
+    }
+
+    public ProgressView getView() {
+        return new ProgressView(
+                this.getEnergyStored(),
+                this.getMaxEnergyStored()
+        );
     }
 }

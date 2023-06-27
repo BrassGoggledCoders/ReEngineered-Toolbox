@@ -135,6 +135,8 @@ public class FreezerPanelEntity extends PanelEntity implements MenuProvider {
                 pContainerId,
                 pPlayerInventory,
                 ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()),
+                this.getPanel(),
+                this.getFacing(),
                 this.itemHandler,
                 this.fluidHandler::getTankView,
                 () -> this.cachedRecipe.getRecipe()
@@ -142,7 +144,8 @@ public class FreezerPanelEntity extends PanelEntity implements MenuProvider {
                                 this.progress,
                                 freezerRecipe.time()
                         ))
-                        .orElse(ProgressView.NULL)
+                        .orElse(ProgressView.NULL),
+                this.energyHandler::getView
         );
     }
 }
