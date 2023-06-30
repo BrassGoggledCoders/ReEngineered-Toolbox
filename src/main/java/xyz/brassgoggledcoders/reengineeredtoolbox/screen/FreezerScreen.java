@@ -52,7 +52,7 @@ public class FreezerScreen extends AbstractContainerScreen<FreezerMenu> {
         int y = topPos + 17;
         int height = 52;
         int capacity = tankView.capacity();
-        FluidStack fluidStack = this.getMenu().getFluidStack();
+        FluidStack fluidStack = tankView.fluidStack();
         if (!fluidStack.isEmpty()) {
             int stored = fluidStack.getAmount();
             if (stored > capacity) {
