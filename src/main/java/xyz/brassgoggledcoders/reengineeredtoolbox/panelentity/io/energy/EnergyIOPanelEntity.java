@@ -23,15 +23,13 @@ import java.util.function.BiFunction;
 
 public class EnergyIOPanelEntity extends IOPanelEntity {
     private final IOStyle ioStyle;
-    private final Component identifier;
     private final IEnergyStorage energyStorage;
     private final LazyOptional<IEnergyStorage> lazyOptional;
 
     public EnergyIOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
                                IOStyle ioStyle, Component identifier) {
-        super(type, frameEntity, panelState);
+        super(type, frameEntity, panelState, identifier);
         this.ioStyle = ioStyle;
-        this.identifier = identifier;
         this.energyStorage = this.createEnergyHandler();
         this.lazyOptional = LazyOptional.of(this::getEnergyStorage);
     }
@@ -42,12 +40,6 @@ public class EnergyIOPanelEntity extends IOPanelEntity {
                 this.ioStyle,
                 this.getFrameEntity().getCapability(ReEngineeredCapabilities.FREQUENCY_ENERGY_HANDLER)
         );
-    }
-
-    @Override
-    @NotNull
-    protected Component getIdentifier() {
-        return this.identifier;
     }
 
     @Override

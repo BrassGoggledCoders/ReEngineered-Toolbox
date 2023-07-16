@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item;
 
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -19,8 +20,9 @@ public abstract class ItemIOPanelEntity extends IOPanelEntity {
 
     private final LazyOptional<IItemHandler> lazyOptional;
 
-    public ItemIOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
-        super(type, frameEntity, panelState);
+    public ItemIOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
+                             @NotNull Component identifier) {
+        super(type, frameEntity, panelState, identifier);
         this.lazyOptional = LazyOptional.of(this::createItemHandler);
     }
 

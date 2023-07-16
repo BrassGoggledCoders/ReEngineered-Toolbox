@@ -21,7 +21,7 @@ public class RedstoneOutputPanelEntity extends RedstoneIOPanelEntity {
     }
 
     public RedstoneOutputPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
-        super(type, frameEntity, panelState);
+        super(type, frameEntity, panelState, ReEngineeredText.REDSTONE_SLOT_OUT);
         this.redstoneHandlerLazyOptional = frameEntity.getCapability(ReEngineeredCapabilities.FREQUENCY_REDSTONE_HANDLER);
     }
 
@@ -45,11 +45,5 @@ public class RedstoneOutputPanelEntity extends RedstoneIOPanelEntity {
     @Override
     public int getSignal() {
         return this.getPower();
-    }
-
-    @Override
-    @NotNull
-    protected Component getIdentifier() {
-        return ReEngineeredText.REDSTONE_SLOT_OUT;
     }
 }

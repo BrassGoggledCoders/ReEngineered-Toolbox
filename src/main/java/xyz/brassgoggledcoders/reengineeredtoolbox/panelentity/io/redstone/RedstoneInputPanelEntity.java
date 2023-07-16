@@ -24,7 +24,7 @@ public class RedstoneInputPanelEntity extends RedstoneIOPanelEntity {
     }
 
     public RedstoneInputPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
-        super(type, frameEntity, panelState);
+        super(type, frameEntity, panelState, ReEngineeredText.REDSTONE_SLOT_IN);
         this.redstoneHandlerLazyOptional = frameEntity.getCapability(ReEngineeredCapabilities.FREQUENCY_REDSTONE_HANDLER);
         this.redstoneHandlerLazyOptional.ifPresent(redstoneHandler -> redstoneHandler.addPowerProvider(
                 this,
@@ -56,11 +56,5 @@ public class RedstoneInputPanelEntity extends RedstoneIOPanelEntity {
                 }
             }
         }
-    }
-
-    @Override
-    @NotNull
-    protected Component getIdentifier() {
-        return ReEngineeredText.REDSTONE_SLOT_IN;
     }
 }

@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io;
 
-import com.mojang.datafixers.util.Function3;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.capabilities.Capability;
@@ -23,14 +22,12 @@ import java.util.function.BiFunction;
 
 public class FluidIOPanelEntity extends IOPanelEntity {
     private final IOStyle ioStyle;
-    private final Component identifier;
     private final LazyOptional<IFluidHandler> lazyOptional;
 
     public FluidIOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
                               IOStyle ioStyle, Component identifier) {
-        super(type, frameEntity, panelState);
+        super(type, frameEntity, panelState, identifier);
         this.ioStyle = ioStyle;
-        this.identifier = identifier;
         this.lazyOptional = LazyOptional.of(this::createFluidHandler);
     }
 
@@ -40,12 +37,6 @@ public class FluidIOPanelEntity extends IOPanelEntity {
                 this.getFrameEntity().getCapability(ReEngineeredCapabilities.FREQUENCY_FLUID_HANDLER),
                 this.ioStyle
         );
-    }
-
-    @Override
-    @NotNull
-    protected Component getIdentifier() {
-        return this.identifier;
     }
 
     @Override

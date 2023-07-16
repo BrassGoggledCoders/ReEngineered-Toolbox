@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.LightLayer;
 import org.jetbrains.annotations.NotNull;
@@ -16,14 +15,8 @@ public class DaylightDetectorPanelEntity extends RedstoneIOPanelEntity {
     private final FrameSlot invertedPort;
 
     public DaylightDetectorPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
-        super(type, frameEntity, panelState);
+        super(type, frameEntity, panelState, ReEngineeredText.REDSTONE_SLOT_IN);
         this.invertedPort = new FrameSlot(ReEngineeredText.REDSTONE_SLOT_INVERTED_OUT, FrameSlotViews.CENTERED_4X4);
-    }
-
-    @Override
-    @NotNull
-    protected Component getIdentifier() {
-        return ReEngineeredText.REDSTONE_SLOT_OUT;
     }
 
     public DaylightDetectorPanelEntity(IFrameEntity iFrameEntity, PanelState panelState) {

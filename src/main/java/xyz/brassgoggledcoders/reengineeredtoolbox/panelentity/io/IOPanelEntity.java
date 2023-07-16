@@ -5,26 +5,20 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotView;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotViews;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 
-import java.util.Collections;
-import java.util.List;
-
 public abstract class IOPanelEntity extends PanelEntity {
 
     private final FrameSlot ioPort;
 
-    public IOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
+    public IOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
+                         @NotNull Component identifier) {
         super(type, frameEntity, panelState);
-        this.ioPort = this.registerFrameSlot(new FrameSlot(this.getIdentifier(), FrameSlotViews.CENTERED_4X4));
+        this.ioPort = this.registerFrameSlot(new FrameSlot(identifier, FrameSlotViews.CENTERED_4X4));
     }
-
-    @NotNull
-    protected abstract Component getIdentifier();
 
     public FrameSlot getIoPort() {
         return ioPort;
