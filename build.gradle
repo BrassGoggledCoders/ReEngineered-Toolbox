@@ -102,7 +102,13 @@ dependencies {
     def containerSyncing = "1.2.7"
     implementation fg.deobf("xyz.brassgoggledcoders.shadyskies:ContainerSyncing:${containerSyncing}")
     jarJar(group: 'xyz.brassgoggledcoders.shadyskies', name: 'ContainerSyncing', version: "${containerSyncing}") {
-        jarJar.ranged(it, "[${containerSyncing}, 1.3.0)")
+        jarJar.ranged(it, "[${containerSyncing}, 2.0.0)")
+    }
+
+    def jsoning = "1.0.1"
+    implementation fg.deobf("xyz.brassgoggledcoders.shadyskies:Jsoning:${jsoning}")
+    jarJar(group: 'xyz.brassgoggledcoders.shadyskies', name: 'Jsoning', version: "${jsoning}") {
+        jarJar.ranged(it, "[${jsoning}, 2.0.0)")
     }
 
     runtimeOnly fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:1.19.2-9.2.2-165.3")
