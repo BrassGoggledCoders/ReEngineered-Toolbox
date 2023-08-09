@@ -8,7 +8,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public interface Option<T> {
-    @NotNull None EMPTY = new None();
+    @NotNull None<?> EMPTY = new None<>();
 
     boolean exists(Predicate<T> contains);
 
@@ -16,7 +16,6 @@ public interface Option<T> {
 
     T orElse(T value);
 
-    @SuppressWarnings("unchecked")
     static <U> Option<U> ofLazy(LazyOptional<U> backingEnergyStorage) {
         if (backingEnergyStorage.isPresent()) {
             return new LazyOption<>(backingEnergyStorage);
@@ -31,9 +30,16 @@ public interface Option<T> {
                 .orElse(empty());
     }
 
-    @SuppressWarnings("unchecked")
+    static <U> Option<U> ofNullable(U value) {
+        if (value == null) {
+            return empty();
+        } else {
+            return new Some<>(value);
+        }
+    }
+
     static <U> Option<U> empty() {
-        return EMPTY.<U>cast();
+        return EMPTY.cast();
     }
 
     class None<T> implements Option<T> {

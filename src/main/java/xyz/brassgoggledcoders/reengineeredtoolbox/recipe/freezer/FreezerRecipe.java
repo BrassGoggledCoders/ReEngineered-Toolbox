@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.recipe.freezer;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -45,6 +46,12 @@ public record FreezerRecipe(
     @NotNull
     public ResourceLocation getId() {
         return this.id();
+    }
+
+    @Override
+    @NotNull
+    public NonNullList<Ingredient> getIngredients() {
+        return NonNullList.withSize(1, this.itemInput);
     }
 
     @Override

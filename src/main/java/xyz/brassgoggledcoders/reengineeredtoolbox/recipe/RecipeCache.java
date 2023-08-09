@@ -8,6 +8,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.INBTSerializable;
+import xyz.brassgoggledcoders.reengineeredtoolbox.util.functional.Option;
 
 public class RecipeCache<T extends Recipe<U>, U extends Container> implements INBTSerializable<StringTag> {
     private final RecipeType<T> recipeType;
@@ -25,7 +26,7 @@ public class RecipeCache<T extends Recipe<U>, U extends Container> implements IN
         tryGet = true;
     }
 
-    public T getRecipe(U container, Level level) {
+    public Option<T> getRecipe(U container, Level level) {
         if (this.lastRecipeId != null) {
             this.lastRecipe = level.getRecipeManager()
                     .getRecipeFor(recipeType, container, level, this.lastRecipeId)
@@ -45,7 +46,11 @@ public class RecipeCache<T extends Recipe<U>, U extends Container> implements IN
             this.tryGet = false;
         }
 
-        return lastRecipe;
+        return Option.ofNullable(lastRecipe);
+    }
+
+    public Option<T> getRecipe() {
+        return Option.ofNullable(this.lastRecipe);
     }
 
 
