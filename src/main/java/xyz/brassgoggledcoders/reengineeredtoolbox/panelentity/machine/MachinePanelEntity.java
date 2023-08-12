@@ -15,7 +15,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityTyp
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.energy.FrequencyBackedEnergyHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.RecipeCache;
-import xyz.brassgoggledcoders.reengineeredtoolbox.util.CachedRecipe;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.functional.Option;
 
 public abstract class MachinePanelEntity<T extends Recipe<U>, U extends Container> extends PanelEntity implements MenuProvider {

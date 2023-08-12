@@ -1,7 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.dispenser;
 
 import com.google.common.base.Suppliers;
-import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -15,7 +14,6 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;
@@ -111,17 +109,6 @@ public class DispenserPanelEntity extends PanelEntity {
             dispenserPanelEntity.setLevel(this.getLevel());
         }
         return dispenserPanelEntity;
-    }
-
-    @Override
-    @NotNull
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        LazyOptional<T> lazyOptional = this.getDispenserEntity().getCapability(cap, side);
-        if (lazyOptional.isPresent()) {
-            return lazyOptional;
-        } else {
-            return super.getCapability(cap, side);
-        }
     }
 
     @Override

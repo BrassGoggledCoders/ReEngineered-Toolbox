@@ -17,6 +17,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.PanelWithMenu;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panel.TriggeredPanelWithEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.DaylightDetectorPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.IOPanel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.RedstoneIOPanel;
@@ -29,6 +30,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.Daylig
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneInputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.FreezerPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.MilkerPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.dispenser.DispenserPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelEntry;
 
@@ -220,6 +222,23 @@ public class ReEngineeredPanels {
             .object("freezer")
             .panel(() -> new PanelWithMenu<>(FreezerPanelEntity::new))
             .panelEntity(FreezerPanelEntity::new)
+            .item()
+            .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())
+                    .pattern("IFI")
+                    .pattern("IPI")
+                    .define('I', Items.PACKED_ICE)
+                    .define('F', Items.FURNACE)
+                    .define('P', BLANK.asPanel())
+                    .unlockedBy("has_item", RegistrateRecipeProvider.has(BLANK.asPanel()))
+                    .save(provider)
+            )
+            .build()
+            .register();
+
+    public static final PanelEntry<TriggeredPanelWithEntity> MILKER = ReEngineeredToolbox.getRegistrateAddon()
+            .object("milker")
+            .panel(() -> new TriggeredPanelWithEntity(MilkerPanelEntity::new))
+            .panelEntity(MilkerPanelEntity::new)
             .item()
             .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())
                     .pattern("IFI")
