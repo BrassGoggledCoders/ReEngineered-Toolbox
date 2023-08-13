@@ -12,8 +12,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelEntityPanelComponent;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.interaction.InteractionPanelComponent;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.redstone.RedstonePanelComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.interaction.IInteractionPanelComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.redstone.IRedstonePanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.FacingPropertyComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 
@@ -54,7 +54,7 @@ public class PanelState extends StateHolder<Panel, PanelState> {
     }
 
     public boolean canConnectRedstone(IFrameEntity frame) {
-        for (RedstonePanelComponent component : this.getPanel().getComponents(RedstonePanelComponent.class)) {
+        for (IRedstonePanelComponent component : this.getPanel().getComponents(IRedstonePanelComponent.class)) {
             if (component.canConnectRedstone(frame, this)) {
                 return true;
             }
@@ -69,7 +69,9 @@ public class PanelState extends StateHolder<Panel, PanelState> {
 
     public InteractionResult use(IFrameEntity frameEntity, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         InteractionResult result = InteractionResult.PASS;
-        Iterator<InteractionPanelComponent> iterator = this.getPanel().getComponents(InteractionPanelComponent.class).iterator();
+        Iterator<IInteractionPanelComponent> iterator = this.getPanel()
+                .getComponents(IInteractionPanelComponent.class)
+                .iterator();
 
         while (result == InteractionResult.PASS && iterator.hasNext()) {
             result = iterator.next().use(frameEntity, this, pPlayer, pHand, pHit);
@@ -80,7 +82,7 @@ public class PanelState extends StateHolder<Panel, PanelState> {
 
     public int getSignal(IFrameEntity frameEntity) {
         int signal = 0;
-        for (RedstonePanelComponent component : this.getPanel().getComponents(RedstonePanelComponent.class)) {
+        for (IRedstonePanelComponent component : this.getPanel().getComponents(IRedstonePanelComponent.class)) {
             int componentSignal = component.getSignal(frameEntity, this);
             if (componentSignal > signal) {
                 signal = componentSignal;

@@ -4,11 +4,8 @@ import net.minecraft.world.item.context.UseOnContext;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelComponent;
 
-public class PlacementPanelComponent extends PanelComponent {
+public interface IPlacementPanelComponent {
     @Nullable
-    public PanelState getPanelStateForPlacement(UseOnContext context, IFrameEntity frame) {
-        return this.getPanel().defaultPanelState();
-    }
+    PanelState getPanelStateForPlacement(UseOnContext context, IFrameEntity frame, @Nullable PanelState current);
 }

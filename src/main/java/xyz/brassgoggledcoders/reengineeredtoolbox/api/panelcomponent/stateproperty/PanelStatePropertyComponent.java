@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelComponent;
 
-public class PanelStatePropertyComponent<T extends Comparable<T>> extends PanelComponent {
+public class PanelStatePropertyComponent<T extends Comparable<T>> extends PanelComponent implements IStatePropertyPanelComponent<T> {
     @NotNull
     private final Property<T> property;
     @Nullable
@@ -22,15 +22,18 @@ public class PanelStatePropertyComponent<T extends Comparable<T>> extends PanelC
     }
 
     @NotNull
+    @Override
     public Property<T> getProperty() {
         return property;
     }
 
+    @Override
     @Nullable
     public T getDefaultValue() {
         return defaultValue;
     }
 
+    @Override
     @NotNull
     public PanelState setValueToPanelState(@NotNull PanelState panelState) {
         if (this.getDefaultValue() != null) {

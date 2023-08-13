@@ -17,7 +17,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelEntityPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.interaction.MenuInteractionPanelComponent;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.placement.RestrictedPlacementPanelComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.placement.RestrictedDirectionPlacementPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.redstone.RedstonePanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.FacingPropertyComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.PanelStatePropertyComponent;
@@ -222,8 +222,7 @@ public class ReEngineeredPanels {
     public static final PanelEntry<Panel> DAYLIGHT_DETECTOR = ReEngineeredToolbox.getRegistrateAddon()
             .object("daylight_detector")
             .panel()
-            .component(new RestrictedPlacementPanelComponent(Direction.UP))
-            .component(new RedstonePanelComponent())
+            .component(new RestrictedDirectionPlacementPanelComponent(Direction.UP))
             .component(new PanelEntityPanelComponent(DaylightDetectorPanelEntity::new))
             .panelState((context, provider) -> provider.singleDirectionPanel(
                     context.get(),

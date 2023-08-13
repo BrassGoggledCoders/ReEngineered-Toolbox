@@ -104,13 +104,13 @@ public class Panel implements ItemLike {
     }
 
     @Nullable
-    public <T extends PanelComponent> T getComponent(Class<T> clazz) {
+    public <T> T getComponent(Class<T> clazz) {
         List<T> components = this.getComponents(clazz);
         return components.isEmpty() ? null : components.get(0);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends PanelComponent> List<T> getComponents(Class<T> clazz) {
+    public <T> List<T> getComponents(Class<T> clazz) {
         if (this.cachedComponents.containsKey(clazz)) {
             return (List<T>) this.cachedComponents.get(clazz);
         }
@@ -123,5 +123,4 @@ public class Panel implements ItemLike {
 
         return (List<T>) this.cachedComponents.get(clazz);
     }
-
 }
