@@ -132,11 +132,13 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
                     }
                     if (panelEntity != null) {
                         panelEntity.setPanelState(panelState);
+                        panelEntity.setPanelPosition(panelPosition);
                         this.panelEntityMap.put(direction, panelEntity);
                     }
                 } else {
                     PanelEntity panelEntity = panelState.createPanelEntity(this);
                     if (panelEntity != null) {
+                        panelEntity.setPanelPosition(panelPosition);
                         this.panelEntityMap.put(direction, panelEntity);
                     }
                 }
@@ -146,7 +148,12 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
                 return InteractionResultHolder.sidedSuccess(panelState, this.getNoNullLevel().isClientSide());
             }
         }
-        return InteractionResultHolder.fail(this.panelStateMap.get(direction));
+
+        if (direction != null) {
+            return InteractionResultHolder.fail(this.panelStateMap.get(direction));
+        } else {
+            return InteractionResultHolder.fail(ReEngineeredPanels.PLUG.getDefaultState());
+        }
     }
 
     @Override
@@ -286,12 +293,13 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
                 this.panelStateMap.put(direction, panelState);
                 PanelEntity panelEntity;
                 if (panelTag.contains("PanelEntity")) {
-                    panelEntity = PanelEntity.loadStatic(this, panelState, panelTag.getCompound("PanelEntity"));
+                    panelEntity = PanelEntity.loadStatic(panelState, this, panelTag.getCompound("PanelEntity"));
                 } else {
                     panelEntity = panelState.createPanelEntity(this);
                 }
 
                 if (panelEntity != null) {
+                    panelEntity.setPanelPosition(BlockPanelPosition.fromDirection(direction));
                     this.panelEntityMap.put(direction, panelEntity);
                 }
             }

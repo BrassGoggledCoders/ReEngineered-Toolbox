@@ -146,6 +146,7 @@ public class ReEngineeredPanels {
             .panel()
             .component(new RedstonePanelComponent())
             .component(new PanelEntityPanelComponent(RedstoneInputPanelEntity::new))
+            .component(new PanelStatePropertyComponent<>(BlockStateProperties.POWERED, false))
             .component(new FacingPropertyComponent())
             .<RedstoneInputPanelEntity>panelEntity(RedstoneInputPanelEntity::new)
             .panelState((context, provider) -> {
@@ -175,6 +176,7 @@ public class ReEngineeredPanels {
             .panel()
             .component(new RedstoneSignalPanelComponent())
             .component(new PanelEntityPanelComponent(RedstoneInputPanelEntity::new))
+            .component(new PanelStatePropertyComponent<>(BlockStateProperties.POWERED, false))
             .component(new FacingPropertyComponent())
             .<RedstoneOutputPanelEntity>panelEntity(RedstoneOutputPanelEntity::new)
             .panelState((context, provider) -> {

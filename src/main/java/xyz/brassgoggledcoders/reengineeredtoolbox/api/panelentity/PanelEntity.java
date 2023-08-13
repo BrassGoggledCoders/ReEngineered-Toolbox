@@ -187,7 +187,7 @@ public class PanelEntity implements ICapabilityProvider {
     }
 
     @Nullable
-    public static PanelEntity loadStatic(IFrameEntity frame, PanelState pState, CompoundTag pTag) {
+    public static PanelEntity loadStatic(PanelState pState, IFrameEntity frame, CompoundTag pTag) {
         String s = pTag.getString("id");
         ResourceLocation resourcelocation = ResourceLocation.tryParse(s);
         if (resourcelocation == null) {
