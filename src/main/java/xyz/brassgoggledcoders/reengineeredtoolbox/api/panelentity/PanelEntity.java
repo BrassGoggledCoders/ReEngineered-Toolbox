@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
@@ -33,6 +34,10 @@ public class PanelEntity implements ICapabilityProvider {
 
     @NotNull
     private PanelState panelState;
+
+    @NotNull
+    private IPanelPosition panelPosition;
+
     private boolean removed;
 
     public PanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
@@ -40,6 +45,7 @@ public class PanelEntity implements ICapabilityProvider {
         this.panelState = panelState;
         this.type = type;
         this.frameSlots = new ArrayList<>();
+        this.panelPosition = IPanelPosition.NONE;
     }
 
     public void neighborChanged() {
@@ -64,6 +70,15 @@ public class PanelEntity implements ICapabilityProvider {
 
     public void setPanelState(@NotNull PanelState panelState) {
         this.panelState = panelState;
+    }
+
+    @NotNull
+    public IPanelPosition getPanelPosition() {
+        return panelPosition;
+    }
+
+    public void setPanelPosition(IPanelPosition panelPosition) {
+        this.panelPosition = panelPosition;
     }
 
     @NotNull
@@ -126,7 +141,7 @@ public class PanelEntity implements ICapabilityProvider {
     protected boolean stillValid(Player player) {
         if (player.distanceToSqr(Vec3.atCenterOf(this.getBlockPos())) <= 64.0D) {
             if (this.getLevel().getBlockEntity(this.getBlockPos()) == this.getFrameEntity()) {
-                return this.getFrameEntity().getPanelEntity(this.getFacing()) == this;
+                return this.getFrameEntity().getPanelEntity(this.getPanelPosition()) == this;
             }
         }
 

@@ -16,6 +16,8 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.BlockPanelPosition;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.blockentity.FrameBlockEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredItemTags;
@@ -31,7 +33,8 @@ public class ForgeClientEventHandler {
             Player player = Minecraft.getInstance().player;
             if (player != null && player.getMainHandItem().is(ReEngineeredItemTags.CAN_ALTER_FRAME_SLOT)) {
                 if (player.getLevel().getBlockEntity(blockHitResult.getBlockPos()) instanceof FrameBlockEntity frameBlockEntity) {
-                    PanelEntity panelEntity = frameBlockEntity.getPanelEntity(blockHitResult.getDirection());
+                    IPanelPosition panelPosition = BlockPanelPosition.fromDirection(blockHitResult.getDirection());
+                    PanelEntity panelEntity = frameBlockEntity.getPanelEntity(panelPosition);
                     if (panelEntity != null) {
                         int scaledHeight = Minecraft.getInstance().getWindow().getGuiScaledHeight();
                         int scaledWidth = Minecraft.getInstance().getWindow().getGuiScaledWidth();

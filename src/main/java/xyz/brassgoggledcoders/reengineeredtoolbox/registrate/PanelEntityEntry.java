@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.registries.RegistryObject;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
@@ -28,15 +29,15 @@ public class PanelEntityEntry<T extends PanelEntity> extends RegistryEntry<Panel
         return t != null && t.getType() == get();
     }
 
-    public Optional<T> get(BlockGetter blockGetter, BlockPos pos, Direction direction) {
-        return Optional.ofNullable(getNullable(blockGetter, pos, direction));
+    public Optional<T> get(BlockGetter blockGetter, BlockPos pos, IPanelPosition panelPosition) {
+        return Optional.ofNullable(getNullable(blockGetter, pos, panelPosition));
     }
 
     @Nullable
     @SuppressWarnings("unchecked")
-    public T getNullable(BlockGetter blockGetter, BlockPos pos, Direction direction) {
+    public T getNullable(BlockGetter blockGetter, BlockPos pos, IPanelPosition panelPosition) {
         if (blockGetter.getBlockEntity(pos) instanceof IFrameEntity frame) {
-            PanelEntity panel = frame.getPanelEntity(direction);
+            PanelEntity panel = frame.getPanelEntity(panelPosition);
             if (panel != null) {
                 if (is(panel)) {
                     return (T) panel;

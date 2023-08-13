@@ -1,7 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.frame;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
@@ -13,6 +12,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
@@ -22,28 +22,28 @@ import java.util.function.Function;
 
 
 public interface IFrameEntity extends ICapabilityProvider {
-    default InteractionResultHolder<PanelState> putPanelState(@NotNull Direction direction, @Nullable PanelState panelState) {
-        return putPanelState(direction, panelState, false);
+    default InteractionResultHolder<PanelState> putPanelState(@NotNull IPanelPosition panelPosition, @Nullable PanelState panelState) {
+        return putPanelState(panelPosition, panelState, false);
     }
 
-    InteractionResultHolder<PanelState> putPanelState(@NotNull Direction direction, @Nullable PanelState panelState, boolean replace);
+    InteractionResultHolder<PanelState> putPanelState(@NotNull IPanelPosition panelPosition, @Nullable PanelState panelState, boolean replace);
 
     @SuppressWarnings("UnusedReturnValue")
-    default InteractionResultHolder<PanelState> updatePanelState(@NotNull Direction direction, Function<PanelState, PanelState> update) {
-        PanelState panelState = this.getPanelState(direction);
+    default InteractionResultHolder<PanelState> updatePanelState(@NotNull IPanelPosition panelPosition, Function<PanelState, PanelState> update) {
+        PanelState panelState = this.getPanelState(panelPosition);
         PanelState newState = update.apply(panelState);
         if (panelState != newState) {
-            return putPanelState(direction, newState, true);
+            return putPanelState(panelPosition, newState, true);
         } else {
             return InteractionResultHolder.fail(panelState);
         }
     }
 
     @NotNull
-    PanelState getPanelState(@NotNull Direction direction);
+    PanelState getPanelState(@NotNull IPanelPosition panelPosition);
 
     @Nullable
-    PanelEntity getPanelEntity(@Nullable Direction direction);
+    PanelEntity getPanelEntity(@Nullable IPanelPosition panelPosition);
 
     @NotNull
     BlockPos getFramePos();
@@ -60,7 +60,7 @@ public interface IFrameEntity extends ICapabilityProvider {
 
     boolean isValid();
 
-    void scheduleTick(@NotNull Direction direction, Panel panel, int ticks);
+    void scheduleTick(@NotNull IPanelPosition panelPosition, Panel panel, int ticks);
 
     boolean changeFrameSlot(@NotNull BlockHitResult hitResult, ItemStack toolStack);
 

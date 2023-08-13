@@ -67,14 +67,15 @@ public class PanelState extends StateHolder<Panel, PanelState> {
         return this.getPanel() == panel;
     }
 
-    public InteractionResult use(IFrameEntity frameEntity, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+    public InteractionResult use(IFrameEntity frameEntity, IPanelPosition panelPosition, Player pPlayer,
+                                 InteractionHand pHand, BlockHitResult pHit) {
         InteractionResult result = InteractionResult.PASS;
         Iterator<IInteractionPanelComponent> iterator = this.getPanel()
                 .getComponents(IInteractionPanelComponent.class)
                 .iterator();
 
         while (result == InteractionResult.PASS && iterator.hasNext()) {
-            result = iterator.next().use(frameEntity, this, pPlayer, pHand, pHit);
+            result = iterator.next().use(this, frameEntity, panelPosition, pPlayer, pHand, pHit);
         }
 
         return result;

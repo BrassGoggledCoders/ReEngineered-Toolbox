@@ -54,10 +54,14 @@ public class DispenserPanelEntity extends PanelEntity {
         if (power > 0 != this.getPanelState().getValue(BlockStateProperties.TRIGGERED)) {
             if (power > 0) {
                 this.getFrameEntity()
-                        .scheduleTick(this.getFacing(), this.getPanel(), 4);
+                        .scheduleTick(this.getPanelPosition(), this.getPanel(), 4);
             }
             this.getFrameEntity()
-                    .putPanelState(this.getFacing(), this.getPanelState().setValue(BlockStateProperties.TRIGGERED, power > 0), true);
+                    .putPanelState(
+                            this.getPanelPosition(),
+                            this.getPanelState()
+                                    .setValue(BlockStateProperties.TRIGGERED, power > 0), true
+                    );
         }
     }
 

@@ -1,7 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone;
 
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +8,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.Frequency;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
@@ -44,15 +44,20 @@ public class RedstoneInputPanelEntity extends RedstoneIOPanelEntity {
 
     @Override
     public void neighborChanged() {
-        Direction direction = this.getFacing();
+        IPanelPosition panelPosition = this.getPanelPosition();
+        Direction direction = panelPosition.getFacing();
         if (direction != null) {
-            int newPower = this.getLevel().getSignal(this.getBlockPos().relative(direction), direction);
+            int newPower = this.getLevel().getSignal(panelPosition.offset(this.getFrameEntity()), direction);
             if (this.getPower() != newPower) {
                 this.setPower(newPower);
                 this.redstoneHandlerLazyOptional.ifPresent(IFrequencyRedstoneHandler::markRequiresUpdate);
                 if (this.getPower() > 0 != this.getPanelState().getValue(BlockStateProperties.POWERED)) {
                     this.getFrameEntity()
-                            .putPanelState(direction, this.getPanelState().setValue(BlockStateProperties.POWERED, this.getPower() > 0), true);
+                            .putPanelState(
+                                    panelPosition,
+                                    this.getPanelState()
+                                            .setValue(BlockStateProperties.POWERED, this.getPower() > 0), true
+                            );
                 }
             }
         }

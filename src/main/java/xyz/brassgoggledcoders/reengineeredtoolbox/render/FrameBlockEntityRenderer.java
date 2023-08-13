@@ -26,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotView;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.BlockPanelPosition;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.blockentity.FrameBlockEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredItemTags;
@@ -47,7 +49,8 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
         if (player != null && player.getMainHandItem().is(ReEngineeredItemTags.CAN_ALTER_FRAME_SLOT)) {
             if (hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getBlockPos().equals(pBlockEntity.getFramePos())) {
                 Direction direction = blockHitResult.getDirection();
-                PanelEntity panelEntity = pBlockEntity.getPanelEntity(direction);
+                IPanelPosition panelPosition = BlockPanelPosition.fromDirection(direction);
+                PanelEntity panelEntity = pBlockEntity.getPanelEntity(panelPosition);
                 if (panelEntity != null) {
                     List<FrameSlot> frameSlotView = panelEntity.getFrameSlots();
                     if (!frameSlotView.isEmpty()) {

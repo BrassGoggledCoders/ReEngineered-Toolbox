@@ -5,9 +5,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelLike;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.*;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.placement.IPlacementPanelComponent;
 
 import java.util.List;
@@ -31,7 +29,8 @@ public class PanelItem<P extends Panel> extends Item implements PanelLike {
                 panelState = component.getPanelStateForPlacement(pContext, frameEntity, panelState);
             }
             if (panelState != null) {
-                InteractionResult setResult = frameEntity.putPanelState(pContext.getClickedFace(), panelState).getResult();
+                IPanelPosition panelPosition = BlockPanelPosition.fromDirection(pContext.getClickedFace());
+                InteractionResult setResult = frameEntity.putPanelState(panelPosition, panelState).getResult();
                 if (setResult.consumesAction()) {
                     pContext.getItemInHand().shrink(1);
                 }

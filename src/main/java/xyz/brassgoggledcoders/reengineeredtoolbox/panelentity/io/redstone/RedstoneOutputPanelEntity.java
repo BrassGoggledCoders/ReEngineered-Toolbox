@@ -30,7 +30,7 @@ public class RedstoneOutputPanelEntity extends RedstoneIOPanelEntity {
         if (this.getPower() > 0 != this.getPanelState().getValue(BlockStateProperties.POWERED)) {
             PanelState panelState = this.getPanelState().setValue(BlockStateProperties.POWERED, this.getPower() > 0);
             this.getFrameEntity()
-                    .putPanelState(this.getFacing(), panelState, true);
+                    .putPanelState(this.getPanelPosition(), panelState, true);
         }
     }
 

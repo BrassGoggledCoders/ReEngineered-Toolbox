@@ -20,6 +20,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.BlockPanelPosition;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.blockentity.FrameBlockEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredBlocks;
@@ -45,7 +47,8 @@ public class FrameBlock extends Block implements EntityBlock {
     public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {
         Direction direction = Direction.fromNormal(pFromPos.subtract(pPos));
         if (direction != null && pLevel.getBlockEntity(pPos) instanceof IFrameEntity frameEntity) {
-            PanelEntity entity = frameEntity.getPanelEntity(direction);
+            IPanelPosition panelPosition = BlockPanelPosition.fromDirection(direction);
+            PanelEntity entity = frameEntity.getPanelEntity(panelPosition);
             if (entity != null) {
                 entity.neighborChanged();
             }
@@ -55,7 +58,8 @@ public class FrameBlock extends Block implements EntityBlock {
     @Override
     public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, @Nullable Direction direction) {
         if (direction != null && level.getBlockEntity(pos) instanceof IFrameEntity frameEntity) {
-            return frameEntity.getPanelState(direction)
+            IPanelPosition panelPosition = BlockPanelPosition.fromDirection(direction);
+            return frameEntity.getPanelState(panelPosition)
                     .canConnectRedstone(frameEntity);
         }
         return true;
@@ -74,8 +78,10 @@ public class FrameBlock extends Block implements EntityBlock {
                 }
             }
 
-            return frameEntity.getPanelState(pHit.getDirection())
-                    .use(frameEntity, pPlayer, pHand, pHit);
+            IPanelPosition panelPosition = BlockPanelPosition.fromDirection(pHit.getDirection());
+
+            return frameEntity.getPanelState(panelPosition)
+                    .use(frameEntity, panelPosition, pPlayer, pHand, pHit);
         }
         return InteractionResult.PASS;
     }
@@ -85,7 +91,8 @@ public class FrameBlock extends Block implements EntityBlock {
     @ParametersAreNonnullByDefault
     public int getSignal(BlockState pBlockState, BlockGetter pBlockAccess, BlockPos pPos, Direction pSide) {
         if (pBlockAccess.getBlockEntity(pPos) instanceof IFrameEntity frameEntity) {
-            return frameEntity.getPanelState(pSide.getOpposite())
+            IPanelPosition panelPosition = BlockPanelPosition.fromDirection(pSide.getOpposite());
+            return frameEntity.getPanelState(panelPosition)
                     .getSignal(frameEntity);
         }
         return 0;
@@ -96,7 +103,8 @@ public class FrameBlock extends Block implements EntityBlock {
     @ParametersAreNonnullByDefault
     public int getDirectSignal(BlockState pBlockState, BlockGetter pBlockAccess, BlockPos pPos, Direction pSide) {
         if (pBlockAccess.getBlockEntity(pPos) instanceof IFrameEntity frameEntity) {
-            return frameEntity.getPanelState(pSide.getOpposite())
+            IPanelPosition panelPosition = BlockPanelPosition.fromDirection(pSide.getOpposite());
+            return frameEntity.getPanelState(panelPosition)
                     .getSignal(frameEntity);
         }
         return 0;

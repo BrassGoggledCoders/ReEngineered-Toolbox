@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.redstone;
 
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelComponent;
 
@@ -19,7 +20,7 @@ public class RedstonePanelComponent extends PanelComponent {
         return canConnect;
     }
 
-    public int getSignal(IFrameEntity frameEntity, PanelState panelState) {
+    public int getSignal(PanelState panelState, IFrameEntity frameEntity, IPanelPosition panelPosition) {
         return 0;
     }
 }

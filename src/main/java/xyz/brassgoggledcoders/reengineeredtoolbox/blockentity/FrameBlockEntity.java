@@ -36,6 +36,8 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedst
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.Frequency;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.BlockPanelPosition;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
@@ -64,7 +66,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
     private final Map<Direction, PanelState> panelStateMap;
     private final Map<Direction, PanelEntity> panelEntityMap;
-    private final TreeMap<Long, Set<Direction>> scheduledTicks;
+    private final TreeMap<Long, Set<IPanelPosition>> scheduledTicks;
 
     private final FrequencyItemHandler frequencyItemHandler;
     private final LazyOptional<IFrequencyItemHandler> frequencyItemHandlerLazy;
@@ -108,52 +110,58 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     public ModelData getModelData() {
         ModelData.Builder modelData = ModelData.builder();
         for (Map.Entry<Direction, ModelProperty<PanelState>> entry : PANEL_STATE_MODEL_PROPERTIES.entrySet()) {
-            modelData.with(entry.getValue(), this.getPanelState(entry.getKey()));
+            modelData.with(entry.getValue(), this.getPanelState(BlockPanelPosition.fromDirection(entry.getKey())));
         }
         return modelData.build();
     }
 
     @Override
-    public InteractionResultHolder<PanelState> putPanelState(@NotNull Direction direction, PanelState panelState, boolean replace) {
-        PanelState existingPanelState = this.panelStateMap.get(direction);
-        if (existingPanelState == null || replace) {
-            this.panelStateMap.put(direction, panelState);
-            if (existingPanelState != null) {
-                PanelEntity panelEntity = this.getPanelEntity(direction);
-                if (panelEntity == null || existingPanelState.getPanel() != panelState.getPanel()) {
-                    if (panelEntity != null) {
-                        panelEntity.onRemove();
+    public InteractionResultHolder<PanelState> putPanelState(@NotNull IPanelPosition panelPosition, PanelState panelState, boolean replace) {
+        Direction direction = panelPosition.getFacing();
+        if (direction != null) {
+            PanelState existingPanelState = this.panelStateMap.get(direction);
+            if (existingPanelState == null || replace) {
+                this.panelStateMap.put(direction, panelState);
+                if (existingPanelState != null) {
+                    PanelEntity panelEntity = this.getPanelEntity(panelPosition);
+                    if (panelEntity == null || existingPanelState.getPanel() != panelState.getPanel()) {
+                        if (panelEntity != null) {
+                            panelEntity.onRemove();
+                        }
+                        panelEntity = panelState.createPanelEntity(this);
                     }
-                    panelEntity = panelState.createPanelEntity(this);
+                    if (panelEntity != null) {
+                        panelEntity.setPanelState(panelState);
+                        this.panelEntityMap.put(direction, panelEntity);
+                    }
+                } else {
+                    PanelEntity panelEntity = panelState.createPanelEntity(this);
+                    if (panelEntity != null) {
+                        this.panelEntityMap.put(direction, panelEntity);
+                    }
                 }
-                if (panelEntity != null) {
-                    panelEntity.setPanelState(panelState);
-                    this.panelEntityMap.put(direction, panelEntity);
-                }
-            } else {
-                PanelEntity panelEntity = panelState.createPanelEntity(this);
-                if (panelEntity != null) {
-                    this.panelEntityMap.put(direction, panelEntity);
-                }
+                this.setChanged();
+                this.requestModelDataUpdate();
+                this.getNoNullLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+                return InteractionResultHolder.sidedSuccess(panelState, this.getNoNullLevel().isClientSide());
             }
-            this.setChanged();
-            this.requestModelDataUpdate();
-            this.getNoNullLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
-            return InteractionResultHolder.sidedSuccess(panelState, this.getNoNullLevel().isClientSide());
-        } else {
-            return InteractionResultHolder.fail(this.panelStateMap.get(direction));
         }
+        return InteractionResultHolder.fail(this.panelStateMap.get(direction));
     }
 
     @Override
     @NotNull
-    public PanelState getPanelState(@NotNull Direction direction) {
+    public PanelState getPanelState(@NotNull IPanelPosition panelPosition) {
+        Direction direction = panelPosition.getFacing();
         return this.panelStateMap.getOrDefault(direction, ReEngineeredPanels.PLUG.withDirection(direction));
     }
 
     @Override
     @Nullable
-    public PanelEntity getPanelEntity(@Nullable Direction direction) {
+    public PanelEntity getPanelEntity(@Nullable IPanelPosition panelPosition) {
+        Direction direction = Optional.ofNullable(panelPosition)
+                .map(IPanelPosition::getFacing)
+                .orElse(null);
         if (direction != null) {
             return this.panelEntityMap.get(direction);
         } else {
@@ -190,7 +198,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     }
 
     @Override
-    public void scheduleTick(@NotNull Direction direction, Panel panel, int ticks) {
+    public void scheduleTick(@NotNull IPanelPosition direction, Panel panel, int ticks) {
         if (!this.getFrameLevel().isClientSide()) {
             this.getFrameLevel()
                     .scheduleTick(this.getBlockPos(), this.getBlockState().getBlock(), ticks);
@@ -202,7 +210,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
     @Override
     public boolean changeFrameSlot(@NotNull BlockHitResult result, ItemStack toolStack) {
-        PanelEntity panelEntity = this.getPanelEntity(result.getDirection());
+        PanelEntity panelEntity = this.getPanelEntity(BlockPanelPosition.fromDirection(result.getDirection()));
         if (panelEntity != null) {
             List<FrameSlot> frameSlots = panelEntity.getFrameSlots();
             if (!frameSlots.isEmpty()) {
@@ -234,10 +242,11 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
     public void doScheduledTick() {
         long gameTime = this.getFrameLevel().getGameTime();
-        Map.Entry<Long, Set<Direction>> scheduledTick = this.scheduledTicks.lowerEntry(gameTime);
+        Map.Entry<Long, Set<IPanelPosition>> scheduledTick = this.scheduledTicks.lowerEntry(gameTime);
         while (scheduledTick != null) {
-            for (Direction direction : scheduledTick.getValue()) {
-                Optional.ofNullable(this.panelEntityMap.get(direction))
+            for (IPanelPosition direction : scheduledTick.getValue()) {
+                Optional.ofNullable(direction.getFacing())
+                        .map(this.panelEntityMap::get)
                         .ifPresent(PanelEntity::scheduledTick);
             }
             this.scheduledTicks.remove(scheduledTick.getKey());
@@ -360,7 +369,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
                 lazyOptional = this.frequencyEnergyHandlerLazy.cast();
             }
         } else {
-            PanelEntity panelEntity = this.getPanelEntity(side);
+            PanelEntity panelEntity = this.getPanelEntity(BlockPanelPosition.fromDirection(side));
             if (panelEntity != null) {
                 lazyOptional = panelEntity.getCapability(cap, side);
             }
