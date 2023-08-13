@@ -8,6 +8,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelLike;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.placement.PlacementPanelComponent;
 
 import java.util.function.Supplier;
 
@@ -23,7 +24,11 @@ public class PanelItem<P extends Panel> extends Item implements PanelLike {
     @NotNull
     public InteractionResult useOn(UseOnContext pContext) {
         if (pContext.getLevel().getBlockEntity(pContext.getClickedPos()) instanceof IFrameEntity frameEntity) {
-            PanelState panelState = this.asPanel().getPanelStateForPlacement(pContext, frameEntity);
+            PanelState panelState = this.asPanel().defaultPanelState();
+            PlacementPanelComponent component = this.asPanel().getComponent(PlacementPanelComponent.class);
+            if (component != null) {
+                panelState = component.getPanelStateForPlacement(pContext, frameEntity);
+            }
             if (panelState != null) {
                 InteractionResult setResult = frameEntity.putPanelState(pContext.getClickedFace(), panelState).getResult();
                 if (setResult.consumesAction()) {

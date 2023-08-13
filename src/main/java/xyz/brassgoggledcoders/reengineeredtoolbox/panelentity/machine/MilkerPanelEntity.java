@@ -2,7 +2,6 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +18,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.energy.FrequencyB
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.fluid.FrequencyBackedFluidHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panel.TriggeredPanelWithEntity;
 
 public class MilkerPanelEntity extends PanelEntity {
     private final FrameSlot redstoneIn;
@@ -55,7 +53,7 @@ public class MilkerPanelEntity extends PanelEntity {
     }
 
     private void setPowerAndUpdate(int power) {
-        if (power > 0 != this.getPanelState().getValue(TriggeredPanelWithEntity.TRIGGERED)) {
+        if (power > 0 != this.getPanelState().getValue(BlockStateProperties.TRIGGERED)) {
             if (power > 0) {
                 this.getFrameEntity()
                         .scheduleTick(Direction.UP, this.getPanel(), 4);

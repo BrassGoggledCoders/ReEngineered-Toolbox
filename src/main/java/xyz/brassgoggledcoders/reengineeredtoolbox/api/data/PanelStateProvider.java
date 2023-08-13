@@ -7,6 +7,7 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.IGeneratedBlockState;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.FacingPropertyComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 
 import java.io.IOException;
@@ -25,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+@SuppressWarnings("unused")
 public abstract class PanelStateProvider implements DataProvider {
     private static final int DEFAULT_ANGLE_OFFSET = 180;
 
@@ -157,9 +160,11 @@ public abstract class PanelStateProvider implements DataProvider {
     }
 
     public void directionalPanel(Panel panel, Function<PanelState, ModelFile> modelFunc, int angleOffset) {
+        Property<Direction> directionProp = Objects.requireNonNull(panel.getComponent(FacingPropertyComponent.class))
+                .getProperty();
         getVariantBuilder(panel)
                 .forAllStates(state -> {
-                    Direction dir = state.getValue(Objects.requireNonNull(panel.getFacingProperty()));
+                    Direction dir = state.getValue(Objects.requireNonNull(directionProp));
                     return ConfiguredModel.builder()
                             .modelFile(modelFunc.apply(state))
                             .rotationX(dir == Direction.DOWN ? 180 : dir.getAxis().isHorizontal() ? 90 : 0)

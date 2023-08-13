@@ -20,19 +20,30 @@ import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelLike;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.item.PanelItem;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class PanelBuilder<P extends Panel, R> extends AbstractBuilder<Panel, P, R, PanelBuilder<P, R>> {
-    private final Supplier<P> panelConstructor;
+    private final Function<Collection<PanelComponent>, P> panelConstructor;
+    private final Collection<PanelComponent> panelComponents;
 
-    public PanelBuilder(AbstractRegistrate<?> owner, R parent, String name, BuilderCallback callback, Supplier<P> panelConstructor) {
+    public PanelBuilder(AbstractRegistrate<?> owner, R parent, String name, BuilderCallback callback, Function<Collection<PanelComponent>, P> panelConstructor) {
         super(owner, parent, name, callback, ReEngineeredPanels.PANEL_KEY);
         this.panelConstructor = panelConstructor;
+        this.panelComponents = new ArrayList<>();
+    }
+
+    public PanelBuilder<P, R> component(PanelComponent panelComponent) {
+        this.panelComponents.add(panelComponent);
+        return this;
     }
 
     public PanelBuilder<P, R> panelState(NonNullBiConsumer<DataGenContext<Panel, P>, RegistratePanelStateProvider> cons) {
@@ -98,7 +109,7 @@ public class PanelBuilder<P extends Panel, R> extends AbstractBuilder<Panel, P, 
     @NotNull
     @NonnullType
     protected P createEntry() {
-        return panelConstructor.get();
+        return panelConstructor.apply(this.panelComponents);
     }
 
     @Override
@@ -120,6 +131,18 @@ public class PanelBuilder<P extends Panel, R> extends AbstractBuilder<Panel, P, 
     }
 
     public static <P extends Panel, R> PanelBuilder<P, R> create(AbstractRegistrate<?> owner, R parent, String name, BuilderCallback callback, Supplier<P> factory) {
+        return new PanelBuilder<>(owner, parent, name, callback, (properties) -> factory.get())
+                .defaultPanelState()
+                .defaultLang();
+    }
+
+    public static <P extends Panel, R> PanelBuilder<P, R> create(
+            AbstractRegistrate<?> owner,
+            R parent,
+            String name,
+            BuilderCallback callback,
+            Function<Collection<PanelComponent>, P> factory
+    ) {
         return new PanelBuilder<>(owner, parent, name, callback, factory)
                 .defaultPanelState()
                 .defaultLang();

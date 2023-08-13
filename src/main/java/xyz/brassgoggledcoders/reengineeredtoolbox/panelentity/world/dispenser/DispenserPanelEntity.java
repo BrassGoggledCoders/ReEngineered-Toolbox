@@ -23,9 +23,9 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotViews;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
+import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 import xyz.brassgoggledcoders.reengineeredtoolbox.mixin.DispenserBlockAccessor;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panel.world.DispenserPanel;
 
 import java.util.function.Supplier;
 
@@ -36,6 +36,10 @@ public class DispenserPanelEntity extends PanelEntity {
     private final FrameSlot redstoneSlot;
     private final LazyOptional<IFrequencyItemHandler> itemHandlerLazyOptional;
     private final LazyOptional<IFrequencyRedstoneHandler> redstoneHandlerLazyOptional;
+
+    public DispenserPanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
+        this(ReEngineeredPanels.DISPENSER.getPanelEntityType(), frameEntity, panelState);
+    }
 
     public DispenserPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(type, frameEntity, panelState);
@@ -100,7 +104,7 @@ public class DispenserPanelEntity extends PanelEntity {
     public BlockState asDispenser() {
         return Blocks.DISPENSER.defaultBlockState()
                 .setValue(DispenserBlock.FACING, this.getFacing())
-                .setValue(DispenserBlock.TRIGGERED, this.getPanelState().getValue(DispenserPanel.TRIGGERED));
+                .setValue(DispenserBlock.TRIGGERED, this.getPanelState().getValue(BlockStateProperties.TRIGGERED));
     }
 
     public DispenserBlockEntity getDispenserEntity() {
