@@ -24,7 +24,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotViews;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 import xyz.brassgoggledcoders.reengineeredtoolbox.mixin.DispenserBlockAccessor;
@@ -40,11 +39,7 @@ public class DispenserPanelEntity extends PanelEntity {
     private final LazyOptional<IFrequencyRedstoneHandler> redstoneHandlerLazyOptional;
 
     public DispenserPanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
-        this(ReEngineeredPanels.DISPENSER.getPanelEntityType(), frameEntity, panelState);
-    }
-
-    public DispenserPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
-        super(type, frameEntity, panelState);
+        super(frameEntity, panelState);
         this.internalDispenser = Suppliers.memoize(() -> new DispenserBlockEntity(this.getBlockPos(), this.asDispenser()));
         this.itemSlot = this.registerFrameSlot(new FrameSlot(ReEngineeredText.ITEM_SLOT_IN, FrameSlotViews.LEFT_4X4));
         this.redstoneSlot = this.registerFrameSlot(new FrameSlot(ReEngineeredText.REDSTONE_SLOT_IN, FrameSlotViews.RIGHT_4X4));

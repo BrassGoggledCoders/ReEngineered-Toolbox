@@ -11,13 +11,11 @@ import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.energy.FrequencyBackedEnergyHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.IOPanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelEntityBuilder;
 
 import java.util.function.BiFunction;
 
@@ -26,9 +24,9 @@ public class EnergyIOPanelEntity extends IOPanelEntity {
     private final IEnergyStorage energyStorage;
     private final LazyOptional<IEnergyStorage> lazyOptional;
 
-    public EnergyIOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
+    public EnergyIOPanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
                                IOStyle ioStyle, Component identifier) {
-        super(type, frameEntity, panelState, identifier);
+        super(frameEntity, panelState, identifier);
         this.ioStyle = ioStyle;
         this.energyStorage = this.createEnergyHandler();
         this.lazyOptional = LazyOptional.of(this::getEnergyStorage);
@@ -58,34 +56,15 @@ public class EnergyIOPanelEntity extends IOPanelEntity {
     }
 
     public static BiFunction<IFrameEntity, PanelState, EnergyIOPanelEntity> energyOutput() {
-        return (entity, state) -> new EnergyOutputPanelEntity(
-                ReEngineeredPanels.ENERGY_OUTPUT.getPanelEntityType(),
-                entity,
-                state
-        );
+        return EnergyOutputPanelEntity::new;
     }
 
     protected IEnergyStorage getEnergyStorage() {
         return this.energyStorage;
     }
 
-    public static PanelEntityBuilder.PanelEntityFactory<EnergyIOPanelEntity> energyOutputFactory() {
-        return EnergyOutputPanelEntity::new;
-    }
-
     public static BiFunction<IFrameEntity, PanelState, EnergyIOPanelEntity> energyInput() {
         return (entity, state) -> new EnergyIOPanelEntity(
-                ReEngineeredPanels.ENERGY_INPUT.getPanelEntityType(),
-                entity,
-                state,
-                IOStyle.ONLY_INSERT,
-                ReEngineeredText.ENERGY_SLOT_IN
-        );
-    }
-
-    public static PanelEntityBuilder.PanelEntityFactory<EnergyIOPanelEntity> energyInputFactory() {
-        return (type, entity, state) -> new EnergyIOPanelEntity(
-                type,
                 entity,
                 state,
                 IOStyle.ONLY_INSERT,

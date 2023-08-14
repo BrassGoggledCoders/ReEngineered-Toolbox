@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.item.FrequencyBackedItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.IOPanelEntity;
@@ -20,9 +19,9 @@ public abstract class ItemIOPanelEntity extends IOPanelEntity {
 
     private final LazyOptional<IItemHandler> lazyOptional;
 
-    public ItemIOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
+    public ItemIOPanelEntity( @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
                              @NotNull Component identifier) {
-        super(type, frameEntity, panelState, identifier);
+        super(frameEntity, panelState, identifier);
         this.lazyOptional = LazyOptional.of(this::createItemHandler);
     }
 

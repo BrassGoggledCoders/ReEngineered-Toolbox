@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine;
 
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -12,7 +11,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotViews;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.energy.FrequencyBackedEnergyHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.fluid.FrequencyBackedFluidHandler;
@@ -29,11 +27,7 @@ public class MilkerPanelEntity extends PanelEntity {
     private final FrequencyBackedFluidHandler fluidHandler;
 
     public MilkerPanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
-        this(ReEngineeredPanels.MILKER.getPanelEntityType(), frameEntity, panelState);
-    }
-
-    public MilkerPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
-        super(type, frameEntity, panelState);
+        super(frameEntity, panelState);
         this.redstoneIn = this.registerFrameSlot(new FrameSlot(ReEngineeredText.REDSTONE_SLOT_IN, FrameSlotViews.TOP_RIGHT_4X4));
         this.energyIn = this.registerFrameSlot(new FrameSlot(ReEngineeredText.ENERGY_SLOT_IN, FrameSlotViews.TOP_LEFT_4X4));
         this.fluidOut = this.registerFrameSlot(new FrameSlot(ReEngineeredText.FLUID_SLOT_OUT, FrameSlotViews.BOTTOM_CENTERED_4X4));

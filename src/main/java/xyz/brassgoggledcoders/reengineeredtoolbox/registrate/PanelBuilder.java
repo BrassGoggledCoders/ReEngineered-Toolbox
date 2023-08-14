@@ -93,18 +93,6 @@ public class PanelBuilder<P extends Panel, R> extends AbstractBuilder<Panel, P, 
                 ));
     }
 
-    public <T extends PanelEntity> PanelBuilder<P, R> panelEntity(PanelEntityBuilder.PanelEntityFactory<T> createPanelEntity) {
-        return this.getOwner()
-                .entry((name, builderCallback) -> PanelEntityBuilder.create(
-                        this.getOwner(),
-                        this,
-                        name,
-                        builderCallback,
-                        createPanelEntity
-                ))
-                .build();
-    }
-
     @Override
     @NotNull
     @NonnullType

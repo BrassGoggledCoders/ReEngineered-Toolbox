@@ -11,12 +11,9 @@ import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.fluid.FrequencyBackedFluidHandler;
-import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
-import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelEntityBuilder;
 
 import java.util.function.BiFunction;
 
@@ -24,9 +21,9 @@ public class FluidIOPanelEntity extends IOPanelEntity {
     private final IOStyle ioStyle;
     private final LazyOptional<IFluidHandler> lazyOptional;
 
-    public FluidIOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
+    public FluidIOPanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
                               IOStyle ioStyle, Component identifier) {
-        super(type, frameEntity, panelState, identifier);
+        super(frameEntity, panelState, identifier);
         this.ioStyle = ioStyle;
         this.lazyOptional = LazyOptional.of(this::createFluidHandler);
     }
@@ -56,17 +53,6 @@ public class FluidIOPanelEntity extends IOPanelEntity {
 
     public static BiFunction<IFrameEntity, PanelState, FluidIOPanelEntity> fluidOutput() {
         return (entity, state) -> new FluidIOPanelEntity(
-                ReEngineeredPanels.FLUID_OUTPUT.getPanelEntityType(),
-                entity,
-                state,
-                IOStyle.ONLY_EXTRACT,
-                ReEngineeredText.FLUID_SLOT_OUT
-        );
-    }
-
-    public static PanelEntityBuilder.PanelEntityFactory<FluidIOPanelEntity> fluidOutputFactory() {
-        return (type, entity, state) -> new FluidIOPanelEntity(
-                type,
                 entity,
                 state,
                 IOStyle.ONLY_EXTRACT,
@@ -76,17 +62,6 @@ public class FluidIOPanelEntity extends IOPanelEntity {
 
     public static BiFunction<IFrameEntity, PanelState, FluidIOPanelEntity> fluidInput() {
         return (entity, state) -> new FluidIOPanelEntity(
-                ReEngineeredPanels.FLUID_INPUT.getPanelEntityType(),
-                entity,
-                state,
-                IOStyle.ONLY_INSERT,
-                ReEngineeredText.FLUID_SLOT_IN
-        );
-    }
-
-    public static PanelEntityBuilder.PanelEntityFactory<FluidIOPanelEntity> fluidInputFactory() {
-        return (type, entity, state) -> new FluidIOPanelEntity(
-                type,
                 entity,
                 state,
                 IOStyle.ONLY_INSERT,

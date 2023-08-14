@@ -7,20 +7,15 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotViews;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 
 public class DaylightDetectorPanelEntity extends RedstoneIOPanelEntity {
     private final FrameSlot invertedPort;
 
-    public DaylightDetectorPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
-        super(type, frameEntity, panelState, ReEngineeredText.REDSTONE_SLOT_IN);
+    public DaylightDetectorPanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
+        super(frameEntity, panelState, ReEngineeredText.REDSTONE_SLOT_IN);
         this.invertedPort = new FrameSlot(ReEngineeredText.REDSTONE_SLOT_INVERTED_OUT, FrameSlotViews.CENTERED_4X4);
-    }
-
-    public DaylightDetectorPanelEntity(IFrameEntity iFrameEntity, PanelState panelState) {
-        this(ReEngineeredPanels.DAYLIGHT_DETECTOR.getPanelEntityType(), iFrameEntity, panelState);
     }
 
     @Override

@@ -5,15 +5,14 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.IOPanelEntity;
 
 public abstract class RedstoneIOPanelEntity extends IOPanelEntity {
     private int power;
 
-    public RedstoneIOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
+    public RedstoneIOPanelEntity( @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
                                  @NotNull Component identifier) {
-        super(type, frameEntity, panelState, identifier);
+        super(frameEntity, panelState, identifier);
     }
 
     public int getPower() {
