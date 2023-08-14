@@ -16,7 +16,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelEntityPanelComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.panelentity.IPanelEntityPanelComponent;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -152,7 +152,7 @@ public class PanelEntity implements ICapabilityProvider {
             ReEngineeredToolbox.LOGGER.error("Panel entity has invalid type: {}", s);
             return null;
         } else {
-            return Optional.ofNullable(pState.getPanel().getComponent(PanelEntityPanelComponent.class))
+            return Optional.ofNullable(pState.getPanel().getComponent(IPanelEntityPanelComponent.class))
                     .map(panelEntityPanelComponent -> panelEntityPanelComponent.createPanelEntity(frame, pState))
                     .map((panelEntity) -> {
                         try {

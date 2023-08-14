@@ -11,8 +11,8 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelEntityPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.interaction.IInteractionPanelComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.panelentity.IPanelEntityPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.redstone.IRedstonePanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.FacingPropertyComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
@@ -48,7 +48,7 @@ public class PanelState extends StateHolder<Panel, PanelState> {
 
     @Nullable
     public PanelEntity createPanelEntity(IFrameEntity frame) {
-        return Optional.ofNullable(this.getPanel().getComponent(PanelEntityPanelComponent.class))
+        return Optional.ofNullable(this.getPanel().getComponent(IPanelEntityPanelComponent.class))
                 .map(component -> component.createPanelEntity(frame, this))
                 .orElse(null);
     }
