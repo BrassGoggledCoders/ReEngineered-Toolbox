@@ -35,8 +35,8 @@ public class EnergyIOPanelEntity extends IOPanelEntity {
     private FrequencyBackedEnergyHandler createEnergyHandler() {
         return new FrequencyBackedEnergyHandler(
                 this.getIoPort(),
-                this.ioStyle,
-                this.getFrameEntity().getCapability(ReEngineeredCapabilities.FREQUENCY_ENERGY_HANDLER)
+                this.getFrameEntity().getCapability(ReEngineeredCapabilities.FREQUENCY_ENERGY_HANDLER),
+                this.ioStyle
         );
     }
 

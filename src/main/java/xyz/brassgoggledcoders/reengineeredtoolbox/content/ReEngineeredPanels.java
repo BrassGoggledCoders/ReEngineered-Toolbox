@@ -10,22 +10,26 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelEntityPanelComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.panelentity.PanelEntityPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.interaction.MenuInteractionPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.placement.RestrictedDirectionPlacementPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.redstone.RedstonePanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.FacingPropertyComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.PanelStatePropertyComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.energy.FrequencyBackedEnergyHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.fluid.FrequencyBackedFluidHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.item.FrequencyBackedItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelcomponent.RedstoneSignalPanelComponent;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.FluidIOPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelcomponent.panelentity.BasicCapabilityPanelEntityPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.energy.EnergyIOPanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemInputPanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.DaylightDetectorPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneInputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.FreezerPanelEntity;
@@ -66,7 +70,13 @@ public class ReEngineeredPanels {
             ReEngineeredToolbox.getRegistrateAddon()
                     .object("item_input")
                     .panel()
-                    .component(new PanelEntityPanelComponent(ItemInputPanelEntity::new))
+                    .component(new BasicCapabilityPanelEntityPanelComponent<>(
+                            ForgeCapabilities.ITEM_HANDLER,
+                            ReEngineeredCapabilities.FREQUENCY_ITEM_HANDLER,
+                            ReEngineeredText.ITEM_SLOT_IN,
+                            IOStyle.ONLY_INSERT,
+                            FrequencyBackedItemHandler::new
+                    ))
                     .component(new FacingPropertyComponent())
                     .item()
                     .build()
@@ -77,7 +87,13 @@ public class ReEngineeredPanels {
             ReEngineeredToolbox.getRegistrateAddon()
                     .object("item_output")
                     .panel()
-                    .component(new PanelEntityPanelComponent(ItemOutputPanelEntity::new))
+                    .component(new BasicCapabilityPanelEntityPanelComponent<>(
+                            ForgeCapabilities.ITEM_HANDLER,
+                            ReEngineeredCapabilities.FREQUENCY_ITEM_HANDLER,
+                            ReEngineeredText.ITEM_SLOT_OUT,
+                            IOStyle.ONLY_EXTRACT,
+                            FrequencyBackedItemHandler::new
+                    ))
                     .component(new FacingPropertyComponent())
                     .item()
                     .build()
@@ -87,7 +103,13 @@ public class ReEngineeredPanels {
             ReEngineeredToolbox.getRegistrateAddon()
                     .object("fluid_input")
                     .panel()
-                    .component(new PanelEntityPanelComponent(FluidIOPanelEntity.fluidInput()))
+                    .component(new BasicCapabilityPanelEntityPanelComponent<>(
+                            ForgeCapabilities.FLUID_HANDLER,
+                            ReEngineeredCapabilities.FREQUENCY_FLUID_HANDLER,
+                            ReEngineeredText.FLUID_SLOT_IN,
+                            IOStyle.ONLY_INSERT,
+                            FrequencyBackedFluidHandler::new
+                    ))
                     .component(new FacingPropertyComponent())
                     .item()
                     .build()
@@ -98,7 +120,13 @@ public class ReEngineeredPanels {
             ReEngineeredToolbox.getRegistrateAddon()
                     .object("fluid_output")
                     .panel()
-                    .component(new PanelEntityPanelComponent(FluidIOPanelEntity.fluidOutput()))
+                    .component(new BasicCapabilityPanelEntityPanelComponent<>(
+                            ForgeCapabilities.FLUID_HANDLER,
+                            ReEngineeredCapabilities.FREQUENCY_FLUID_HANDLER,
+                            ReEngineeredText.FLUID_SLOT_OUT,
+                            IOStyle.ONLY_EXTRACT,
+                            FrequencyBackedFluidHandler::new
+                    ))
                     .component(new FacingPropertyComponent())
                     .item()
                     .build()
@@ -108,7 +136,13 @@ public class ReEngineeredPanels {
             ReEngineeredToolbox.getRegistrateAddon()
                     .object("energy_input")
                     .panel()
-                    .component(new PanelEntityPanelComponent(EnergyIOPanelEntity.energyInput()))
+                    .component(new BasicCapabilityPanelEntityPanelComponent<>(
+                            ForgeCapabilities.ENERGY,
+                            ReEngineeredCapabilities.FREQUENCY_ENERGY_HANDLER,
+                            ReEngineeredText.ENERGY_SLOT_IN,
+                            IOStyle.ONLY_INSERT,
+                            FrequencyBackedEnergyHandler::new
+                    ))
                     .component(new FacingPropertyComponent())
                     .item()
                     .build()
