@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.dispenser;
 
 import com.google.common.base.Suppliers;
+import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;
@@ -106,8 +108,13 @@ public class DispenserPanelEntity extends PanelEntity {
     }
 
     public BlockState asDispenser() {
+        Direction facing = this.getPanelPosition().getFacing();
+        if (facing == null) {
+            facing = Direction.UP;
+            ReEngineeredToolbox.LOGGER.error("Failed to find Facing for PanelPosition: %s".formatted(this.getPanelPosition()));
+        }
         return Blocks.DISPENSER.defaultBlockState()
-                .setValue(DispenserBlock.FACING, this.getFacing())
+                .setValue(DispenserBlock.FACING, facing)
                 .setValue(DispenserBlock.TRIGGERED, this.getPanelState().getValue(BlockStateProperties.TRIGGERED));
     }
 

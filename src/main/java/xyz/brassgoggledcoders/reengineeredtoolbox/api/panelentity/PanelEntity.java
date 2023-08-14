@@ -77,17 +77,13 @@ public class PanelEntity implements ICapabilityProvider {
         return panelPosition;
     }
 
-    public void setPanelPosition(IPanelPosition panelPosition) {
+    public void setPanelPosition(@NotNull IPanelPosition panelPosition) {
         this.panelPosition = panelPosition;
     }
 
     @NotNull
     public IFrameEntity getFrameEntity() {
         return frameEntity;
-    }
-
-    public Direction getFacing() {
-        return this.getPanelState().getFacing();
     }
 
     @NotNull
@@ -176,12 +172,9 @@ public class PanelEntity implements ICapabilityProvider {
 
     @Nullable
     public BlockEntity getAdjacantBlockEntity() {
-        Direction facing = this.getFacing();
-        if (facing != null) {
-            BlockPos offsetPos = this.getBlockPos().relative(facing);
-            if (this.getLevel().isLoaded(offsetPos)) {
-                return this.getLevel().getBlockEntity(offsetPos);
-            }
+        BlockPos offsetPos = this.getPanelPosition().offset(this.getFrameEntity());
+        if (this.getLevel().isLoaded(offsetPos)) {
+            return this.getLevel().getBlockEntity(offsetPos);
         }
         return null;
     }

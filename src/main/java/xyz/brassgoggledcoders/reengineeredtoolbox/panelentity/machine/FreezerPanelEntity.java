@@ -110,7 +110,7 @@ public class FreezerPanelEntity extends MachinePanelEntity<FreezerRecipe, Freeze
                 pPlayerInventory,
                 ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()),
                 this.getPanel(),
-                this.getFacing(),
+                this.getPanelPosition(),
                 this.itemHandler,
                 this.fluidHandler::getTankView,
                 () -> this.getCachedRecipe().getRecipe()
