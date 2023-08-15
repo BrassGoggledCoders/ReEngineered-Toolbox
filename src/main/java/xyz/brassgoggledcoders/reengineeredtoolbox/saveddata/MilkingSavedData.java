@@ -10,7 +10,10 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.functional.Option;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class MilkingSavedData extends SavedData {
     private static final String NAME = ReEngineeredToolbox.rl("milking").toString();

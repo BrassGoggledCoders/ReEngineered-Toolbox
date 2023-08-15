@@ -10,7 +10,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.Frequency;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 
 import java.util.function.ObjIntConsumer;

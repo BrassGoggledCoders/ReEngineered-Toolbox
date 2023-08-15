@@ -5,8 +5,8 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyEnergyHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyFluidHandler;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;
 
 public class ReEngineeredCapabilities {
     public static Capability<IFrequencyItemHandler> FREQUENCY_ITEM_HANDLER = CapabilityManager.get(new CapabilityToken<>() {});

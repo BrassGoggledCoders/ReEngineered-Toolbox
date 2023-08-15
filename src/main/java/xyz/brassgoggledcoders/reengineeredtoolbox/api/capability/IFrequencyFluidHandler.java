@@ -1,7 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.capability;
 
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.Frequency;

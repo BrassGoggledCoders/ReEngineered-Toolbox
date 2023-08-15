@@ -18,7 +18,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.fluid.FrequencyBackedFluidHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.item.FrequencyBackedItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredMenus;
-import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredRecipes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.FreezerMenu;

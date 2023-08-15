@@ -1,7 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.content;
 
 import com.tterrag.registrate.util.entry.MenuEntry;
-import com.tterrag.registrate.util.entry.RegistryEntry;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.FreezerMenu;
 import xyz.brassgoggledcoders.reengineeredtoolbox.screen.FreezerScreen;

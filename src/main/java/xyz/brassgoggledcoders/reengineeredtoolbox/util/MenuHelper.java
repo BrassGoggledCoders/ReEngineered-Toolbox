@@ -1,10 +1,8 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.util;
 
-import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.BlockPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 

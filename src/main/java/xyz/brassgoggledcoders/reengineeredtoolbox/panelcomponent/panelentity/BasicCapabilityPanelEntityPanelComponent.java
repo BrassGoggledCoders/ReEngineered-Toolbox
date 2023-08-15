@@ -7,7 +7,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotView;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotViews;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelComponent;
