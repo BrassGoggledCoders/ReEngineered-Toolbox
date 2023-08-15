@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.dispenser;
 
 import com.google.common.base.Suppliers;
+import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
+import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;
@@ -22,10 +24,8 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotViews;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 import xyz.brassgoggledcoders.reengineeredtoolbox.mixin.DispenserBlockAccessor;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panel.world.DispenserPanel;
 
 import java.util.function.Supplier;
 
@@ -37,8 +37,8 @@ public class DispenserPanelEntity extends PanelEntity {
     private final LazyOptional<IFrequencyItemHandler> itemHandlerLazyOptional;
     private final LazyOptional<IFrequencyRedstoneHandler> redstoneHandlerLazyOptional;
 
-    public DispenserPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
-        super(type, frameEntity, panelState);
+    public DispenserPanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
+        super(frameEntity, panelState);
         this.internalDispenser = Suppliers.memoize(() -> new DispenserBlockEntity(this.getBlockPos(), this.asDispenser()));
         this.itemSlot = this.registerFrameSlot(new FrameSlot(ReEngineeredText.ITEM_SLOT_IN, FrameSlotViews.LEFT_4X4));
         this.redstoneSlot = this.registerFrameSlot(new FrameSlot(ReEngineeredText.REDSTONE_SLOT_IN, FrameSlotViews.RIGHT_4X4));
@@ -50,10 +50,14 @@ public class DispenserPanelEntity extends PanelEntity {
         if (power > 0 != this.getPanelState().getValue(BlockStateProperties.TRIGGERED)) {
             if (power > 0) {
                 this.getFrameEntity()
-                        .scheduleTick(this.getFacing(), this.getPanel(), 4);
+                        .scheduleTick(this.getPanelPosition(), this.getPanel(), 4);
             }
             this.getFrameEntity()
-                    .putPanelState(this.getFacing(), this.getPanelState().setValue(BlockStateProperties.TRIGGERED, power > 0), true);
+                    .putPanelState(
+                            this.getPanelPosition(),
+                            this.getPanelState()
+                                    .setValue(BlockStateProperties.TRIGGERED, power > 0), true
+                    );
         }
     }
 
@@ -98,9 +102,14 @@ public class DispenserPanelEntity extends PanelEntity {
     }
 
     public BlockState asDispenser() {
+        Direction facing = this.getPanelPosition().getFacing();
+        if (facing == null) {
+            facing = Direction.UP;
+            ReEngineeredToolbox.LOGGER.error("Failed to find Facing for PanelPosition: %s".formatted(this.getPanelPosition()));
+        }
         return Blocks.DISPENSER.defaultBlockState()
-                .setValue(DispenserBlock.FACING, this.getFacing())
-                .setValue(DispenserBlock.TRIGGERED, this.getPanelState().getValue(DispenserPanel.TRIGGERED));
+                .setValue(DispenserBlock.FACING, facing)
+                .setValue(DispenserBlock.TRIGGERED, this.getPanelState().getValue(BlockStateProperties.TRIGGERED));
     }
 
     public DispenserBlockEntity getDispenserEntity() {

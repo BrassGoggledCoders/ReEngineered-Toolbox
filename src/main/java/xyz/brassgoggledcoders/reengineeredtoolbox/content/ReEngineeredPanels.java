@@ -10,27 +10,29 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryManager;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panel.PanelWithMenu;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panel.TriggeredPanelWithEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.DaylightDetectorPanel;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.IOPanel;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panel.io.RedstoneIOPanel;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panel.world.DispenserPanel;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.FluidIOPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.interaction.MenuInteractionPanelComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.panelentity.PanelEntityPanelComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.placement.RestrictedDirectionPlacementPanelComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.redstone.RedstonePanelComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.FacingPropertyComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.PanelStatePropertyComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.energy.FrequencyBackedEnergyHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.fluid.FrequencyBackedFluidHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.item.FrequencyBackedItemHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelcomponent.RedstoneSignalPanelComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelcomponent.panelentity.BasicCapabilityPanelEntityPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.energy.EnergyIOPanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemInputPanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.item.ItemOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.DaylightDetectorPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneInputPanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.FreezerPanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.MilkerPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.dispenser.DispenserPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelEntry;
 
@@ -41,21 +43,15 @@ public class ReEngineeredPanels {
     public static final ResourceKey<Registry<Panel>> PANEL_KEY = ReEngineeredToolbox.getRegistrate()
             .makeRegistry("panel", RegistryBuilder::new);
 
-    public static final ResourceKey<Registry<PanelEntityType<?>>> PANEL_ENTITY_KEY = ReEngineeredToolbox.getRegistrate()
-            .makeRegistry("panel_entity_type", RegistryBuilder::new);
-
     public static final Supplier<ForgeRegistry<Panel>> PANEL_REGISTRY = Suppliers.memoize(() ->
             RegistryManager.ACTIVE.getRegistry(PANEL_KEY)
-    );
-
-    public static final Supplier<ForgeRegistry<PanelEntityType<?>>> PANEL_ENTITY_REGISTRY = Suppliers.memoize(() ->
-            RegistryManager.ACTIVE.getRegistry(PANEL_ENTITY_KEY)
     );
 
     @SuppressWarnings("DataFlowIssue")
     public static final PanelEntry<Panel> PLUG = ReEngineeredToolbox.getRegistrateAddon()
             .object("plug")
-            .panel(Panel::new)
+            .panel()
+            .component(new FacingPropertyComponent())
             .panelState((context, provider) -> provider.openDirectionalPanel(context.get()))
             .item()
             .properties(properties -> properties.tab(null))
@@ -64,72 +60,112 @@ public class ReEngineeredPanels {
 
     public static final PanelEntry<Panel> BLANK = ReEngineeredToolbox.getRegistrateAddon()
             .object("blank")
-            .panel(Panel::new)
+            .panel()
+            .component(new FacingPropertyComponent())
             .item()
             .build()
             .register();
 
-    public static final PanelEntry<IOPanel> ITEM_INPUT =
+    public static final PanelEntry<Panel> ITEM_INPUT =
             ReEngineeredToolbox.getRegistrateAddon()
                     .object("item_input")
-                    .panel(() -> new IOPanel(ItemInputPanelEntity::new))
-                    .panelEntity(ItemInputPanelEntity::new)
+                    .panel()
+                    .component(new BasicCapabilityPanelEntityPanelComponent<>(
+                            ForgeCapabilities.ITEM_HANDLER,
+                            ReEngineeredCapabilities.FREQUENCY_ITEM_HANDLER,
+                            ReEngineeredText.ITEM_SLOT_IN,
+                            IOStyle.ONLY_INSERT,
+                            FrequencyBackedItemHandler::new
+                    ))
+                    .component(new FacingPropertyComponent())
                     .item()
                     .build()
                     .register();
 
 
-    public static final PanelEntry<IOPanel> ITEM_OUTPUT =
+    public static final PanelEntry<Panel> ITEM_OUTPUT =
             ReEngineeredToolbox.getRegistrateAddon()
                     .object("item_output")
-                    .panel(() -> new IOPanel(ItemOutputPanelEntity::new))
-                    .panelEntity(ItemOutputPanelEntity::new)
+                    .panel()
+                    .component(new BasicCapabilityPanelEntityPanelComponent<>(
+                            ForgeCapabilities.ITEM_HANDLER,
+                            ReEngineeredCapabilities.FREQUENCY_ITEM_HANDLER,
+                            ReEngineeredText.ITEM_SLOT_OUT,
+                            IOStyle.ONLY_EXTRACT,
+                            FrequencyBackedItemHandler::new
+                    ))
+                    .component(new FacingPropertyComponent())
                     .item()
                     .build()
                     .register();
 
-    public static final PanelEntry<IOPanel> FLUID_INPUT =
+    public static final PanelEntry<Panel> FLUID_INPUT =
             ReEngineeredToolbox.getRegistrateAddon()
                     .object("fluid_input")
-                    .panel(() -> new IOPanel(FluidIOPanelEntity.fluidInput()))
-                    .panelEntity(FluidIOPanelEntity.fluidInputFactory())
+                    .panel()
+                    .component(new BasicCapabilityPanelEntityPanelComponent<>(
+                            ForgeCapabilities.FLUID_HANDLER,
+                            ReEngineeredCapabilities.FREQUENCY_FLUID_HANDLER,
+                            ReEngineeredText.FLUID_SLOT_IN,
+                            IOStyle.ONLY_INSERT,
+                            FrequencyBackedFluidHandler::new
+                    ))
+                    .component(new FacingPropertyComponent())
                     .item()
                     .build()
                     .register();
 
 
-    public static final PanelEntry<IOPanel> FLUID_OUTPUT =
+    public static final PanelEntry<Panel> FLUID_OUTPUT =
             ReEngineeredToolbox.getRegistrateAddon()
                     .object("fluid_output")
-                    .panel(() -> new IOPanel(FluidIOPanelEntity.fluidOutput()))
-                    .panelEntity(FluidIOPanelEntity.fluidOutputFactory())
+                    .panel()
+                    .component(new BasicCapabilityPanelEntityPanelComponent<>(
+                            ForgeCapabilities.FLUID_HANDLER,
+                            ReEngineeredCapabilities.FREQUENCY_FLUID_HANDLER,
+                            ReEngineeredText.FLUID_SLOT_OUT,
+                            IOStyle.ONLY_EXTRACT,
+                            FrequencyBackedFluidHandler::new
+                    ))
+                    .component(new FacingPropertyComponent())
                     .item()
                     .build()
                     .register();
 
-    public static final PanelEntry<IOPanel> ENERGY_INPUT =
+    public static final PanelEntry<Panel> ENERGY_INPUT =
             ReEngineeredToolbox.getRegistrateAddon()
                     .object("energy_input")
-                    .panel(() -> new IOPanel(EnergyIOPanelEntity.energyInput()))
-                    .panelEntity(EnergyIOPanelEntity.energyInputFactory())
+                    .panel()
+                    .component(new BasicCapabilityPanelEntityPanelComponent<>(
+                            ForgeCapabilities.ENERGY,
+                            ReEngineeredCapabilities.FREQUENCY_ENERGY_HANDLER,
+                            ReEngineeredText.ENERGY_SLOT_IN,
+                            IOStyle.ONLY_INSERT,
+                            FrequencyBackedEnergyHandler::new
+                    ))
+                    .component(new FacingPropertyComponent())
                     .item()
                     .build()
                     .register();
 
 
-    public static final PanelEntry<IOPanel> ENERGY_OUTPUT =
+    public static final PanelEntry<Panel> ENERGY_OUTPUT =
             ReEngineeredToolbox.getRegistrateAddon()
                     .object("energy_output")
-                    .panel(() -> new IOPanel(EnergyIOPanelEntity.energyOutput()))
-                    .panelEntity(EnergyIOPanelEntity.energyOutputFactory())
+                    .panel()
+                    .component(new PanelEntityPanelComponent(EnergyIOPanelEntity.energyOutput()))
+                    .component(new FacingPropertyComponent())
                     .item()
                     .build()
                     .register();
 
-    public static final PanelEntry<RedstoneIOPanel> REDSTONE_INPUT = ReEngineeredToolbox.getRegistrateAddon()
+    public static final PanelEntry<Panel> REDSTONE_INPUT = ReEngineeredToolbox.getRegistrateAddon()
             .object("redstone_input")
-            .panel(() -> new RedstoneIOPanel(RedstoneInputPanelEntity::new))
-            .<RedstoneInputPanelEntity>panelEntity(RedstoneInputPanelEntity::new)
+            .panel()
+            .component(new RedstonePanelComponent())
+            .component(new PanelEntityPanelComponent(RedstoneInputPanelEntity::new))
+            .component(new PanelStatePropertyComponent<>(BlockStateProperties.POWERED, false))
+            .component(new FacingPropertyComponent())
             .panelState((context, provider) -> {
                 ModelFile inputOn = provider.models().flatPanel("redstone_input_on");
                 ModelFile inputOff = provider.models().flatPanel("redstone_input_off");
@@ -152,10 +188,13 @@ public class ReEngineeredPanels {
             .build()
             .register();
 
-    public static final PanelEntry<RedstoneIOPanel> REDSTONE_OUTPUT = ReEngineeredToolbox.getRegistrateAddon()
+    public static final PanelEntry<Panel> REDSTONE_OUTPUT = ReEngineeredToolbox.getRegistrateAddon()
             .object("redstone_output")
-            .panel(() -> new RedstoneIOPanel(RedstoneOutputPanelEntity::new))
-            .<RedstoneOutputPanelEntity>panelEntity(RedstoneOutputPanelEntity::new)
+            .panel()
+            .component(new RedstoneSignalPanelComponent())
+            .component(new PanelEntityPanelComponent(RedstoneInputPanelEntity::new))
+            .component(new PanelStatePropertyComponent<>(BlockStateProperties.POWERED, false))
+            .component(new FacingPropertyComponent())
             .panelState((context, provider) -> {
                 ModelFile inputOn = provider.models().flatPanel("redstone_output_on");
                 ModelFile inputOff = provider.models().flatPanel("redstone_output_off");
@@ -179,10 +218,12 @@ public class ReEngineeredPanels {
             .register();
 
 
-    public static final PanelEntry<DispenserPanel> DISPENSER = ReEngineeredToolbox.getRegistrateAddon()
+    public static final PanelEntry<Panel> DISPENSER = ReEngineeredToolbox.getRegistrateAddon()
             .object("dispenser")
-            .panel(DispenserPanel::new)
-            .panelEntity(DispenserPanelEntity::new)
+            .panel()
+            .component(new FacingPropertyComponent())
+            .component(new PanelStatePropertyComponent<>(BlockStateProperties.TRIGGERED, false))
+            .component(new PanelEntityPanelComponent(DispenserPanelEntity::new))
             .item()
             .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())
                     .pattern("D")
@@ -195,16 +236,17 @@ public class ReEngineeredPanels {
             .build()
             .register();
 
-    public static final PanelEntry<DaylightDetectorPanel> DAYLIGHT_DETECTOR = ReEngineeredToolbox.getRegistrateAddon()
+    public static final PanelEntry<Panel> DAYLIGHT_DETECTOR = ReEngineeredToolbox.getRegistrateAddon()
             .object("daylight_detector")
-            .panel(DaylightDetectorPanel::new)
+            .panel()
+            .component(new RestrictedDirectionPlacementPanelComponent(Direction.UP))
+            .component(new PanelEntityPanelComponent(DaylightDetectorPanelEntity::new))
             .panelState((context, provider) -> provider.singleDirectionPanel(
                     context.get(),
                     Direction.UP,
                     provider.models()
                             .flatPanel(context.getName(), provider.mcLoc("block/daylight_detector_top"))
             ))
-            .panelEntity(DaylightDetectorPanelEntity::new)
             .item()
             .model((context, provider) -> provider.generated(context, provider.mcLoc("block/daylight_detector_top")))
             .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())
@@ -218,10 +260,12 @@ public class ReEngineeredPanels {
             .build()
             .register();
 
-    public static final PanelEntry<PanelWithMenu<FreezerPanelEntity>> FREEZER = ReEngineeredToolbox.getRegistrateAddon()
+    public static final PanelEntry<Panel> FREEZER = ReEngineeredToolbox.getRegistrateAddon()
             .object("freezer")
-            .panel(() -> new PanelWithMenu<>(FreezerPanelEntity::new))
-            .panelEntity(FreezerPanelEntity::new)
+            .panel()
+            .component(new FacingPropertyComponent())
+            .component(new PanelEntityPanelComponent(FreezerPanelEntity::new))
+            .component(new MenuInteractionPanelComponent())
             .item()
             .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())
                     .pattern("IFI")
@@ -235,10 +279,10 @@ public class ReEngineeredPanels {
             .build()
             .register();
 
-    public static final PanelEntry<TriggeredPanelWithEntity> MILKER = ReEngineeredToolbox.getRegistrateAddon()
+    public static final PanelEntry<Panel> MILKER = ReEngineeredToolbox.getRegistrateAddon()
             .object("milker")
-            .panel(() -> new TriggeredPanelWithEntity(MilkerPanelEntity::new))
-            .panelEntity(MilkerPanelEntity::new)
+            .panel()
+            .component(new PanelStatePropertyComponent<>(BlockStateProperties.TRIGGERED, false))
             .item()
             .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())
                     .pattern("IFI")
@@ -254,10 +298,6 @@ public class ReEngineeredPanels {
 
     public static ForgeRegistry<Panel> getRegistry() {
         return PANEL_REGISTRY.get();
-    }
-
-    public static ForgeRegistry<PanelEntityType<?>> getPanelEntityRegistry() {
-        return PANEL_ENTITY_REGISTRY.get();
     }
 
     public static void setup() {

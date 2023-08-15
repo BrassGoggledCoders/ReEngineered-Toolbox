@@ -11,7 +11,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.energy.FrequencyBackedEnergyHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.RecipeCache;
@@ -27,8 +26,8 @@ public abstract class MachinePanelEntity<T extends Recipe<U>, U extends Containe
     private int progress;
     private int coolDown;
 
-    public MachinePanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
-        super(type, frameEntity, panelState);
+    public MachinePanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
+        super(frameEntity, panelState);
         this.energyIn = this.registerFrameSlot(this.createEnergyFrameSlot());
         this.cachedRecipe = new RecipeCache<>(this.getRecipeType());
         this.energyHandler = new FrequencyBackedEnergyHandler(energyIn, IOStyle.ONLY_EXTRACT, frameEntity);

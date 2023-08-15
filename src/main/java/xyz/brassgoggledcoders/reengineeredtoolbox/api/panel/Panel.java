@@ -1,28 +1,25 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.panel;
 
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
 import net.minecraft.Util;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.PanelStatePropertyComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public class Panel implements ItemLike {
@@ -33,13 +30,30 @@ public class Panel implements ItemLike {
     @NotNull
     private final StateDefinition<Panel, PanelState> stateDefinition;
     @NotNull
-    private PanelState defaultPanelState;
+    private final PanelState defaultPanelState;
+    @NotNull
+    private final List<PanelComponent> components;
+    @NotNull
+    private final ListMultimap<Class<?>, PanelComponent> cachedComponents;
 
-    public Panel() {
+
+    public Panel(Collection<PanelComponent> components) {
+        this.components = new ArrayList<>(components);
+        this.cachedComponents = MultimapBuilder.hashKeys()
+                .arrayListValues()
+                .build();
+
         StateDefinition.Builder<Panel, PanelState> builder = new StateDefinition.Builder<>(this);
-        this.createPanelStateDefinition(builder);
+        for (PanelStatePropertyComponent<?> propertyComponent : this.getComponents(PanelStatePropertyComponent.class)) {
+            builder.add(propertyComponent.getProperty());
+        }
         this.stateDefinition = builder.create(Panel::defaultPanelState, PanelState::new);
-        this.defaultPanelState = this.stateDefinition.any();
+
+        PanelState panelState = this.stateDefinition.any();
+        for (PanelStatePropertyComponent<?> propertyComponent : this.getComponents(PanelStatePropertyComponent.class)) {
+            panelState = propertyComponent.setValueToPanelState(panelState);
+        }
+        this.defaultPanelState = panelState;
     }
 
     @Override
@@ -72,27 +86,8 @@ public class Panel implements ItemLike {
         return this.descriptionId;
     }
 
-    public PanelState getPanelStateForPlacement(UseOnContext context, IFrameEntity frame) {
-        PanelState panelState = this.defaultPanelState();
-        if (this.getFacingProperty() != null) {
-            panelState = panelState.setValue(this.getFacingProperty(), context.getClickedFace());
-        }
-        return panelState;
-    }
-
     private boolean filter(Item item) {
         return item instanceof PanelLike panelLike && panelLike.asPanel() == this;
-    }
-
-    @Nullable
-    public Property<Direction> getFacingProperty() {
-        return BlockStateProperties.FACING;
-    }
-
-    protected void createPanelStateDefinition(StateDefinition.Builder<Panel, PanelState> pBuilder) {
-        if (this.getFacingProperty() != null) {
-            pBuilder.add(this.getFacingProperty());
-        }
     }
 
     @NotNull
@@ -100,9 +95,6 @@ public class Panel implements ItemLike {
         return this.stateDefinition;
     }
 
-    protected final void registerDefaultState(@NotNull PanelState pState) {
-        this.defaultPanelState = pState;
-    }
 
     /**
      * Gets the default state for this block
@@ -112,28 +104,23 @@ public class Panel implements ItemLike {
     }
 
     @Nullable
-    public PanelEntity createPanelEntity(IFrameEntity frame, PanelState panelState) {
-        return null;
+    public <T> T getComponent(Class<T> clazz) {
+        List<T> components = this.getComponents(clazz);
+        return components.isEmpty() ? null : components.get(0);
     }
 
-    public boolean canConnectRedstone(IFrameEntity entity, PanelState panelState) {
-        return false;
-    }
-
-    @Nullable
-    public Direction getFacing(PanelState panelState) {
-        if (this.getFacingProperty() != null) {
-            return panelState.getValue(this.getFacingProperty());
+    @SuppressWarnings("unchecked")
+    public <T> List<T> getComponents(Class<T> clazz) {
+        if (this.cachedComponents.containsKey(clazz)) {
+            return (List<T>) this.cachedComponents.get(clazz);
         }
-        return null;
-    }
 
-    @NotNull
-    public InteractionResult use(IFrameEntity frameEntity, PanelState panelState, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        return InteractionResult.PASS;
-    }
+        for (PanelComponent panelComponent : this.components) {
+            if (clazz.isInstance(panelComponent)) {
+                this.cachedComponents.put(clazz, panelComponent);
+            }
+        }
 
-    public int getSignal(IFrameEntity frameEntity, PanelState panelState) {
-        return 0;
+        return (List<T>) this.cachedComponents.get(clazz);
     }
 }

@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.FacingPropertyComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.NbtHelper;
 
@@ -59,8 +60,9 @@ public class FrameItemOverrides extends ItemOverrides {
                             CompoundTag panelStateTag = directionalPanelTag.getCompound("PanelState");
                             if (!panelStateTag.isEmpty()) {
                                 panelState = NbtHelper.readPanelState(panelStateTag);
-                                if (panelState.getPanel().getFacingProperty() != null) {
-                                    panelState = panelState.setValue(panelState.getPanel().getFacingProperty(), direction);
+                                FacingPropertyComponent component = panelState.getPanel().getComponent(FacingPropertyComponent.class);
+                                if (component != null) {
+                                    panelState = panelState.setValue(component.getProperty(), direction);
                                 }
                             }
                         }

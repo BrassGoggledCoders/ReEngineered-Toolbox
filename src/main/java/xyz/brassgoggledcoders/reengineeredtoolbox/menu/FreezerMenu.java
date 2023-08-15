@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.menu;
 
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -16,6 +15,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.MenuHelper;
@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 public class FreezerMenu extends AbstractContainerMenu implements IPropertyManaged {
     private final ContainerLevelAccess levelAccess;
     private final Panel panel;
-    private final Direction direction;
+    private final IPanelPosition panelPosition;
     private final PropertyManager propertyManager;
     private final Inventory inventory;
     private final Property<TankView> tankView;
@@ -42,7 +42,7 @@ public class FreezerMenu extends AbstractContainerMenu implements IPropertyManag
         super(type, windowId);
         this.levelAccess = ContainerLevelAccess.NULL;
         this.panel = ReEngineeredPanels.BLANK.asPanel();
-        this.direction = Direction.UP;
+        this.panelPosition = IPanelPosition.NONE;
 
         this.inventory = inventory;
         this.propertyManager = ReEngineeredToolbox.getSyncing()
@@ -56,12 +56,12 @@ public class FreezerMenu extends AbstractContainerMenu implements IPropertyManag
     }
 
     public FreezerMenu(@Nullable MenuType<?> pMenuType, int pContainerId, Inventory inventory, ContainerLevelAccess levelAccess,
-                       Panel panel, Direction direction, IItemHandlerModifiable itemHandler, Supplier<TankView> tankViewSupplier,
+                       Panel panel, IPanelPosition panelPosition, IItemHandlerModifiable itemHandler, Supplier<TankView> tankViewSupplier,
                        Supplier<ProgressView> progressSupplier, Supplier<ProgressView> energySupplier) {
         super(pMenuType, pContainerId);
         this.levelAccess = levelAccess;
         this.panel = panel;
-        this.direction = direction;
+        this.panelPosition = panelPosition;
         this.inventory = inventory;
         this.propertyManager = ReEngineeredToolbox.getSyncing()
                 .createManager(pContainerId);
@@ -102,7 +102,7 @@ public class FreezerMenu extends AbstractContainerMenu implements IPropertyManag
 
     @Override
     public boolean stillValid(@NotNull Player pPlayer) {
-        return MenuHelper.checkPanelMenuValid(this.levelAccess, pPlayer, direction, panel);
+        return MenuHelper.checkPanelMenuValid(this.levelAccess, pPlayer, panelPosition, panel);
     }
 
     public TankView getTankView() {

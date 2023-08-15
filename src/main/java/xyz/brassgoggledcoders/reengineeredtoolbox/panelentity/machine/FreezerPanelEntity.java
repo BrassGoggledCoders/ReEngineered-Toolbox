@@ -14,12 +14,10 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotViews;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.fluid.FrequencyBackedFluidHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.item.FrequencyBackedItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredMenus;
-import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredRecipes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.FreezerMenu;
@@ -37,8 +35,8 @@ public class FreezerPanelEntity extends MachinePanelEntity<FreezerRecipe, Freeze
     private final FrequencyBackedItemHandler itemHandler;
     private final FrequencyBackedFluidHandler fluidHandler;
 
-    public FreezerPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
-        super(type, frameEntity, panelState);
+    public FreezerPanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
+        super(frameEntity, panelState);
         this.fluidIn = this.registerFrameSlot(new FrameSlot(ReEngineeredText.FLUID_SLOT_IN, FrameSlotViews.TOP_RIGHT_4X4));
         this.itemIn = this.registerFrameSlot(new FrameSlot(ReEngineeredText.ITEM_SLOT_IN, FrameSlotViews.BOTTOM_LEFT_4X4));
         this.itemOut = this.registerFrameSlot(new FrameSlot(ReEngineeredText.ITEM_SLOT_OUT, FrameSlotViews.BOTTOM_RIGHT_4X4));
@@ -60,10 +58,6 @@ public class FreezerPanelEntity extends MachinePanelEntity<FreezerRecipe, Freeze
     @Override
     protected FreezerRecipeContainer getRecipeContainer() {
         return new FreezerRecipeContainer(this.itemHandler, this.fluidHandler);
-    }
-
-    public FreezerPanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
-        this(ReEngineeredPanels.FREEZER.getPanelEntityType(), frameEntity, panelState);
     }
 
     @Override
@@ -110,7 +104,7 @@ public class FreezerPanelEntity extends MachinePanelEntity<FreezerRecipe, Freeze
                 pPlayerInventory,
                 ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()),
                 this.getPanel(),
-                this.getFacing(),
+                this.getPanelPosition(),
                 this.itemHandler,
                 this.fluidHandler::getTankView,
                 () -> this.getCachedRecipe().getRecipe()

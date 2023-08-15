@@ -4,10 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -15,9 +13,10 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.panelentity.IPanelEntityPanelComponent;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -27,19 +26,21 @@ import java.util.Optional;
 public class PanelEntity implements ICapabilityProvider {
     @NotNull
     private final IFrameEntity frameEntity;
-    @NotNull
-    private final PanelEntityType<?> type;
     private final List<FrameSlot> frameSlots;
 
     @NotNull
     private PanelState panelState;
+
+    @NotNull
+    private IPanelPosition panelPosition;
+
     private boolean removed;
 
-    public PanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
+    public PanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         this.frameEntity = frameEntity;
         this.panelState = panelState;
-        this.type = type;
         this.frameSlots = new ArrayList<>();
+        this.panelPosition = IPanelPosition.NONE;
     }
 
     public void neighborChanged() {
@@ -67,17 +68,17 @@ public class PanelEntity implements ICapabilityProvider {
     }
 
     @NotNull
-    public IFrameEntity getFrameEntity() {
-        return frameEntity;
+    public IPanelPosition getPanelPosition() {
+        return panelPosition;
     }
 
-    public Direction getFacing() {
-        return this.getPanelState().getFacing();
+    public void setPanelPosition(@NotNull IPanelPosition panelPosition) {
+        this.panelPosition = panelPosition;
     }
 
     @NotNull
-    public PanelEntityType<?> getType() {
-        return type;
+    public IFrameEntity getFrameEntity() {
+        return frameEntity;
     }
 
     public Level getLevel() {
@@ -88,25 +89,10 @@ public class PanelEntity implements ICapabilityProvider {
         return this.getFrameEntity().getFramePos();
     }
 
-    public final CompoundTag saveWithId() {
-        CompoundTag compoundtag = this.saveWithoutMetadata();
-        this.saveId(compoundtag);
-        return compoundtag;
-    }
-
-    public final CompoundTag saveWithoutMetadata() {
+    public final CompoundTag save() {
         CompoundTag compoundtag = new CompoundTag();
         this.save(compoundtag);
         return compoundtag;
-    }
-
-    private void saveId(CompoundTag pTag) {
-        ResourceLocation resourcelocation = ReEngineeredPanels.getPanelEntityRegistry().getKey(this.getType());
-        if (resourcelocation == null) {
-            throw new RuntimeException(this.getClass() + " is missing a mapping! This is a bug!");
-        } else {
-            pTag.putString("id", resourcelocation.toString());
-        }
     }
 
     public void serverTick() {
@@ -121,16 +107,6 @@ public class PanelEntity implements ICapabilityProvider {
 
     public void invalidate() {
 
-    }
-
-    protected boolean stillValid(Player player) {
-        if (player.distanceToSqr(Vec3.atCenterOf(this.getBlockPos())) <= 64.0D) {
-            if (this.getLevel().getBlockEntity(this.getBlockPos()) == this.getFrameEntity()) {
-                return this.getFrameEntity().getPanelEntity(this.getFacing()) == this;
-            }
-        }
-
-        return false;
     }
 
     protected Panel getPanel() {
@@ -161,33 +137,23 @@ public class PanelEntity implements ICapabilityProvider {
 
     @Nullable
     public BlockEntity getAdjacantBlockEntity() {
-        Direction facing = this.getFacing();
-        if (facing != null) {
-            BlockPos offsetPos = this.getBlockPos().relative(facing);
-            if (this.getLevel().isLoaded(offsetPos)) {
-                return this.getLevel().getBlockEntity(offsetPos);
-            }
+        BlockPos offsetPos = this.getPanelPosition().offset(this.getFrameEntity());
+        if (this.getLevel().isLoaded(offsetPos)) {
+            return this.getLevel().getBlockEntity(offsetPos);
         }
         return null;
     }
 
     @Nullable
-    public static PanelEntity loadStatic(IFrameEntity frame, PanelState pState, CompoundTag pTag) {
+    public static PanelEntity loadStatic(PanelState pState, IFrameEntity frame, CompoundTag pTag) {
         String s = pTag.getString("id");
         ResourceLocation resourcelocation = ResourceLocation.tryParse(s);
         if (resourcelocation == null) {
             ReEngineeredToolbox.LOGGER.error("Panel entity has invalid type: {}", s);
             return null;
         } else {
-            return Optional.ofNullable(ReEngineeredPanels.getPanelEntityRegistry().getValue(resourcelocation))
-                    .map((panelEntityType) -> {
-                        try {
-                            return panelEntityType.createPanelEntity().apply(panelEntityType, frame, pState);
-                        } catch (Throwable throwable) {
-                            ReEngineeredToolbox.LOGGER.error("Failed to create panel entity {}", s, throwable);
-                            return null;
-                        }
-                    })
+            return Optional.ofNullable(pState.getPanel().getComponent(IPanelEntityPanelComponent.class))
+                    .map(panelEntityPanelComponent -> panelEntityPanelComponent.createPanelEntity(frame, pState))
                     .map((panelEntity) -> {
                         try {
                             panelEntity.load(pTag);

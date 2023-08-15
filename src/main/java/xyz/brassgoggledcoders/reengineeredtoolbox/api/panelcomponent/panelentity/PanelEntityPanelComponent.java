@@ -1,18 +1,18 @@
-package xyz.brassgoggledcoders.reengineeredtoolbox.panel.io;
+package xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.panelentity;
 
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.IOPanelEntity;
 
 import java.util.function.BiFunction;
 
-public class IOPanel extends Panel {
-    private final BiFunction<IFrameEntity, PanelState, ? extends IOPanelEntity> panelEntityConstructor;
+public class PanelEntityPanelComponent extends PanelComponent implements IPanelEntityPanelComponent {
 
-    public IOPanel(BiFunction<IFrameEntity, PanelState, ? extends IOPanelEntity> panelEntityConstructor) {
+    private final BiFunction<IFrameEntity, PanelState, ? extends PanelEntity> panelEntityConstructor;
+
+    public PanelEntityPanelComponent(BiFunction<IFrameEntity, PanelState, ? extends PanelEntity> panelEntityConstructor) {
         this.panelEntityConstructor = panelEntityConstructor;
     }
 

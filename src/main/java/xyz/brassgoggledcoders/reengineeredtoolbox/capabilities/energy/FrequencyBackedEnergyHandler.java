@@ -15,14 +15,14 @@ public class FrequencyBackedEnergyHandler implements IEnergyStorage {
     private final IOStyle ioStyle;
     private final Option<IFrequencyEnergyHandler> backingEnergyStorage;
 
-    public FrequencyBackedEnergyHandler(FrameSlot frameSlot, IOStyle ioStyle, LazyOptional<IFrequencyEnergyHandler> backingEnergyStorage) {
+    public FrequencyBackedEnergyHandler(FrameSlot frameSlot, LazyOptional<IFrequencyEnergyHandler> backingEnergyStorage, IOStyle ioStyle) {
         this.frameSlot = frameSlot;
         this.ioStyle = ioStyle;
         this.backingEnergyStorage = Option.ofLazy(backingEnergyStorage);
     }
 
     public FrequencyBackedEnergyHandler(FrameSlot frameSlot, IOStyle ioStyle, ICapabilityProvider provider) {
-        this(frameSlot, ioStyle, provider.getCapability(ReEngineeredCapabilities.FREQUENCY_ENERGY_HANDLER));
+        this(frameSlot, provider.getCapability(ReEngineeredCapabilities.FREQUENCY_ENERGY_HANDLER), ioStyle);
     }
 
     @Override

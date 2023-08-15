@@ -1,13 +1,13 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.util;
 
-import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 
 public class MenuHelper {
-    public static boolean checkPanelMenuValid(ContainerLevelAccess levelAccess, Player player, Direction direction, Panel panel) {
+    public static boolean checkPanelMenuValid(ContainerLevelAccess levelAccess, Player player, IPanelPosition panelPosition, Panel panel) {
         return levelAccess.evaluate((level, blockPos) -> {
             double distance = player.distanceToSqr(
                     (double) blockPos.getX() + 0.5D,
@@ -18,7 +18,7 @@ public class MenuHelper {
             boolean matchesPanel = false;
 
             if (level.getBlockEntity(blockPos) instanceof IFrameEntity frame) {
-                matchesPanel = frame.getPanelState(direction).is(panel);
+                matchesPanel = frame.getPanelState(panelPosition).is(panel);
             }
 
             return distance <= 64 && matchesPanel;

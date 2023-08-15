@@ -1,6 +1,5 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.fluid;
 
-import net.minecraft.world.level.block.TntBlock;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
