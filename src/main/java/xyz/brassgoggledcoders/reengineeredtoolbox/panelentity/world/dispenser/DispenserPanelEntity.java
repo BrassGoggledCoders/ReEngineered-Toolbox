@@ -22,6 +22,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedst
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotViews;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
@@ -101,15 +102,22 @@ public class DispenserPanelEntity extends PanelEntity {
                 .setBlockState(this.asDispenser());
     }
 
+    @Override
+    @SuppressWarnings("deprecation")
+    public void setPanelPosition(@NotNull IPanelPosition panelPosition) {
+        super.setPanelPosition(panelPosition);
+        this.internalDispenser.get()
+                .setBlockState(this.asDispenser());
+    }
+
     public BlockState asDispenser() {
         Direction facing = this.getPanelPosition().getFacing();
-        if (facing == null) {
-            facing = Direction.UP;
-            ReEngineeredToolbox.LOGGER.error("Failed to find Facing for PanelPosition: %s".formatted(this.getPanelPosition()));
-        }
-        return Blocks.DISPENSER.defaultBlockState()
-                .setValue(DispenserBlock.FACING, facing)
+        BlockState blockState = Blocks.DISPENSER.defaultBlockState()
                 .setValue(DispenserBlock.TRIGGERED, this.getPanelState().getValue(BlockStateProperties.TRIGGERED));
+        if (facing != null) {
+            blockState = blockState.setValue(DispenserBlock.FACING, facing);
+        }
+        return blockState;
     }
 
     public DispenserBlockEntity getDispenserEntity() {
