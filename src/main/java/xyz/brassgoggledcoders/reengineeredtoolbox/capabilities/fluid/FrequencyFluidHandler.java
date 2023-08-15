@@ -36,6 +36,12 @@ public class FrequencyFluidHandler implements IFrequencyFluidHandler, INBTSerial
     }
 
     @Override
+    public boolean hasCapacity(Frequency frequency) {
+        IFluidTank fluidTank = this.getFluidTank(frequency);
+        return fluidTank.getFluidAmount() < fluidTank.getCapacity();
+    }
+
+    @Override
     public boolean isFluidValid(Frequency frequency, @NotNull FluidStack fluidStack) {
         return this.getFluidTank(frequency).isFluidValid(fluidStack);
     }

@@ -11,6 +11,8 @@ public interface IFrequencyFluidHandler {
 
     int getCapacity(Frequency frequency);
 
+    boolean hasCapacity(Frequency frequency);
+
     boolean isFluidValid(Frequency frequency, @NotNull FluidStack fluidStack);
 
     int fill(Frequency frequency, FluidStack fluidStack, FluidAction fluidAction);

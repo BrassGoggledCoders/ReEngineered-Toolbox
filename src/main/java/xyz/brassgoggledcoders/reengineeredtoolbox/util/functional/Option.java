@@ -4,6 +4,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -16,6 +17,8 @@ public interface Option<T> {
 
     T orElse(T value);
 
+    void ifPresent(Consumer<T> consumer);
+
     static <U> Option<U> ofLazy(LazyOptional<U> backingEnergyStorage) {
         if (backingEnergyStorage.isPresent()) {
             return new LazyOption<>(backingEnergyStorage);
@@ -24,7 +27,7 @@ public interface Option<T> {
         }
     }
 
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "unused"})
     static <U> Option<U> fromOptional(Optional<U> optional) {
         return optional.<Option<U>>map(Some::new)
                 .orElse(empty());
@@ -64,6 +67,10 @@ public interface Option<T> {
         public <X> Option<X> cast() {
             return (Option<X>) this;
         }
+
+        public void ifPresent(Consumer<T> consumer) {
+
+        }
     }
 
     record Some<T>(T value) implements Option<T> {
@@ -82,6 +89,10 @@ public interface Option<T> {
         @Override
         public T orElse(T value) {
             return this.value();
+        }
+
+        public void ifPresent(Consumer<T> consumer) {
+            consumer.accept(this.value);
         }
     }
 
@@ -109,6 +120,10 @@ public interface Option<T> {
         public T orElse(T value) {
             return this.lazyValue()
                     .orElse(value);
+        }
+
+        public void ifPresent(Consumer<T> consumer) {
+            this.lazyValue().ifPresent(consumer::accept);
         }
     }
 }

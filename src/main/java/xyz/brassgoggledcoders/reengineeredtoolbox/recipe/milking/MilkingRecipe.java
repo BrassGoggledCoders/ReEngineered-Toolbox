@@ -50,6 +50,10 @@ public class MilkingRecipe implements Recipe<MilkingContainer> {
         return this.resultStack.copy();
     }
 
+    public FluidStack assembleFluid(@NotNull MilkingContainer container) {
+        return this.result.copy();
+    }
+
     @Override
     public boolean canCraftInDimensions(int pWidth, int pHeight) {
         return false;

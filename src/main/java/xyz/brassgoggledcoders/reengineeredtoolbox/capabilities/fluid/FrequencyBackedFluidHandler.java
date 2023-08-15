@@ -91,6 +91,13 @@ public class FrequencyBackedFluidHandler implements IFluidHandler {
         return FluidStack.EMPTY;
     }
 
+    public boolean hasCapacity() {
+        return ioStyle.isAllowInsert() &&
+                this.backingFluidHandler.map(fluidHandler -> fluidHandler.hasCapacity(this.frameSlot.getFrequency()))
+                        .orElse(false);
+    }
+
+
     public TankView getTankView() {
         return this.backingFluidHandler.map(fluidHandler -> new TankView(
                 fluidHandler.getFluid(frameSlot.getFrequency()),
