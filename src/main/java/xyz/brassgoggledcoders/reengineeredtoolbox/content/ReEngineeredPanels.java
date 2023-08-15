@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
@@ -33,6 +34,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.energy.EnergyIO
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.DaylightDetectorPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneInputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.FreezerPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.MilkerPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.dispenser.DispenserPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelEntry;
 
@@ -282,13 +284,14 @@ public class ReEngineeredPanels {
     public static final PanelEntry<Panel> MILKER = ReEngineeredToolbox.getRegistrateAddon()
             .object("milker")
             .panel()
-            .component(new PanelStatePropertyComponent<>(BlockStateProperties.TRIGGERED, false))
+            .component(new FacingPropertyComponent())
+            .component(new PanelEntityPanelComponent(MilkerPanelEntity::new))
             .item()
             .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())
-                    .pattern("IFI")
+                    .pattern(" B ")
                     .pattern("IPI")
-                    .define('I', Items.PACKED_ICE)
-                    .define('F', Items.FURNACE)
+                    .define('I', Tags.Items.INGOTS_IRON)
+                    .define('B', Items.BUCKET)
                     .define('P', BLANK.asPanel())
                     .unlockedBy("has_item", RegistrateRecipeProvider.has(BLANK.asPanel()))
                     .save(provider)

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "P": {
+      "item": "reengineered_toolbox:blank"
+    }
+  },
+  "pattern": [
+    " B ",
+    "IPI"
+  ],
+  "result": {
+    "item": "reengineered_toolbox:milker"
+  }
+}
