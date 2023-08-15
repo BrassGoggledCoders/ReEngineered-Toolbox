@@ -314,7 +314,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
                 panelTag.put("PanelState", NbtHelper.writePanelState(panelState));
                 PanelEntity panelEntity = this.panelEntityMap.get(direction);
                 if (panelEntity != null) {
-                    panelTag.put("PanelEntity", panelEntity.saveWithId());
+                    panelTag.put("PanelEntity", panelEntity.save());
                 }
 
                 panelsTag.put(direction.getName(), panelTag);

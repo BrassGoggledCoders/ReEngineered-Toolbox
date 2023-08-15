@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelLike;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelComponent;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.item.PanelItem;
 
@@ -91,18 +90,6 @@ public class PanelBuilder<P extends Panel, R> extends AbstractBuilder<Panel, P, 
                                 "panel/" + provider.name(context)
                         )
                 ));
-    }
-
-    public <T extends PanelEntity> PanelBuilder<P, R> panelEntity(PanelEntityBuilder.PanelEntityFactory<T> createPanelEntity) {
-        return this.getOwner()
-                .entry((name, builderCallback) -> PanelEntityBuilder.create(
-                        this.getOwner(),
-                        this,
-                        name,
-                        builderCallback,
-                        createPanelEntity
-                ))
-                .build();
     }
 
     @Override

@@ -8,15 +8,14 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlotViews;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 
 public abstract class IOPanelEntity extends PanelEntity {
 
     private final FrameSlot ioPort;
 
-    public IOPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
+    public IOPanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
                          @NotNull Component identifier) {
-        super(type, frameEntity, panelState);
+        super(frameEntity, panelState);
         this.ioPort = this.registerFrameSlot(new FrameSlot(identifier, FrameSlotViews.CENTERED_4X4));
     }
 

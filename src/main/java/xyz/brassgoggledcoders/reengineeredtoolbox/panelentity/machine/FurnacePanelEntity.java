@@ -10,12 +10,11 @@ import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.furnace.IRETCookingRecipe;
 
 public class FurnacePanelEntity extends MachinePanelEntity<IRETCookingRecipe, RecipeWrapper> {
-    public FurnacePanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
-        super(type, frameEntity, panelState);
+    public FurnacePanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
+        super(frameEntity, panelState);
     }
 
     @Override

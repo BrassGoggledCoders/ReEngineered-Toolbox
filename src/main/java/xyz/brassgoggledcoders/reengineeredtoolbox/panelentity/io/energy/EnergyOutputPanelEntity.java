@@ -5,15 +5,14 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntityType;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 
 public class EnergyOutputPanelEntity extends EnergyIOPanelEntity {
     private int coolDown;
 
-    public EnergyOutputPanelEntity(@NotNull PanelEntityType<?> type, @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
-        super(type, frameEntity, panelState, IOStyle.ONLY_EXTRACT, ReEngineeredText.ENERGY_SLOT_OUT);
+    public EnergyOutputPanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
+        super(frameEntity, panelState, IOStyle.ONLY_EXTRACT, ReEngineeredText.ENERGY_SLOT_OUT);
     }
 
     @Override
