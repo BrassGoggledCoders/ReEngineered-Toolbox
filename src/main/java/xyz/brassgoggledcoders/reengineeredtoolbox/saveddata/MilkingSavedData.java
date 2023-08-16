@@ -30,7 +30,7 @@ public class MilkingSavedData extends SavedData {
 
     public boolean isMilkingAllowed(UUID entityId, long gameTime) {
         return Option.ofNullable(this.nextMilkingAllowed.get(entityId))
-                .exists(nextTime -> gameTime > nextTime);
+                .forAll(nextTime -> gameTime > nextTime);
     }
 
     @Override

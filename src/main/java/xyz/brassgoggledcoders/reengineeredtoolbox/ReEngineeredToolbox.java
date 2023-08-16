@@ -6,6 +6,7 @@ import com.tterrag.registrate.providers.ProviderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,8 @@ public class ReEngineeredToolbox {
 
 
     public ReEngineeredToolbox() {
+        ForgeMod.enableMilkFluid();
+
         NetworkHandler.setup();
 
         ReEngineeredBlocks.setup();

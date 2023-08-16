@@ -24,12 +24,16 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.energy.FrequencyB
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.fluid.FrequencyBackedFluidHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredRecipes;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
+import xyz.brassgoggledcoders.reengineeredtoolbox.particle.fluidorb.FluidOrbParticleProcess;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.RecipeCache;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.milking.MilkingContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.milking.MilkingRecipe;
 import xyz.brassgoggledcoders.reengineeredtoolbox.saveddata.MilkingSavedData;
+import xyz.brassgoggledcoders.reengineeredtoolbox.util.VectorHelper;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 public class MilkerPanelEntity extends PanelEntity {
@@ -43,6 +47,7 @@ public class MilkerPanelEntity extends PanelEntity {
 
     private final RecipeCache<MilkingRecipe, MilkingContainer> recipeCache;
 
+    private final List<FluidOrbParticleProcess> particleProcessList;
     private long nextAllowedActivation;
     private boolean powered;
 
@@ -58,6 +63,10 @@ public class MilkerPanelEntity extends PanelEntity {
         this.redstoneHandlerLazyOptional = frameEntity.getCapability(ReEngineeredCapabilities.FREQUENCY_REDSTONE_HANDLER);
 
         this.recipeCache = new RecipeCache<>(ReEngineeredRecipes.MILKING_TYPE.get(), 4);
+        this.particleProcessList = new ArrayList<>();
+
+        this.nextAllowedActivation = 0;
+        this.powered = false;
     }
 
     @Override
@@ -74,6 +83,22 @@ public class MilkerPanelEntity extends PanelEntity {
             if (power > 0 && this.getLevel().getGameTime() > nextAllowedActivation) {
                 this.getFrameEntity()
                         .scheduleTick(this.getPanelPosition(), this.getPanel(), 4);
+            }
+        }
+    }
+
+    @Override
+    public void serverTick() {
+        super.serverTick();
+        if (!this.particleProcessList.isEmpty()) {
+            Iterator<FluidOrbParticleProcess> processIterator = this.particleProcessList.iterator();
+            while (processIterator.hasNext()) {
+                FluidOrbParticleProcess particleProcess = processIterator.next();
+                if (particleProcess.isValid()) {
+                    particleProcess.spawnParticles();
+                } else {
+                    processIterator.remove();
+                }
             }
         }
     }
@@ -122,7 +147,12 @@ public class MilkerPanelEntity extends PanelEntity {
                                             entity.getUUID(),
                                             this.getLevel().getGameTime() + milkingRecipe.getCoolDown()
                                     ));
-
+                            this.particleProcessList.add(new FluidOrbParticleProcess(
+                                    entity,
+                                    this.getLevel().getGameTime() + (milkingRecipe.getCoolDown() / 2),
+                                    VectorHelper.centered(this.getPanelPosition().offset(this.getFrameEntity())),
+                                    fluidStack.getFluid()
+                            ));
                         }
                     }
 
@@ -152,6 +182,8 @@ public class MilkerPanelEntity extends PanelEntity {
         this.fluidOut.deserializeNBT(pTag.getCompound("FluidOut"));
         this.redstoneIn.deserializeNBT(pTag.getCompound("RedstoneIn"));
         this.energyIn.deserializeNBT(pTag.getCompound("EnergyIn"));
+        this.nextAllowedActivation = pTag.getLong("NextAllowedActivation");
+        this.powered = pTag.getBoolean("Powered");
     }
 
     @Override
@@ -160,5 +192,7 @@ public class MilkerPanelEntity extends PanelEntity {
         pTag.put("FluidOut", this.fluidOut.serializeNBT());
         pTag.put("RedstoneIn", this.redstoneIn.serializeNBT());
         pTag.put("EnergyIn", this.energyIn.serializeNBT());
+        pTag.putLong("NextAllowedActivation", this.nextAllowedActivation);
+        pTag.putBoolean("Powered", this.powered);
     }
 }

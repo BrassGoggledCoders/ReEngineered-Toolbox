@@ -1,0 +1,9 @@
+{
+  "type": "reengineered_toolbox:milking",
+  "coolDown": 600,
+  "input": "minecraft:cow",
+  "result": {
+    "amount": 1000,
+    "fluid": "minecraft:milk"
+  }
+}

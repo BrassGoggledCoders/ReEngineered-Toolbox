@@ -105,7 +105,7 @@ dependencies {
         jarJar.ranged(it, "[${containerSyncing}, 2.0.0)")
     }
 
-    def jsoning = "1.0.1"
+    def jsoning = "1.0.2"
     implementation fg.deobf("xyz.brassgoggledcoders.shadyskies:Jsoning:${jsoning}")
     jarJar(group: 'xyz.brassgoggledcoders.shadyskies', name: 'Jsoning', version: "${jsoning}") {
         jarJar.ranged(it, "[${jsoning}, 2.0.0)")
