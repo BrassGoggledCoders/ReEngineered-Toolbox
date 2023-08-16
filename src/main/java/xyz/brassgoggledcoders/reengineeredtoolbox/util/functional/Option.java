@@ -13,6 +13,8 @@ public interface Option<T> {
 
     boolean exists(Predicate<T> contains);
 
+    boolean forAll(Predicate<T> contains);
+
     <U> Option<U> map(Function<T, U> function);
 
     T orElse(T value);
@@ -53,6 +55,11 @@ public interface Option<T> {
         }
 
         @Override
+        public boolean forAll(Predicate<T> contains) {
+            return true;
+        }
+
+        @Override
         public <U> Option<U> map(Function<T, U> function) {
             return this.cast();
         }
@@ -77,6 +84,11 @@ public interface Option<T> {
 
         @Override
         public boolean exists(Predicate<T> contains) {
+            return contains.test(value);
+        }
+
+        @Override
+        public boolean forAll(Predicate<T> contains) {
             return contains.test(value);
         }
 
@@ -107,6 +119,16 @@ public interface Option<T> {
             }
 
             return false;
+        }
+
+        @Override
+        public boolean forAll(Predicate<T> contains) {
+            if (this.lazyValue().isPresent()) {
+                return this.lazyValue()
+                        .filter(contains::test)
+                        .isPresent();
+            }
+            return true;
         }
 
         @Override
