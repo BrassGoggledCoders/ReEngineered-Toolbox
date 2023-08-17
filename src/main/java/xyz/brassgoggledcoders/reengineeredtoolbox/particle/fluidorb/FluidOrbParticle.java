@@ -42,7 +42,7 @@ public class FluidOrbParticle extends TextureSheetParticle {
             this.yd = direction.y / 8;
             this.zd = direction.z / 8;
             this.move(xd, yd, zd);
-            if (Math.abs((this.xo - this.x) + (this.yo - this.y) + (this.zo - this.z)) < 0.02) {
+            if (currentPos.closerThan(direction, 0.1)) {
                 this.remove();
             }
         }

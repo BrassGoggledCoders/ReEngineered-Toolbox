@@ -28,7 +28,7 @@ public class FluidOrbParticleProcess {
 
     public void spawnParticles() {
         Entity entity = this.reference.get();
-        if (entity != null && entity.getLevel() instanceof ServerLevel serverLevel && serverLevel.getRandom().nextInt(3) == 0) {
+        if (entity != null && entity.getLevel() instanceof ServerLevel serverLevel && serverLevel.getRandom().nextBoolean()) {
             Vec3 startPos = VectorHelper.withRandomOffset(entity.getOnPos(), serverLevel.getRandom(), 1);
             long timeRemaining = endTime - serverLevel.getGameTime();
             serverLevel.sendParticles(
@@ -40,7 +40,7 @@ public class FluidOrbParticleProcess {
                     startPos.x,
                     startPos.y,
                     startPos.z,
-                    1,
+                    serverLevel.getRandom().nextInt(2) + 1,
                     0.0D,
                     0.0D,
                     0.0D,

@@ -20,17 +20,19 @@ public class RecipeCache<T extends Recipe<U>, U extends Container> implements IN
     private T lastRecipe;
     private final List<T> savedChecks;
     private final int maxSavedChecks;
+    private final boolean resettable;
 
     private boolean tryGet = true;
 
     public RecipeCache(RecipeType<T> recipeType) {
-        this(recipeType, 0);
+        this(recipeType, 0, false);
     }
 
-    public RecipeCache(RecipeType<T> recipeType, int savedChecks) {
+    public RecipeCache(RecipeType<T> recipeType, int savedChecks, boolean resettable) {
         this.recipeType = recipeType;
         this.savedChecks = new ArrayList<>(savedChecks);
         this.maxSavedChecks = savedChecks;
+        this.resettable = resettable;
     }
 
     public void reset() {
@@ -73,7 +75,9 @@ public class RecipeCache<T extends Recipe<U>, U extends Container> implements IN
                         .orElse(null);
             }
 
-            this.tryGet = false;
+            if (this.resettable) {
+                this.tryGet = false;
+            }
         }
 
         return Option.ofNullable(lastRecipe);

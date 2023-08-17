@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -62,7 +63,7 @@ public class MilkerPanelEntity extends PanelEntity {
 
         this.redstoneHandlerLazyOptional = frameEntity.getCapability(ReEngineeredCapabilities.FREQUENCY_REDSTONE_HANDLER);
 
-        this.recipeCache = new RecipeCache<>(ReEngineeredRecipes.MILKING_TYPE.get(), 4);
+        this.recipeCache = new RecipeCache<>(ReEngineeredRecipes.MILKING_TYPE.get(), 4, false);
         this.particleProcessList = new ArrayList<>();
 
         this.nextAllowedActivation = 0;
@@ -116,7 +117,7 @@ public class MilkerPanelEntity extends PanelEntity {
         AABB aabb = this.getAABBForMilking(this.getPanelPosition());
         Optional<MilkingSavedData> milkingSavedDataOpt = MilkingSavedData.getFor(this.getLevel());
         if (aabb != null && milkingSavedDataOpt.isPresent()) {
-            Iterator<Entity> entityIterator = this.getLevel().getEntities(null, aabb)
+            Iterator<Entity> entityIterator = this.getLevel().getEntities((Entity) null, aabb, entity -> !entity.isSpectator() && !(entity instanceof ItemEntity))
                     .iterator();
             MilkingSavedData milkingSavedData = milkingSavedDataOpt.get();
             long gameTime = this.getLevel().getGameTime();
