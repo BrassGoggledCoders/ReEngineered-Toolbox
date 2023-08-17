@@ -27,7 +27,7 @@ public class BasicCapabilityPanelEntity<T, U> extends PanelEntity {
         super(frameEntity, panelState);
         this.capability = capability;
         this.frequencyCapability = frequencyCapability;
-        this.frameSlot = frameSlot;
+        this.frameSlot = this.registerFrameSlot(frameSlot);
         this.ioStyle = ioStyle;
         this.lazyOptionalCreator = lazyOptionalCreator;
         this.lazyOptional = LazyOptional.of(this::createHandler);
