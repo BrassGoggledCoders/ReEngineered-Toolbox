@@ -96,8 +96,8 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
     private Pair<Vector3f, Vector3f> cubeLocation(FrameSlotView slotView, Direction direction) {
         return switch (direction) {
             case UP -> Pair.of(
-                    new Vector3f(slotView.xPos() / 16F, 1.0001F, slotView.yPos() / 16F),
-                    new Vector3f((slotView.xPos() + slotView.width()) / 16F, 1.0001F, (slotView.yPos() + slotView.height()) / 16F)
+                    new Vector3f((16 - slotView.xPos() - slotView.width()) / 16F, 1.0001F, (16 - slotView.yPos()) / 16F),
+                    new Vector3f((16 - slotView.xPos()) / 16F, 1.0001F, (16 - slotView.yPos() - slotView.height()) / 16F)
             );
             case DOWN -> Pair.of(
                     new Vector3f((16 - slotView.xPos() - slotView.width()) / 16F, -0.0001F, slotView.yPos() / 16F),

@@ -24,6 +24,11 @@ public record FrameSlotView(
         yLook = yLook - (int) yLook;
         yLook *= 16D;
 
+        if (direction == Direction.DOWN) {
+            yLook = 16 - yLook;
+        }
+
+
         xLook = switch (direction.getAxis()) {
             case X -> look.z();
             case Y -> direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? look.x() : -look.x();
@@ -34,7 +39,7 @@ public record FrameSlotView(
         xLook = xLook - (int) xLook;
         xLook *= 16D;
 
-        if (direction == Direction.WEST || direction == Direction.SOUTH || direction == Direction.DOWN) {
+        if (direction == Direction.WEST || direction == Direction.SOUTH) {
             xLook = 16 - xLook;
         }
 
