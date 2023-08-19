@@ -1,4 +1,4 @@
-// 1.19.2	2023-08-15T23:08:45.0412104	Registrate Provider for reengineered_toolbox [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud), PanelStates]
+// 1.19.2	2023-08-19T19:14:56.1664089	Registrate Provider for reengineered_toolbox [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud), PanelStates]
 336dbe86e88604bd24d9d5df1ff219e274f151ff assets/reengineered_toolbox/blockstates/iron_frame.json
 a2e9e101e957b8ef20e25c20d3184f134a5ca0d7 assets/reengineered_toolbox/lang/en_ud.json
 38c124f124dfe3005a796cd0c077a1c1c8890514 assets/reengineered_toolbox/lang/en_us.json
@@ -52,11 +52,26 @@ dc4147b5ee26136a75e7392fae3e74ea4911b5a7 assets/reengineered_toolbox/panelstates
 3aaa0d92b82ac3ad879afb8f11030d45cde7117f data/reengineered_toolbox/advancements/recipes/reengineered_toolbox/dispenser.json
 b5af76e64145b363c4f8e9523d17cfdf292e8925 data/reengineered_toolbox/advancements/recipes/reengineered_toolbox/freezer.json
 cacc3b0bd4e23725f639539e8863cd07519ce273 data/reengineered_toolbox/advancements/recipes/reengineered_toolbox/milker.json
+f3b4509624fbbc3005abb3144830fb7b6eb64947 data/reengineered_toolbox/loot_tables/blank.json
 46738edb0dd03de153a731a19afcfbd16b12afee data/reengineered_toolbox/loot_tables/blocks/iron_frame.json
+01ef242c503f3ad95f30f0dcf86995eb1376e955 data/reengineered_toolbox/loot_tables/daylight_detector.json
+07c04fa6e20ac0a4775bfe528f1d289542fcc073 data/reengineered_toolbox/loot_tables/dispenser.json
+031c6dff5e5ffcc3c22d997b0d8378e3a0c0d9ca data/reengineered_toolbox/loot_tables/energy_input.json
+25852a8fb5ec7682b6b2d2db68c3561b07888284 data/reengineered_toolbox/loot_tables/energy_output.json
+856779cd56cf27be311a015c9cbd396034bb7def data/reengineered_toolbox/loot_tables/fluid_input.json
+154b9bff32366cfe7185ffaae26dcfb58c0d88d9 data/reengineered_toolbox/loot_tables/fluid_output.json
+89294be1eb8e804ddaf9c19823997caa575ce768 data/reengineered_toolbox/loot_tables/freezer.json
+e21f3a6544f250ee354898e1dc56c8a16ab26bb3 data/reengineered_toolbox/loot_tables/item_input.json
+3ea8fe009a75cd81ff79ccc8557291e0caf38b27 data/reengineered_toolbox/loot_tables/item_output.json
+63b95a78e7e7ae5a2e97fdf1d7ae899f61b6f0de data/reengineered_toolbox/loot_tables/milker.json
+6390a5c55e831acf23ec5554fa3d7a08ef8d8504 data/reengineered_toolbox/loot_tables/plug.json
+39df7873c7e7a35d67576d5a003c13002909eba6 data/reengineered_toolbox/loot_tables/redstone_input.json
+13afabe3844d9f4de3a6da57ccdac995038276cf data/reengineered_toolbox/loot_tables/redstone_output.json
 0517b5d7e060cd4798b7bee2753496a0f524e226 data/reengineered_toolbox/recipes/daylight_detector.json
 91f397a68b190b2f0e631ac0fdb4f6a6da75b246 data/reengineered_toolbox/recipes/dispenser.json
 1b6746f23ae364726876b26c8563e48d7c7281c3 data/reengineered_toolbox/recipes/freezer.json
 2d76efa509442df5b1a3bd1d8bc1dc0b6206ab76 data/reengineered_toolbox/recipes/freezer/ice.json
 99417fdfa132d3580cdc7600caec343b91246807 data/reengineered_toolbox/recipes/milker.json
 2b06db3ccf2ee6010e0a8dc6ff4925d5c53f784c data/reengineered_toolbox/recipes/milking/milk.json
-0782b106200788eafed5a658dc6ba4997490305f data/reengineered_toolbox/tags/items/can_alter_frame_slot.json
+62d849153b68e145deb4ce6a2f26d48ceabd0525 data/reengineered_toolbox/tags/items/can_alter_frame_slot.json
+6f2cba28128f8d986264b10e1e2c92bb1a290236 data/reengineered_toolbox/tags/items/can_remove_panel.json

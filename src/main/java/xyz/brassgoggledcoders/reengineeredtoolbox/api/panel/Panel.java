@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.panel;
 
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import net.minecraft.Util;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class Panel implements ItemLike {
     @Nullable
@@ -35,6 +37,7 @@ public class Panel implements ItemLike {
     private final List<PanelComponent> components;
     @NotNull
     private final ListMultimap<Class<?>, PanelComponent> cachedComponents;
+    private final Supplier<ResourceLocation> lootTableKeyCache;
 
 
     public Panel(Collection<PanelComponent> components) {
@@ -54,6 +57,8 @@ public class Panel implements ItemLike {
             panelState = propertyComponent.setValueToPanelState(panelState);
         }
         this.defaultPanelState = panelState;
+
+        this.lootTableKeyCache = Suppliers.memoize(this::createLootTableKey);
     }
 
     @Override
@@ -122,5 +127,14 @@ public class Panel implements ItemLike {
         }
 
         return (List<T>) this.cachedComponents.get(clazz);
+    }
+
+    protected ResourceLocation createLootTableKey() {
+        return ReEngineeredPanels.getRegistry()
+                .getKey(this);
+    }
+
+    public ResourceLocation getLootTable() {
+        return this.lootTableKeyCache.get();
     }
 }

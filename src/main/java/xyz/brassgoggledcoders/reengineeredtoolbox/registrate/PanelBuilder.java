@@ -2,11 +2,14 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.registrate;
 
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.AbstractBuilder;
+import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.BuilderCallback;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
+import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
+import com.tterrag.registrate.providers.loot.RegistrateLootTableProvider;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullBiFunction;
@@ -14,6 +17,7 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import com.tterrag.registrate.util.nullness.NonnullType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraftforge.common.util.NonNullFunction;
 import net.minecraftforge.registries.RegistryManager;
 import net.minecraftforge.registries.RegistryObject;
@@ -74,6 +78,18 @@ public class PanelBuilder<P extends Panel, R> extends AbstractBuilder<Panel, P, 
         ));
     }
 
+    public PanelBuilder<P, R> defaultLoot() {
+        return this.loot(RegistratePanelLoot::dropSelf);
+    }
+
+    public PanelBuilder<P, R> loot(NonNullBiConsumer<RegistratePanelLoot, P> cons) {
+        return setData(ProviderType.LOOT, (ctx, prov) -> prov.addLootAction(RegistratePanelLoot.TYPE, tb -> {
+            if (!ctx.getEntry().getLootTable().equals(BuiltInLootTables.EMPTY)) {
+                cons.accept(tb, ctx.getEntry());
+            }
+        }));
+    }
+
     public ItemBuilder<PanelItem<P>, PanelBuilder<P, R>> item() {
         return item(PanelItem::new);
     }
@@ -117,12 +133,6 @@ public class PanelBuilder<P extends Panel, R> extends AbstractBuilder<Panel, P, 
         ).getPath());
     }
 
-    public static <P extends Panel, R> PanelBuilder<P, R> create(AbstractRegistrate<?> owner, R parent, String name, BuilderCallback callback, Supplier<P> factory) {
-        return new PanelBuilder<>(owner, parent, name, callback, (properties) -> factory.get())
-                .defaultPanelState()
-                .defaultLang();
-    }
-
     public static <P extends Panel, R> PanelBuilder<P, R> create(
             AbstractRegistrate<?> owner,
             R parent,
@@ -132,6 +142,7 @@ public class PanelBuilder<P extends Panel, R> extends AbstractBuilder<Panel, P, 
     ) {
         return new PanelBuilder<>(owner, parent, name, callback, factory)
                 .defaultPanelState()
-                .defaultLang();
+                .defaultLang()
+                .defaultLoot();
     }
 }

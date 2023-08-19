@@ -1,0 +1,16 @@
+{
+  "values": [
+    {
+      "id": "#forge:tools/wrenches",
+      "required": false
+    },
+    {
+      "id": "#forge:wrenches",
+      "required": false
+    },
+    {
+      "id": "#immersiveengineering:hammer",
+      "required": false
+    }
+  ]
+}

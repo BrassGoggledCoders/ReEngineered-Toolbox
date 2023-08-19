@@ -49,6 +49,7 @@ public class ReEngineeredToolbox {
 
         ReEngineeredBlocks.setup();
         ReEngineeredItemTags.setup();
+        ReEngineeredLoot.setup();
         ReEngineeredMenus.setup();
         ReEngineeredPanels.setup();
         ReEngineeredParticles.setup();

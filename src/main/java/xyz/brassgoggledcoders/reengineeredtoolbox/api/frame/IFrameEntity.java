@@ -17,6 +17,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -38,6 +39,16 @@ public interface IFrameEntity extends ICapabilityProvider {
             return InteractionResultHolder.fail(panelState);
         }
     }
+
+    boolean hasPanel(@NotNull IPanelPosition panelPosition);
+
+    /**
+     * @param panelPosition the position of the panel
+     * @param player the player attempting to remove the panel
+     * @param heldItem the tool used to remove the panel
+     * @return on the server, a list of Items that should be dropped when removing the Panel, otherwise empty
+     */
+    List<ItemStack> removePanel(@NotNull IPanelPosition panelPosition, @Nullable Player player, @NotNull ItemStack heldItem);
 
     @NotNull
     PanelState getPanelState(@NotNull IPanelPosition panelPosition);

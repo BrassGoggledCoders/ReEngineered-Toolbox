@@ -9,6 +9,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
@@ -19,7 +20,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.Tags;
@@ -29,6 +33,7 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.loot.ReEngineeredLootAPI;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyEnergyHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyFluidHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
@@ -48,6 +53,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.redstone.Frequenc
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.FrameMenuProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.NbtHelper;
+import xyz.brassgoggledcoders.reengineeredtoolbox.util.functional.Option;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -154,6 +160,39 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         } else {
             return InteractionResultHolder.fail(ReEngineeredPanels.PLUG.getDefaultState());
         }
+    }
+
+    @Override
+    public boolean hasPanel(@NotNull IPanelPosition panelPosition) {
+        return Option.ofNullable(panelPosition.getFacing())
+                .exists(panelStateMap::containsKey);
+    }
+
+    @Override
+    public List<ItemStack> removePanel(@NotNull IPanelPosition panelPosition, @Nullable Player player, @NotNull ItemStack heldItem) {
+        if (this.getLevel() instanceof ServerLevel serverLevel) {
+            if (this.hasPanel(panelPosition)) {
+                PanelState panelState = this.getPanelState(panelPosition);
+                LootContext.Builder lootContext = new LootContext.Builder(serverLevel)
+                        .withRandom(serverLevel.getRandom())
+                        .withParameter(ReEngineeredLootAPI.PANELSTATE, panelState)
+                        .withOptionalParameter(ReEngineeredLootAPI.PANEL_ENTITY, this.getPanelEntity(panelPosition))
+                        .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(this.getFramePos()))
+                        .withParameter(LootContextParams.BLOCK_ENTITY, this)
+                        .withParameter(LootContextParams.BLOCK_STATE, this.getBlockState())
+                        .withOptionalParameter(LootContextParams.THIS_ENTITY, player);
+
+                if (player != null) {
+                    lootContext.withLuck(player.getLuck());
+                }
+
+                return serverLevel.getServer()
+                        .getLootTables()
+                        .get(panelState.getPanel().getLootTable())
+                        .getRandomItems(lootContext.create(ReEngineeredLootAPI.getPanelLootParamSet()));
+            }
+        }
+        return Collections.emptyList();
     }
 
     @Override
