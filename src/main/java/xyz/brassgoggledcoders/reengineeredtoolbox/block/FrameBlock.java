@@ -72,7 +72,7 @@ public class FrameBlock extends Block implements EntityBlock {
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (pLevel.getBlockEntity(pPos) instanceof IFrameEntity frameEntity) {
             ItemStack heldItem = pPlayer.getItemInHand(pHand);
-            if (heldItem.is(ReEngineeredItemTags.CAN_ALTER_FRAME_SLOT)) {
+            if (heldItem.isEmpty() || heldItem.is(ReEngineeredItemTags.CAN_ALTER_FRAME_SLOT)) {
                 if (frameEntity.changeFrameSlot(pHit, heldItem)) {
                     return InteractionResult.sidedSuccess(pLevel.isClientSide());
                 }

@@ -46,7 +46,7 @@ public class FrameBlockEntityRenderer implements BlockEntityRenderer<FrameBlockE
                        @NotNull MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
         HitResult hitResult = Minecraft.getInstance().hitResult;
         Player player = Minecraft.getInstance().player;
-        if (player != null && player.getMainHandItem().is(ReEngineeredItemTags.CAN_ALTER_FRAME_SLOT)) {
+        if (player != null &&(player.getMainHandItem().isEmpty() || player.getMainHandItem().is(ReEngineeredItemTags.CAN_ALTER_FRAME_SLOT))) {
             if (hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getBlockPos().equals(pBlockEntity.getFramePos())) {
                 Direction direction = blockHitResult.getDirection();
                 IPanelPosition panelPosition = BlockPanelPosition.fromDirection(direction);

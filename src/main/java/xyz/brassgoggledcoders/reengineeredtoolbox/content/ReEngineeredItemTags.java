@@ -12,8 +12,8 @@ public class ReEngineeredItemTags {
 
     public static void generate(RegistrateTagsProvider<Item> tagsProvider) {
         tagsProvider.tag(CAN_ALTER_FRAME_SLOT)
-                .addTag(Tags.Items.DYES)
-                .addTag(Tags.Items.RODS);
+                .addTag(Tags.Items.DYES);
+
     }
 
     public static void setup() {

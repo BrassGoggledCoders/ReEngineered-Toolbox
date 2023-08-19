@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
@@ -31,7 +32,7 @@ public class ForgeClientEventHandler {
     public static void addFrameSlotText(RenderGuiOverlayEvent.Post event) {
         if (Minecraft.getInstance().hitResult instanceof BlockHitResult blockHitResult) {
             Player player = Minecraft.getInstance().player;
-            if (player != null && player.getMainHandItem().is(ReEngineeredItemTags.CAN_ALTER_FRAME_SLOT)) {
+            if (player != null && (player.getMainHandItem().isEmpty() || player.getMainHandItem().is(ReEngineeredItemTags.CAN_ALTER_FRAME_SLOT))) {
                 if (player.getLevel().getBlockEntity(blockHitResult.getBlockPos()) instanceof FrameBlockEntity frameBlockEntity) {
                     IPanelPosition panelPosition = BlockPanelPosition.fromDirection(blockHitResult.getDirection());
                     PanelEntity panelEntity = frameBlockEntity.getPanelEntity(panelPosition);
