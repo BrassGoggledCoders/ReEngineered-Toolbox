@@ -17,7 +17,7 @@ public record FrameSlotView(
         if (direction.getAxis().isHorizontal()) {
             yLook = look.y() - (int) look.y();
         } else {
-            yLook = direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? -look.z() : look.z();
+            yLook = direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? look.z() : -look.z();
         }
 
         yLook = Math.abs(yLook);
@@ -33,8 +33,8 @@ public record FrameSlotView(
         xLook = Math.abs(xLook);
         xLook = xLook - (int) xLook;
         xLook *= 16D;
-        //WHY EAST AND WEST?
-        if (direction == Direction.EAST || direction == Direction.NORTH || direction == Direction.DOWN) {
+
+        if (direction == Direction.WEST || direction == Direction.SOUTH || direction == Direction.DOWN) {
             xLook = 16 - xLook;
         }
 
