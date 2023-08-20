@@ -7,8 +7,12 @@
   "frame_slot.reengineered_toolbox.item_in": "ʇnduI ɯǝʇI",
   "frame_slot.reengineered_toolbox.item_out": "ʇndʇnO ɯǝʇI",
   "frame_slot.reengineered_toolbox.redstone_in": "ʇnduI ǝuoʇspǝᴚ",
+  "frame_slot.reengineered_toolbox.redstone_in_1": "Ɩ ʇnduI ǝuoʇspǝᴚ",
+  "frame_slot.reengineered_toolbox.redstone_in_2": "ᄅ ʇnduI ǝuoʇspǝᴚ",
   "frame_slot.reengineered_toolbox.redstone_inverted_out": ")pǝʇɹǝʌuI( ʇndʇnO ǝuoʇspǝᴚ",
   "frame_slot.reengineered_toolbox.redstone_out": "ʇndʇnO ǝuoʇspǝᴚ",
+  "frame_slot.reengineered_toolbox.redstone_out_1": "Ɩ ʇndʇnO ǝuoʇspǝᴚ",
+  "frame_slot.reengineered_toolbox.redstone_out_2": "ᄅ ʇndʇnO ǝuoʇspǝᴚ",
   "itemGroup.reengineered_toolbox": "xoqןoo⟘ pǝɹǝǝuıbuƎǝᴚ",
   "panel.reengineered_toolbox.blank": "ʞuɐןᗺ",
   "panel.reengineered_toolbox.daylight_detector": "ɹoʇɔǝʇǝᗡ ʇɥbıןʎɐᗡ",
@@ -23,5 +27,6 @@
   "panel.reengineered_toolbox.milker": "ɹǝʞןıW",
   "panel.reengineered_toolbox.plug": "bnןԀ",
   "panel.reengineered_toolbox.redstone_input": "ʇnduI ǝuoʇspǝᴚ",
+  "panel.reengineered_toolbox.redstone_nor_latch": "ɥɔʇɐꞀ ɹoN ǝuoʇspǝᴚ",
   "panel.reengineered_toolbox.redstone_output": "ʇndʇnO ǝuoʇspǝᴚ"
 }

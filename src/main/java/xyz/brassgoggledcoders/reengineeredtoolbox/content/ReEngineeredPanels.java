@@ -36,6 +36,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.Redsto
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.FreezerPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.MilkerPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.redstone.RedstoneNorLatchPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.dispenser.DispenserPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelEntry;
 
@@ -297,6 +298,26 @@ public class ReEngineeredPanels {
                     .unlockedBy("has_item", RegistrateRecipeProvider.has(BLANK.asPanel()))
                     .save(provider)
             )
+            .build()
+            .register();
+
+    public static final PanelEntry<Panel> REDSTONE_NOR_LATCH = ReEngineeredToolbox.getRegistrateAddon()
+            .object("redstone_nor_latch")
+            .panel()
+            .panelState((context, provider) -> {
+                ModelFile regular = provider.models()
+                        .getExistingFile(provider.retLoc("panel/redstone_nor_latch_panel"));
+                ModelFile rotated = provider.models()
+                                .getExistingFile(provider.retLoc("panel/redstone_nor_latch_panel_rotated"));
+                provider.directionalPanel(
+                        context.get(),
+                        panelState -> panelState.getValue(BlockStateProperties.POWERED) ? regular : rotated
+                );
+            })
+            .component(new PanelStatePropertyComponent<>(BlockStateProperties.POWERED, true))
+            .component(new FacingPropertyComponent())
+            .component(new PanelEntityPanelComponent(RedstoneNorLatchPanelEntity::new))
+            .item()
             .build()
             .register();
 

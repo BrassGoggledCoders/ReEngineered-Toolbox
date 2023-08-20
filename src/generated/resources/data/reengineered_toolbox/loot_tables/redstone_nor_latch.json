@@ -1,0 +1,15 @@
+{
+  "type": "reengineered_toolbox:panel",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "reengineered_toolbox:redstone_nor_latch"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ]
+}

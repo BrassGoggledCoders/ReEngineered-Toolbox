@@ -1,7 +1,7 @@
-// 1.19.2	2023-08-19T19:14:56.1664089	Registrate Provider for reengineered_toolbox [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud), PanelStates]
+// 1.19.2	2023-08-20T01:34:05.9006725	Registrate Provider for reengineered_toolbox [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud), PanelStates]
 336dbe86e88604bd24d9d5df1ff219e274f151ff assets/reengineered_toolbox/blockstates/iron_frame.json
-a2e9e101e957b8ef20e25c20d3184f134a5ca0d7 assets/reengineered_toolbox/lang/en_ud.json
-38c124f124dfe3005a796cd0c077a1c1c8890514 assets/reengineered_toolbox/lang/en_us.json
+c6349feeff66d4acdc685ed40faff9ee19c137ef assets/reengineered_toolbox/lang/en_ud.json
+720bdc7d1cff313b644050d2cbb04666562d20ac assets/reengineered_toolbox/lang/en_us.json
 47ac3450b674baa4a258df663c208426ce1e8e89 assets/reengineered_toolbox/models/block/iron_frame.json
 5548e69b5c9b7699f732ee72e48986a74a771d58 assets/reengineered_toolbox/models/item/blank.json
 f252f2237c0cf64ab41b0168b9812ee564fe022b assets/reengineered_toolbox/models/item/daylight_detector.json
@@ -17,6 +17,7 @@ fe1c7e428e471406325b7da3ab901dab41dc3cc4 assets/reengineered_toolbox/models/item
 ea49fe2e2cd5faece128100e2228bd529bc88534 assets/reengineered_toolbox/models/item/milker.json
 b8609b63bbc371f1eefaf336e8e84d50b137c898 assets/reengineered_toolbox/models/item/plug.json
 1cb4c3b055607ad00b57a5db7fcd535108096616 assets/reengineered_toolbox/models/item/redstone_input.json
+c19e08761dacdbd5321bab096153fbfbce04bd92 assets/reengineered_toolbox/models/item/redstone_nor_latch.json
 19cf4e79c1fd7cbb86e74ab5a813c6e3c78b93bf assets/reengineered_toolbox/models/item/redstone_output.json
 cae4ccccd8ae9d0870e5fd3ae2d1a8c5a3699cc1 assets/reengineered_toolbox/models/panel/blank.json
 b329a9d6b818e4962989d1238e72eefec99e9480 assets/reengineered_toolbox/models/panel/daylight_detector.json
@@ -47,6 +48,7 @@ b79523923cf8720652a153a43d3ceea6b5fcbc28 assets/reengineered_toolbox/panelstates
 1a6a83c3a7e530c5acb5448d543aa2ea59cc73f1 assets/reengineered_toolbox/panelstates/milker.json
 9acd48ddbed48e993ed61042fbcaf75f4c5f98ba assets/reengineered_toolbox/panelstates/plug.json
 e4e3e2997189c7d5cca91c3e91b466e1da01d7b8 assets/reengineered_toolbox/panelstates/redstone_input.json
+65dfac56c91e157a99a8d70cf3c40243bb01a716 assets/reengineered_toolbox/panelstates/redstone_nor_latch.json
 dc4147b5ee26136a75e7392fae3e74ea4911b5a7 assets/reengineered_toolbox/panelstates/redstone_output.json
 48531ac56186adb1b85bb65b11796ac4d2a266d1 data/reengineered_toolbox/advancements/recipes/reengineered_toolbox/daylight_detector.json
 3aaa0d92b82ac3ad879afb8f11030d45cde7117f data/reengineered_toolbox/advancements/recipes/reengineered_toolbox/dispenser.json
@@ -66,6 +68,7 @@ e21f3a6544f250ee354898e1dc56c8a16ab26bb3 data/reengineered_toolbox/loot_tables/i
 63b95a78e7e7ae5a2e97fdf1d7ae899f61b6f0de data/reengineered_toolbox/loot_tables/milker.json
 6390a5c55e831acf23ec5554fa3d7a08ef8d8504 data/reengineered_toolbox/loot_tables/plug.json
 39df7873c7e7a35d67576d5a003c13002909eba6 data/reengineered_toolbox/loot_tables/redstone_input.json
+b232926baa1c4773747e056e48e89b5608e75465 data/reengineered_toolbox/loot_tables/redstone_nor_latch.json
 13afabe3844d9f4de3a6da57ccdac995038276cf data/reengineered_toolbox/loot_tables/redstone_output.json
 0517b5d7e060cd4798b7bee2753496a0f524e226 data/reengineered_toolbox/recipes/daylight_detector.json
 91f397a68b190b2f0e631ac0fdb4f6a6da75b246 data/reengineered_toolbox/recipes/dispenser.json

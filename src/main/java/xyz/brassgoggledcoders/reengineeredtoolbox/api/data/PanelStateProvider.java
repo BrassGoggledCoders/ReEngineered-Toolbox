@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.FacingPropertyComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.IStatePropertyPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 
 import java.io.IOException;
@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 @SuppressWarnings("unused")
 public abstract class PanelStateProvider implements DataProvider {
@@ -159,9 +160,15 @@ public abstract class PanelStateProvider implements DataProvider {
         directionalPanel(panel, modelFunc, DEFAULT_ANGLE_OFFSET);
     }
 
+    @SuppressWarnings("unchecked")
     public void directionalPanel(Panel panel, Function<PanelState, ModelFile> modelFunc, int angleOffset) {
-        Property<Direction> directionProp = Objects.requireNonNull(panel.getComponent(FacingPropertyComponent.class))
-                .getProperty();
+        Property<Direction> directionProp = Objects.requireNonNull(panel.getComponents(IStatePropertyPanelComponent.class))
+                .stream()
+                .filter(component -> component.getProperty().getValueClass() == Direction.class)
+                .map(component -> ((Property<Direction>) component.getProperty()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("directionalPanel called for Panel with no Direction Property"));
+
         getVariantBuilder(panel)
                 .forAllStates(state -> {
                     Direction dir = state.getValue(Objects.requireNonNull(directionProp));
@@ -172,5 +179,4 @@ public abstract class PanelStateProvider implements DataProvider {
                             .build();
                 });
     }
-
 }

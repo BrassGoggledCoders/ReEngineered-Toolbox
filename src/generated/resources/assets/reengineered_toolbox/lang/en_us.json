@@ -7,8 +7,12 @@
   "frame_slot.reengineered_toolbox.item_in": "Item Input",
   "frame_slot.reengineered_toolbox.item_out": "Item Output",
   "frame_slot.reengineered_toolbox.redstone_in": "Redstone Input",
+  "frame_slot.reengineered_toolbox.redstone_in_1": "Redstone Input 1",
+  "frame_slot.reengineered_toolbox.redstone_in_2": "Redstone Input 2",
   "frame_slot.reengineered_toolbox.redstone_inverted_out": "Redstone Output (Inverted)",
   "frame_slot.reengineered_toolbox.redstone_out": "Redstone Output",
+  "frame_slot.reengineered_toolbox.redstone_out_1": "Redstone Output 1",
+  "frame_slot.reengineered_toolbox.redstone_out_2": "Redstone Output 2",
   "itemGroup.reengineered_toolbox": "ReEngineered Toolbox",
   "panel.reengineered_toolbox.blank": "Blank",
   "panel.reengineered_toolbox.daylight_detector": "Daylight Detector",
@@ -23,5 +27,6 @@
   "panel.reengineered_toolbox.milker": "Milker",
   "panel.reengineered_toolbox.plug": "Plug",
   "panel.reengineered_toolbox.redstone_input": "Redstone Input",
+  "panel.reengineered_toolbox.redstone_nor_latch": "Redstone Nor Latch",
   "panel.reengineered_toolbox.redstone_output": "Redstone Output"
 }
