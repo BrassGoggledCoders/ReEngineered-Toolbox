@@ -8,11 +8,11 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.Redsto
 
 public class RedstoneSignalPanelComponent extends RedstonePanelComponent {
     @Override
-    public int getSignal(PanelState panelState, IFrameEntity frameEntity, IPanelPosition panelPosition) {
+    public int getSignal(IFrameEntity frameEntity, PanelState panelState, IPanelPosition panelPosition) {
         if (frameEntity.getPanelEntity(panelPosition) instanceof RedstoneIOPanelEntity redstoneIOPanel) {
             return redstoneIOPanel.getSignal();
         }
 
-        return super.getSignal(panelState, frameEntity, panelPosition);
+        return super.getSignal(frameEntity, panelState, panelPosition);
     }
 }

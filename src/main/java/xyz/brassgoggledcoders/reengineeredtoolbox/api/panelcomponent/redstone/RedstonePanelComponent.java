@@ -5,7 +5,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelComponent;
 
-public class RedstonePanelComponent extends PanelComponent {
+public class RedstonePanelComponent extends PanelComponent implements IRedstonePanelComponent {
     private final boolean canConnect;
 
     public RedstonePanelComponent() {
@@ -16,11 +16,13 @@ public class RedstonePanelComponent extends PanelComponent {
         this.canConnect = canConnect;
     }
 
-    public boolean canConnectRedstone(IFrameEntity entity, PanelState panelState) {
+    @Override
+    public boolean canConnectRedstone(IFrameEntity entity, PanelState panelState, IPanelPosition panelPosition) {
         return canConnect;
     }
 
-    public int getSignal(PanelState panelState, IFrameEntity frameEntity, IPanelPosition panelPosition) {
+    @Override
+    public int getSignal(IFrameEntity frameEntity, PanelState panelState, IPanelPosition panelPosition) {
         return 0;
     }
 }

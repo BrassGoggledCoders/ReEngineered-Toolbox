@@ -60,7 +60,7 @@ public class FrameBlock extends Block implements EntityBlock {
         if (direction != null && level.getBlockEntity(pos) instanceof IFrameEntity frameEntity) {
             IPanelPosition panelPosition = BlockPanelPosition.fromDirection(direction);
             return frameEntity.getPanelState(panelPosition)
-                    .canConnectRedstone(frameEntity);
+                    .canConnectRedstone(frameEntity, panelPosition);
         }
         return true;
     }
@@ -101,7 +101,7 @@ public class FrameBlock extends Block implements EntityBlock {
         if (pBlockAccess.getBlockEntity(pPos) instanceof IFrameEntity frameEntity) {
             IPanelPosition panelPosition = BlockPanelPosition.fromDirection(pSide.getOpposite());
             return frameEntity.getPanelState(panelPosition)
-                    .getSignal(frameEntity);
+                    .getSignal(frameEntity, panelPosition);
         }
         return 0;
     }
@@ -113,7 +113,7 @@ public class FrameBlock extends Block implements EntityBlock {
         if (pBlockAccess.getBlockEntity(pPos) instanceof IFrameEntity frameEntity) {
             IPanelPosition panelPosition = BlockPanelPosition.fromDirection(pSide.getOpposite());
             return frameEntity.getPanelState(panelPosition)
-                    .getSignal(frameEntity);
+                    .getSignal(frameEntity, panelPosition);
         }
         return 0;
     }

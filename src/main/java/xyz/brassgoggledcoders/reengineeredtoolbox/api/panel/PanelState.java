@@ -53,9 +53,9 @@ public class PanelState extends StateHolder<Panel, PanelState> {
                 .orElse(null);
     }
 
-    public boolean canConnectRedstone(IFrameEntity frame) {
+    public boolean canConnectRedstone(IFrameEntity frame, IPanelPosition panelPosition) {
         for (IRedstonePanelComponent component : this.getPanel().getComponents(IRedstonePanelComponent.class)) {
-            if (component.canConnectRedstone(frame, this)) {
+            if (component.canConnectRedstone(frame, this, panelPosition)) {
                 return true;
             }
         }
@@ -81,10 +81,10 @@ public class PanelState extends StateHolder<Panel, PanelState> {
         return result;
     }
 
-    public int getSignal(IFrameEntity frameEntity) {
+    public int getSignal(IFrameEntity frameEntity, IPanelPosition panelPosition) {
         int signal = 0;
         for (IRedstonePanelComponent component : this.getPanel().getComponents(IRedstonePanelComponent.class)) {
-            int componentSignal = component.getSignal(frameEntity, this);
+            int componentSignal = component.getSignal(frameEntity, this, panelPosition);
             if (componentSignal > signal) {
                 signal = componentSignal;
             }

@@ -33,6 +33,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.panelcomponent.panelentity.Bas
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.energy.EnergyIOPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.DaylightDetectorPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneInputPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.FreezerPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.MilkerPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.dispenser.DispenserPanelEntity;
@@ -194,7 +195,7 @@ public class ReEngineeredPanels {
             .object("redstone_output")
             .panel()
             .component(new RedstoneSignalPanelComponent())
-            .component(new PanelEntityPanelComponent(RedstoneInputPanelEntity::new))
+            .component(new PanelEntityPanelComponent(RedstoneOutputPanelEntity::new))
             .component(new PanelStatePropertyComponent<>(BlockStateProperties.POWERED, false))
             .component(new FacingPropertyComponent())
             .panelState((context, provider) -> {
