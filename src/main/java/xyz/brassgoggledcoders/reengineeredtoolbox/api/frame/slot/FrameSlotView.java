@@ -39,7 +39,7 @@ public record FrameSlotView(
         xLook = xLook - (int) xLook;
         xLook *= 16D;
 
-        if (direction == Direction.WEST || direction == Direction.SOUTH) {
+        if (direction == Direction.WEST || direction == Direction.SOUTH || direction.getAxis() == Direction.Axis.Y) {
             xLook = 16 - xLook;
         }
 
