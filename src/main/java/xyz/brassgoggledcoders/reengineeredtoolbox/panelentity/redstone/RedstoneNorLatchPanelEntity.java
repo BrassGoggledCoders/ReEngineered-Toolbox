@@ -27,9 +27,9 @@ public class RedstoneNorLatchPanelEntity extends PanelEntity {
         super(frameEntity, panelState);
         this.frameSlots = new FrameSlot[] {
                 this.registerFrameSlot(new FrameSlot(ReEngineeredText.REDSTONE_SLOT_IN_1, FrameSlotViews.TOP_LEFT_4X4)),
-                this.registerFrameSlot(new FrameSlot(ReEngineeredText.REDSTONE_SLOT_OUT_1, FrameSlotViews.BOTTOM_LEFT_4X4)),
-                this.registerFrameSlot(new FrameSlot(ReEngineeredText.REDSTONE_SLOT_IN_2, FrameSlotViews.TOP_RIGHT_4X4)),
-                this.registerFrameSlot(new FrameSlot(ReEngineeredText.REDSTONE_SLOT_OUT_2, FrameSlotViews.BOTTOM_RIGHT_4X4))
+                this.registerFrameSlot(new FrameSlot(ReEngineeredText.REDSTONE_SLOT_OUT_1, FrameSlotViews.BOTTOM_LEFT_4X4, Frequency.WHITE)),
+                this.registerFrameSlot(new FrameSlot(ReEngineeredText.REDSTONE_SLOT_IN_2, FrameSlotViews.TOP_RIGHT_4X4, Frequency.ORANGE)),
+                this.registerFrameSlot(new FrameSlot(ReEngineeredText.REDSTONE_SLOT_OUT_2, FrameSlotViews.BOTTOM_RIGHT_4X4, Frequency.MAGENTA))
         };
         this.redstoneHandler = frameEntity.getCapability(ReEngineeredCapabilities.FREQUENCY_REDSTONE_HANDLER);
         this.redstoneHandler.ifPresent(value -> value.addPowerProvider(

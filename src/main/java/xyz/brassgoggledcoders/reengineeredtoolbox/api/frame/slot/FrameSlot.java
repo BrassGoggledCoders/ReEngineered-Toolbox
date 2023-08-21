@@ -8,14 +8,19 @@ import org.jetbrains.annotations.Nullable;
 public class FrameSlot {
     @NotNull
     private final Component name;
+    @NotNull
     private final FrameSlotView view;
     @NotNull
     private Frequency frequency;
 
     public FrameSlot(@NotNull Component name, FrameSlotView view) {
+        this(name, view, Frequency.BLACK);
+    }
+
+    public FrameSlot(@NotNull Component name, @NotNull FrameSlotView view, @NotNull Frequency frequency) {
         this.name = name;
         this.view = view;
-        this.frequency = Frequency.BLACK;
+        this.frequency = frequency;
     }
 
     @NotNull
