@@ -36,6 +36,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.Redsto
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneOutputPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.FreezerPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.MilkerPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.redstone.LatchPower;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.redstone.RedstoneNorLatchPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.dispenser.DispenserPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelEntry;
@@ -305,19 +306,43 @@ public class ReEngineeredPanels {
             .object("redstone_nor_latch")
             .panel()
             .panelState((context, provider) -> {
-                ModelFile regular = provider.models()
-                        .getExistingFile(provider.retLoc("panel/redstone_nor_latch_panel"));
-                ModelFile rotated = provider.models()
-                                .getExistingFile(provider.retLoc("panel/redstone_nor_latch_panel_rotated"));
+                ResourceLocation parent = provider.retLoc("panel/redstone_nor_latch_panel");
+
+                ModelFile one = provider.models()
+                        .withExistingParent("redstone_nor_latch_one", parent)
+                        .texture("panel", "panel/redstone_nor_latch_one")
+                        .texture("torch_one", provider.mcLoc("block/redstone_torch_off"))
+                        .texture("torch_two", provider.mcLoc("block/redstone_torch"));
+
+                ModelFile two = provider.models()
+                        .withExistingParent("redstone_nor_latch_two", parent)
+                        .texture("panel", "panel/redstone_nor_latch_two")
+                        .texture("torch_one", provider.mcLoc("block/redstone_torch"))
+                        .texture("torch_two", provider.mcLoc("block/redstone_torch_off"));
+
+                ModelFile both = provider.models()
+                        .withExistingParent("redstone_nor_latch_both", parent)
+                        .texture("panel", "panel/redstone_nor_latch_both")
+                        .texture("torch_one", provider.mcLoc("block/redstone_torch"))
+                        .texture("torch_two", provider.mcLoc("block/redstone_torch"));
+
                 provider.directionalPanel(
                         context.get(),
-                        panelState -> panelState.getValue(BlockStateProperties.POWERED) ? regular : rotated
+                        panelState -> switch (panelState.getValue(LatchPower.PROPERTY)) {
+                            case ONE -> one;
+                            case TWO -> two;
+                            case BOTH -> both;
+                        }
                 );
             })
-            .component(new PanelStatePropertyComponent<>(BlockStateProperties.POWERED, true))
+            .component(new PanelStatePropertyComponent<>(LatchPower.PROPERTY, LatchPower.ONE))
             .component(new FacingPropertyComponent())
             .component(new PanelEntityPanelComponent(RedstoneNorLatchPanelEntity::new))
             .item()
+            .model((context, provider) -> provider.generated(
+                    context,
+                    provider.modLoc("panel/redstone_nor_latch_one")
+            ))
             .build()
             .register();
 

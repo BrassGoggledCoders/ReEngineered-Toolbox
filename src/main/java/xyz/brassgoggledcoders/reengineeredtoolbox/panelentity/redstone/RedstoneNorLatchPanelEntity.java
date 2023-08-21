@@ -3,7 +3,6 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.redstone;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +24,7 @@ public class RedstoneNorLatchPanelEntity extends PanelEntity {
 
     public RedstoneNorLatchPanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState) {
         super(frameEntity, panelState);
-        this.frameSlots = new FrameSlot[] {
+        this.frameSlots = new FrameSlot[]{
                 this.registerFrameSlot(new FrameSlot(ReEngineeredText.REDSTONE_SLOT_IN_1, FrameSlotViews.TOP_LEFT_4X4)),
                 this.registerFrameSlot(new FrameSlot(ReEngineeredText.REDSTONE_SLOT_OUT_1, FrameSlotViews.BOTTOM_LEFT_4X4, Frequency.WHITE)),
                 this.registerFrameSlot(new FrameSlot(ReEngineeredText.REDSTONE_SLOT_IN_2, FrameSlotViews.TOP_RIGHT_4X4, Frequency.ORANGE)),
@@ -39,12 +38,14 @@ public class RedstoneNorLatchPanelEntity extends PanelEntity {
     }
 
     public void providePower(ObjIntConsumer<Frequency> powerSubmit) {
-        if (this.getPanelState().getValue(BlockStateProperties.POWERED)) {
-            powerSubmit.accept(this.frameSlots[1].getFrequency(), 15);
-        } else {
-            powerSubmit.accept(this.frameSlots[3].getFrequency(), 15);
+        switch (this.getPanelState().getValue(LatchPower.PROPERTY)) {
+            case ONE -> powerSubmit.accept(this.frameSlots[1].getFrequency(), 15);
+            case TWO -> powerSubmit.accept(this.frameSlots[3].getFrequency(), 15);
+            case BOTH -> {
+                powerSubmit.accept(this.frameSlots[1].getFrequency(), 15);
+                powerSubmit.accept(this.frameSlots[3].getFrequency(), 15);
+            }
         }
-
     }
 
     @Override
@@ -79,16 +80,31 @@ public class RedstoneNorLatchPanelEntity extends PanelEntity {
     }
 
     public void setPowerAndUpdate(IFrequencyRedstoneHandler redstoneHandler) {
-        FrameSlot toCheck = this.frameSlots[0];
-        if (this.getPanelState().getValue(BlockStateProperties.POWERED)) {
-            toCheck = this.frameSlots[2];
+        int sideOne = redstoneHandler.getPower(this.frameSlots[0].getFrequency());
+        int sideTwo = redstoneHandler.getPower(this.frameSlots[2].getFrequency());
+
+        LatchPower newState = null;
+        if (sideOne > 0 && sideTwo == 0) {
+            newState = LatchPower.ONE;
+        } else if (sideOne == 0 && sideTwo > 0) {
+            newState = LatchPower.TWO;
+        } else if (sideOne > 0 && sideTwo > 0) {
+            newState = LatchPower.BOTH;
         }
 
-        if (redstoneHandler.getPower(toCheck.getFrequency()) > 0) {
+        LatchPower currentState = this.getPanelState().getValue(LatchPower.PROPERTY);
+
+        if (newState == null && currentState == LatchPower.BOTH) {
+            newState = LatchPower.ONE;
+        }
+
+        if (newState != null && newState != currentState) {
+            LatchPower finalNewState = newState;
             this.getFrameEntity().updatePanelState(
                     this.getPanelPosition(),
-                    panelState -> panelState.cycle(BlockStateProperties.POWERED)
+                    panelState -> panelState.setValue(LatchPower.PROPERTY, finalNewState)
             );
+            this.redstoneHandler.ifPresent(IFrequencyRedstoneHandler::markRequiresUpdate);
         }
     }
 

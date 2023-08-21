@@ -1,0 +1,8 @@
+{
+  "parent": "reengineered_toolbox:panel/redstone_nor_latch_panel",
+  "textures": {
+    "panel": "reengineered_toolbox:panel/redstone_nor_latch_both",
+    "torch_one": "minecraft:block/redstone_torch",
+    "torch_two": "minecraft:block/redstone_torch"
+  }
+}

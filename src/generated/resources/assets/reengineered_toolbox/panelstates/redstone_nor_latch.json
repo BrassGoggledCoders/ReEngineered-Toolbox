@@ -1,54 +1,80 @@
 {
   "variants": {
-    "facing=down,powered=false": {
-      "model": "reengineered_toolbox:panel/redstone_nor_latch_panel_rotated",
+    "facing=down,latch_power=both": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_both",
       "x": 180
     },
-    "facing=down,powered=true": {
-      "model": "reengineered_toolbox:panel/redstone_nor_latch_panel",
+    "facing=down,latch_power=one": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_one",
       "x": 180
     },
-    "facing=east,powered=false": {
-      "model": "reengineered_toolbox:panel/redstone_nor_latch_panel_rotated",
+    "facing=down,latch_power=two": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_two",
+      "x": 180
+    },
+    "facing=east,latch_power=both": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_both",
       "x": 90,
       "y": 90
     },
-    "facing=east,powered=true": {
-      "model": "reengineered_toolbox:panel/redstone_nor_latch_panel",
+    "facing=east,latch_power=one": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_one",
       "x": 90,
       "y": 90
     },
-    "facing=north,powered=false": {
-      "model": "reengineered_toolbox:panel/redstone_nor_latch_panel_rotated",
+    "facing=east,latch_power=two": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_two",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north,latch_power=both": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_both",
       "x": 90
     },
-    "facing=north,powered=true": {
-      "model": "reengineered_toolbox:panel/redstone_nor_latch_panel",
+    "facing=north,latch_power=one": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_one",
       "x": 90
     },
-    "facing=south,powered=false": {
-      "model": "reengineered_toolbox:panel/redstone_nor_latch_panel_rotated",
+    "facing=north,latch_power=two": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_two",
+      "x": 90
+    },
+    "facing=south,latch_power=both": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_both",
       "x": 90,
       "y": 180
     },
-    "facing=south,powered=true": {
-      "model": "reengineered_toolbox:panel/redstone_nor_latch_panel",
+    "facing=south,latch_power=one": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_one",
       "x": 90,
       "y": 180
     },
-    "facing=up,powered=false": {
-      "model": "reengineered_toolbox:panel/redstone_nor_latch_panel_rotated"
+    "facing=south,latch_power=two": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_two",
+      "x": 90,
+      "y": 180
     },
-    "facing=up,powered=true": {
-      "model": "reengineered_toolbox:panel/redstone_nor_latch_panel"
+    "facing=up,latch_power=both": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_both"
     },
-    "facing=west,powered=false": {
-      "model": "reengineered_toolbox:panel/redstone_nor_latch_panel_rotated",
+    "facing=up,latch_power=one": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_one"
+    },
+    "facing=up,latch_power=two": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_two"
+    },
+    "facing=west,latch_power=both": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_both",
       "x": 90,
       "y": 270
     },
-    "facing=west,powered=true": {
-      "model": "reengineered_toolbox:panel/redstone_nor_latch_panel",
+    "facing=west,latch_power=one": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_one",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,latch_power=two": {
+      "model": "reengineered_toolbox:panel/redstone_nor_latch_two",
       "x": 90,
       "y": 270
     }
