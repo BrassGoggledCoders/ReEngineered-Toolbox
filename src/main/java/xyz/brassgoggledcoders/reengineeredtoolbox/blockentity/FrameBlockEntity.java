@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,7 +34,6 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.loot.ReEngineeredLootAPI;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyEnergyHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyFluidHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
@@ -41,6 +41,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedst
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.Frequency;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.loot.ReEngineeredLootAPI;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.BlockPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
@@ -150,7 +151,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
                 }
                 this.setChanged();
                 this.requestModelDataUpdate();
-                this.getNoNullLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+                this.getNoNullLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
                 return InteractionResultHolder.sidedSuccess(panelState, this.getNoNullLevel().isClientSide());
             }
         }
@@ -375,6 +376,11 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     public void handleUpdateTag(CompoundTag tag) {
         readPanels(tag.getCompound("Panels"));
         this.requestModelDataUpdate();
+        if (this.getLevel() != null) {
+            BlockState blockState = this.getBlockState();
+            this.getLevel().sendBlockUpdated(this.getBlockPos(), blockState, blockState, Block.UPDATE_ALL);
+            this.getLevel().updateNeighborsAt(this.getBlockPos(), blockState.getBlock());
+        }
     }
 
     @Override
