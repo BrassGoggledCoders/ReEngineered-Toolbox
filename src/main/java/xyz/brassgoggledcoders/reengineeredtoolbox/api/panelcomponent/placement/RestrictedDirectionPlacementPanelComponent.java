@@ -10,22 +10,26 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelCompon
 import java.util.Arrays;
 import java.util.Collection;
 
-public class RestrictedDirectionPlacementPanelComponent extends PanelComponent implements IPlacementPanelComponent {
-    private final Collection<Direction> validDirections;
+public class RestrictedDirectionPlacementPanelComponent extends PanelComponent implements IPlacementPanelComponent, IPlacementRequirementPanelComponent {
+    private final Direction[] validDirections;
 
     public RestrictedDirectionPlacementPanelComponent(Direction... validDirections) {
-        this(Arrays.asList(validDirections));
-    }
-    public RestrictedDirectionPlacementPanelComponent(Collection<Direction> validDirections) {
         this.validDirections = validDirections;
     }
 
     @Override
     @Nullable
     public PanelState getPanelStateForPlacement(UseOnContext context, IFrameEntity frame, PanelState current) {
-        if (validDirections.contains(context.getClickedFace())) {
-            return current;
+        for (Direction direction : validDirections) {
+            if (direction == context.getClickedFace()) {
+                return current;
+            }
         }
         return null;
+    }
+
+    @Override
+    public Direction[] getValidDirections() {
+        return this.validDirections;
     }
 }

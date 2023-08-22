@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.placement.IPlacementRequirementPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 
 import java.io.IOException;
@@ -29,6 +30,7 @@ import java.util.EnumMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class PanelModelBakery {
     private static final PanelModelBakery INSTANCE = new PanelModelBakery();
@@ -113,22 +115,29 @@ public class PanelModelBakery {
                                     );
                                 }
                             } else {
+                                Predicate<Direction> validDirection = direction -> true;
+                                IPlacementRequirementPanelComponent requirementPanel = panelState.getPanel()
+                                        .getComponent(IPlacementRequirementPanelComponent.class);
+                                if (requirementPanel != null) {
+                                    validDirection = requirementPanel::isValidDirection;
+                                }
                                 for (Map.Entry<Direction, ModelState> directionState : DIRECTION_STATE.entrySet()) {
-                                    BakedModel bakedModel = multiVariant.bake(
-                                            modelBakery,
-                                            modelBakery.getAtlasSet()::getSprite,
-                                            directionState.getValue(),
-                                            UNUSED
-                                    );
-                                    if (bakedModel != null) {
-                                        this.panelStateBakedModelLoadingCache.put(
-                                                panelState,
-                                                directionState.getKey(),
-                                                bakedModel
+                                    if (validDirection.test(directionState.getKey())) {
+                                        BakedModel bakedModel = multiVariant.bake(
+                                                modelBakery,
+                                                modelBakery.getAtlasSet()::getSprite,
+                                                directionState.getValue(),
+                                                UNUSED
                                         );
+                                        if (bakedModel != null) {
+                                            this.panelStateBakedModelLoadingCache.put(
+                                                    panelState,
+                                                    directionState.getKey(),
+                                                    bakedModel
+                                            );
+                                        }
                                     }
                                 }
-
                             }
                         }
                     });
