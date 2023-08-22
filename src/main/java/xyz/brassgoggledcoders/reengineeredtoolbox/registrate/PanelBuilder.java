@@ -2,14 +2,11 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.registrate;
 
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.AbstractBuilder;
-import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.BuilderCallback;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
-import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
-import com.tterrag.registrate.providers.loot.RegistrateLootTableProvider;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullBiFunction;
@@ -55,7 +52,7 @@ public class PanelBuilder<P extends Panel, R> extends AbstractBuilder<Panel, P, 
     }
 
     public PanelBuilder<P, R> defaultPanelState() {
-        return this.panelState((context, provider) -> provider.flatDirectionalPanel(context.get()));
+        return this.panelState((context, provider) -> provider.flatPanel(context.get()));
     }
 
     public PanelBuilder<P, R> defaultLang() {

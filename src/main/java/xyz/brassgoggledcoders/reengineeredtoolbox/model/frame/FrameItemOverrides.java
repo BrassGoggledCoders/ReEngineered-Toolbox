@@ -26,7 +26,6 @@ public class FrameItemOverrides extends ItemOverrides {
             .sequential()
             .map(direction -> ReEngineeredPanels.PLUG.get()
                     .defaultPanelState()
-                    .setValue(BlockStateProperties.FACING, direction)
             )
             .toArray(PanelState[]::new)
     );
@@ -53,8 +52,7 @@ public class FrameItemOverrides extends ItemOverrides {
                 if (!panelsTags.isEmpty()) {
                     PanelState[] panelStates = new PanelState[Direction.values().length];
                     for (Direction direction : Direction.values()) {
-                        PanelState panelState = ReEngineeredPanels.PLUG.getDefaultState()
-                                .setValue(BlockStateProperties.FACING, direction);
+                        PanelState panelState = ReEngineeredPanels.PLUG.getDefaultState();
                         CompoundTag directionalPanelTag = panelsTags.getCompound(direction.getName());
                         if (!directionalPanelTag.isEmpty()) {
                             CompoundTag panelStateTag = directionalPanelTag.getCompound("PanelState");

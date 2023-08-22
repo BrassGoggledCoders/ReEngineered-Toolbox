@@ -26,7 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.ToIntFunction;
 
 @SuppressWarnings("unused")
 public abstract class PanelStateProvider implements DataProvider {
@@ -119,16 +118,16 @@ public abstract class PanelStateProvider implements DataProvider {
         return this.models;
     }
 
-    public void flatDirectionalPanel(Panel panel) {
-        directionalPanel(
+    public void flatPanel(Panel panel) {
+        panel(
                 panel,
                 this.models()
                         .flatPanel(Objects.requireNonNull(key(panel)).getPath())
         );
     }
 
-    public void openDirectionalPanel(Panel panel) {
-        directionalPanel(
+    public void openPanel(Panel panel) {
+        panel(
                 panel,
                 this.models()
                         .openPanel(Objects.requireNonNull(key(panel)).getPath())
@@ -146,6 +145,18 @@ public abstract class PanelStateProvider implements DataProvider {
                         .rotationX(dir == Direction.DOWN ? 180 : dir.getAxis().isHorizontal() ? 90 : 0)
                         .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + DEFAULT_ANGLE_OFFSET) % 360)
                         .build());
+    }
+
+    public void panel(Panel panel, ModelFile modelFile) {
+        this.panel(panel, $ -> modelFile);
+    }
+
+    public void panel(Panel panel, Function<PanelState, ModelFile> modelFunc) {
+        getVariantBuilder(panel)
+                .forAllStates(panelState -> ConfiguredModel.builder()
+                        .modelFile(modelFunc.apply(panelState))
+                        .build()
+                );
     }
 
     public void directionalPanel(Panel panel, ModelFile model) {

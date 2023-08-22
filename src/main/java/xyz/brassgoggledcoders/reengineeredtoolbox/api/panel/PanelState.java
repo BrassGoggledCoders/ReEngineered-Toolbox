@@ -1,5 +1,6 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.panel;
 
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Direction;
@@ -15,14 +16,24 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.interaction
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.panelentity.IPanelEntityPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.redstone.IRedstonePanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.FacingPropertyComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.PanelStatePropertyComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class PanelState extends StateHolder<Panel, PanelState> {
+    private final Supplier<Property<Direction>> facingProperty;
+
     public PanelState(Panel pOwner, ImmutableMap<Property<?>, Comparable<?>> pValues, MapCodec<PanelState> pPropertiesCodec) {
         super(pOwner, pValues, pPropertiesCodec);
+        this.facingProperty = Suppliers.memoize(() -> Optional.ofNullable(this.getPanel()
+                        .getComponent(FacingPropertyComponent.class)
+                )
+                .map(PanelStatePropertyComponent::getProperty)
+                .orElse(null)
+        );
     }
 
     public Panel getPanel() {
@@ -38,12 +49,8 @@ public class PanelState extends StateHolder<Panel, PanelState> {
     }
 
     @Nullable
-    public Direction getFacing() {
-        FacingPropertyComponent component = this.getPanel().getComponent(FacingPropertyComponent.class);
-        if (component != null) {
-            return this.getValue(component.getProperty());
-        }
-        return null;
+    public Property<Direction> getFacingProperty() {
+        return this.facingProperty.get();
     }
 
     @Nullable
