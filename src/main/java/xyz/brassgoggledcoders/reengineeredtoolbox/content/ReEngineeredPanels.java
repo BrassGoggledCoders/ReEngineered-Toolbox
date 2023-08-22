@@ -297,14 +297,14 @@ public class ReEngineeredPanels {
                 ModelFile one = provider.models()
                         .withExistingParent("redstone_nor_latch_one", parent)
                         .texture("panel", "panel/redstone_nor_latch_one")
-                        .texture("torch_one", provider.mcLoc("block/redstone_torch_off"))
-                        .texture("torch_two", provider.mcLoc("block/redstone_torch"));
+                        .texture("torch_one", provider.mcLoc("block/redstone_torch"))
+                        .texture("torch_two", provider.mcLoc("block/redstone_torch_off"));
 
                 ModelFile two = provider.models()
                         .withExistingParent("redstone_nor_latch_two", parent)
                         .texture("panel", "panel/redstone_nor_latch_two")
-                        .texture("torch_one", provider.mcLoc("block/redstone_torch"))
-                        .texture("torch_two", provider.mcLoc("block/redstone_torch_off"));
+                        .texture("torch_one", provider.mcLoc("block/redstone_torch_off"))
+                        .texture("torch_two", provider.mcLoc("block/redstone_torch"));
 
                 ModelFile both = provider.models()
                         .withExistingParent("redstone_nor_latch_both", parent)
