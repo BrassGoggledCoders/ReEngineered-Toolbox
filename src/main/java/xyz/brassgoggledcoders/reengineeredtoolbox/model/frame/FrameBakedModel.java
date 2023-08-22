@@ -44,11 +44,11 @@ public class FrameBakedModel implements BakedModel {
             PanelState panelState = modelData.get(modelProperty);
             if (panelState == null) {
                 panelState = ReEngineeredPanels.PLUG.get()
-                        .defaultPanelState()
-                        .setValue(BlockStateProperties.FACING, direction);
+                        .defaultPanelState();
             }
+
             bakedQuads.addAll(PanelModelBakery.getInstance()
-                    .getPanelStateModel(panelState)
+                    .getPanelStateModel(panelState, direction)
                     .getQuads(pState, pDirection, pRandom, ModelData.EMPTY, renderType)
             );
         }

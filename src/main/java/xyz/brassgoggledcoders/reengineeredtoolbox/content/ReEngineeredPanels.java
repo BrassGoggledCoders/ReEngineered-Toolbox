@@ -22,7 +22,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.interaction
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.panelentity.PanelEntityPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.placement.RestrictedDirectionPlacementPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.redstone.RedstonePanelComponent;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.FacingPropertyComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.PanelStatePropertyComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.IOStyle;
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.energy.FrequencyBackedEnergyHandler;
@@ -56,8 +55,7 @@ public class ReEngineeredPanels {
     public static final PanelEntry<Panel> PLUG = ReEngineeredToolbox.getRegistrateAddon()
             .object("plug")
             .panel()
-            .component(new FacingPropertyComponent())
-            .panelState((context, provider) -> provider.openDirectionalPanel(context.get()))
+            .panelState((context, provider) -> provider.openPanel(context.get()))
             .item()
             .properties(properties -> properties.tab(null))
             .build()
@@ -66,7 +64,6 @@ public class ReEngineeredPanels {
     public static final PanelEntry<Panel> BLANK = ReEngineeredToolbox.getRegistrateAddon()
             .object("blank")
             .panel()
-            .component(new FacingPropertyComponent())
             .item()
             .build()
             .register();
@@ -82,7 +79,6 @@ public class ReEngineeredPanels {
                             IOStyle.ONLY_INSERT,
                             FrequencyBackedItemHandler::new
                     ))
-                    .component(new FacingPropertyComponent())
                     .item()
                     .build()
                     .register();
@@ -99,7 +95,6 @@ public class ReEngineeredPanels {
                             IOStyle.ONLY_EXTRACT,
                             FrequencyBackedItemHandler::new
                     ))
-                    .component(new FacingPropertyComponent())
                     .item()
                     .build()
                     .register();
@@ -115,7 +110,6 @@ public class ReEngineeredPanels {
                             IOStyle.ONLY_INSERT,
                             FrequencyBackedFluidHandler::new
                     ))
-                    .component(new FacingPropertyComponent())
                     .item()
                     .build()
                     .register();
@@ -132,7 +126,6 @@ public class ReEngineeredPanels {
                             IOStyle.ONLY_EXTRACT,
                             FrequencyBackedFluidHandler::new
                     ))
-                    .component(new FacingPropertyComponent())
                     .item()
                     .build()
                     .register();
@@ -148,7 +141,6 @@ public class ReEngineeredPanels {
                             IOStyle.ONLY_INSERT,
                             FrequencyBackedEnergyHandler::new
                     ))
-                    .component(new FacingPropertyComponent())
                     .item()
                     .build()
                     .register();
@@ -159,7 +151,6 @@ public class ReEngineeredPanels {
                     .object("energy_output")
                     .panel()
                     .component(new PanelEntityPanelComponent(EnergyIOPanelEntity.energyOutput()))
-                    .component(new FacingPropertyComponent())
                     .item()
                     .build()
                     .register();
@@ -170,11 +161,10 @@ public class ReEngineeredPanels {
             .component(new RedstonePanelComponent())
             .component(new PanelEntityPanelComponent(RedstoneInputPanelEntity::new))
             .component(new PanelStatePropertyComponent<>(BlockStateProperties.POWERED, false))
-            .component(new FacingPropertyComponent())
             .panelState((context, provider) -> {
                 ModelFile inputOn = provider.models().flatPanel("redstone_input_on");
                 ModelFile inputOff = provider.models().flatPanel("redstone_input_off");
-                provider.directionalPanel(context.get(), panelState -> {
+                provider.panel(context.get(), panelState -> {
                     if (panelState.getValue(BlockStateProperties.POWERED)) {
                         return inputOn;
                     } else {
@@ -199,11 +189,10 @@ public class ReEngineeredPanels {
             .component(new RedstoneSignalPanelComponent())
             .component(new PanelEntityPanelComponent(RedstoneOutputPanelEntity::new))
             .component(new PanelStatePropertyComponent<>(BlockStateProperties.POWERED, false))
-            .component(new FacingPropertyComponent())
             .panelState((context, provider) -> {
                 ModelFile inputOn = provider.models().flatPanel("redstone_output_on");
                 ModelFile inputOff = provider.models().flatPanel("redstone_output_off");
-                provider.directionalPanel(context.get(), panelState -> {
+                provider.panel(context.get(), panelState -> {
                     if (panelState.getValue(BlockStateProperties.POWERED)) {
                         return inputOn;
                     } else {
@@ -226,7 +215,6 @@ public class ReEngineeredPanels {
     public static final PanelEntry<Panel> DISPENSER = ReEngineeredToolbox.getRegistrateAddon()
             .object("dispenser")
             .panel()
-            .component(new FacingPropertyComponent())
             .component(new PanelStatePropertyComponent<>(BlockStateProperties.TRIGGERED, false))
             .component(new PanelEntityPanelComponent(DispenserPanelEntity::new))
             .item()
@@ -268,7 +256,6 @@ public class ReEngineeredPanels {
     public static final PanelEntry<Panel> FREEZER = ReEngineeredToolbox.getRegistrateAddon()
             .object("freezer")
             .panel()
-            .component(new FacingPropertyComponent())
             .component(new PanelEntityPanelComponent(FreezerPanelEntity::new))
             .component(new MenuInteractionPanelComponent())
             .item()
@@ -287,7 +274,6 @@ public class ReEngineeredPanels {
     public static final PanelEntry<Panel> MILKER = ReEngineeredToolbox.getRegistrateAddon()
             .object("milker")
             .panel()
-            .component(new FacingPropertyComponent())
             .component(new PanelEntityPanelComponent(MilkerPanelEntity::new))
             .item()
             .recipe((context, provider) -> ShapedRecipeBuilder.shaped(context.get())
@@ -326,7 +312,7 @@ public class ReEngineeredPanels {
                         .texture("torch_one", provider.mcLoc("block/redstone_torch"))
                         .texture("torch_two", provider.mcLoc("block/redstone_torch"));
 
-                provider.directionalPanel(
+                provider.panel(
                         context.get(),
                         panelState -> switch (panelState.getValue(LatchPower.PROPERTY)) {
                             case ONE -> one;
@@ -336,7 +322,6 @@ public class ReEngineeredPanels {
                 );
             })
             .component(new PanelStatePropertyComponent<>(LatchPower.PROPERTY, LatchPower.ONE))
-            .component(new FacingPropertyComponent())
             .component(new PanelEntityPanelComponent(RedstoneNorLatchPanelEntity::new))
             .item()
             .model((context, provider) -> provider.generated(

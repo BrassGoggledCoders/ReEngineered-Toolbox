@@ -14,7 +14,7 @@ public class PanelStateDefinition {
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(PanelStateDefinition.class, new PanelStateDefinition.Deserializer())
             .registerTypeAdapter(Variant.class, new Variant.Deserializer())
-            .registerTypeAdapter(MultiVariant.class, new MultiVariant.Deserializer())
+            .registerTypeAdapter(MultiVariant.class, new PanelMultiVariant.PanelDeserializer())
             .create();
     private final Map<String, MultiVariant> variants = Maps.newLinkedHashMap();
 
