@@ -9,7 +9,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 
-public interface IInteractionPanelComponent  {
+public interface IInteractionPanelComponent {
     @NotNull
     InteractionResult use(PanelState panelState, IFrameEntity frameEntity, IPanelPosition panelPosition, Player pPlayer, InteractionHand pHand, BlockHitResult pHit);
 }

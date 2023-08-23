@@ -15,7 +15,6 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
-import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;

@@ -44,8 +44,8 @@ public interface IFrameEntity extends ICapabilityProvider {
 
     /**
      * @param panelPosition the position of the panel
-     * @param player the player attempting to remove the panel
-     * @param heldItem the tool used to remove the panel
+     * @param player        the player attempting to remove the panel
+     * @param heldItem      the tool used to remove the panel
      * @return on the server, a list of Items that should be dropped when removing the Panel, otherwise empty
      */
     List<ItemStack> removePanel(@NotNull IPanelPosition panelPosition, @Nullable Player player, @NotNull ItemStack heldItem);

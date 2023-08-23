@@ -32,7 +32,7 @@ public class PanelMultiVariant extends MultiVariant {
         } else {
             WeightedBakedModel.Builder weightedbakedmodel$builder = new WeightedBakedModel.Builder();
 
-            for(Variant variant : this.getVariants()) {
+            for (Variant variant : this.getVariants()) {
                 BakedModel bakedmodel = pModelBakery.bake(variant.getModelLocation(), pTransform, pSpriteGetter);
                 weightedbakedmodel$builder.add(bakedmodel, variant.getWeight());
             }
@@ -51,7 +51,7 @@ public class PanelMultiVariant extends MultiVariant {
                     throw new JsonParseException("Empty variant array");
                 }
 
-                for(JsonElement jsonelement : jsonarray) {
+                for (JsonElement jsonelement : jsonarray) {
                     list.add(pContext.deserialize(jsonelement, Variant.class));
                 }
             } else {

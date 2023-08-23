@@ -10,7 +10,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.IOPanelEntity;
 public abstract class RedstoneIOPanelEntity extends IOPanelEntity {
     private int power;
 
-    public RedstoneIOPanelEntity( @NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
+    public RedstoneIOPanelEntity(@NotNull IFrameEntity frameEntity, @NotNull PanelState panelState,
                                  @NotNull Component identifier) {
         super(frameEntity, panelState, identifier);
     }

@@ -29,10 +29,10 @@ public class PanelState extends StateHolder<Panel, PanelState> {
     public PanelState(Panel pOwner, ImmutableMap<Property<?>, Comparable<?>> pValues, MapCodec<PanelState> pPropertiesCodec) {
         super(pOwner, pValues, pPropertiesCodec);
         this.facingProperty = Suppliers.memoize(() -> Optional.ofNullable(this.getPanel()
-                        .getComponent(FacingPropertyComponent.class)
-                )
-                .map(PanelStatePropertyComponent::getProperty)
-                .orElse(null)
+                                .getComponent(FacingPropertyComponent.class)
+                        )
+                        .map(PanelStatePropertyComponent::getProperty)
+                        .orElse(null)
         );
     }
 

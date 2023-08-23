@@ -37,7 +37,7 @@ public class MilkingSavedData extends SavedData {
     @NotNull
     public CompoundTag save(@NotNull CompoundTag pCompoundTag) {
         ListTag nextMilkingAllowListTag = new ListTag();
-        for (Map.Entry<UUID, Long> entry: this.nextMilkingAllowed.entrySet()) {
+        for (Map.Entry<UUID, Long> entry : this.nextMilkingAllowed.entrySet()) {
             CompoundTag tag = new CompoundTag();
 
             tag.putUUID("Id", entry.getKey());

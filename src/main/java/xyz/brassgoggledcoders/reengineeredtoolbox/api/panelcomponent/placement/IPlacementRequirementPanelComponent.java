@@ -7,7 +7,7 @@ public interface IPlacementRequirementPanelComponent {
     Direction[] getValidDirections();
 
     default boolean isValidDirection(Direction direction) {
-        for (Direction validDirection: this.getValidDirections()) {
+        for (Direction validDirection : this.getValidDirections()) {
             if (validDirection == direction) {
                 return true;
             }

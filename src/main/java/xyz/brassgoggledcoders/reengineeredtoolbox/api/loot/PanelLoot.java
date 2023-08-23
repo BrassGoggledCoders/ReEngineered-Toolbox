@@ -2,10 +2,8 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.api.loot;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -31,7 +29,7 @@ public abstract class PanelLoot implements Consumer<BiConsumer<ResourceLocation,
         this.addTables();
         Set<ResourceLocation> set = Sets.newHashSet();
 
-        for(Panel panel : getKnownPanels()) {
+        for (Panel panel : getKnownPanels()) {
             ResourceLocation resourcelocation = panel.getLootTable();
             if (resourcelocation != BuiltInLootTables.EMPTY && set.add(resourcelocation)) {
                 LootTable.Builder lootTableBuilder = this.map.remove(resourcelocation);

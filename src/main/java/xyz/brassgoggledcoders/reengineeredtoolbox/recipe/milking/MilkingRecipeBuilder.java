@@ -6,10 +6,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -20,7 +17,6 @@ import xyz.brassgoggledcoders.jsoning.RegistryJson;
 import xyz.brassgoggledcoders.jsoning.StackJson;
 import xyz.brassgoggledcoders.reengineeredtoolbox.ReEngineeredToolbox;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredRecipes;
-import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.ingredient.FluidIngredient;
 
 import java.util.function.Consumer;
 

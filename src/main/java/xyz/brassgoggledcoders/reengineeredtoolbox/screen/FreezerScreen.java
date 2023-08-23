@@ -23,6 +23,7 @@ import java.awt.*;
 
 public class FreezerScreen extends AbstractContainerScreen<FreezerMenu> {
     private static final ResourceLocation TEXTURE = ReEngineeredToolbox.rl("textures/screen/freezer.png");
+
     public FreezerScreen(FreezerMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
     }

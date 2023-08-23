@@ -7,9 +7,6 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelComponent;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 public class RestrictedDirectionPlacementPanelComponent extends PanelComponent implements IPlacementPanelComponent, IPlacementRequirementPanelComponent {
     private final Direction[] validDirections;
 
