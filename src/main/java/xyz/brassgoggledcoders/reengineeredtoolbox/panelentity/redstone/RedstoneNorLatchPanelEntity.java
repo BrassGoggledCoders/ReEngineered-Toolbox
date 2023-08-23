@@ -79,6 +79,16 @@ public class RedstoneNorLatchPanelEntity extends PanelEntity {
         }
     }
 
+    @Override
+    public void onFrameSlotChange(FrameSlot frameSlot) {
+        super.onFrameSlotChange(frameSlot);
+        if (frameSlot == this.frameSlots[0] || frameSlot == this.frameSlots[2]) {
+            this.redstoneHandler.ifPresent(IFrequencyRedstoneHandler::markRequiresUpdate);
+        } else {
+            this.redstoneHandler.ifPresent(this::setPowerAndUpdate);
+        }
+    }
+
     public void setPowerAndUpdate(IFrequencyRedstoneHandler redstoneHandler) {
         int sideOne = redstoneHandler.getPower(this.frameSlots[0].getFrequency());
         int sideTwo = redstoneHandler.getPower(this.frameSlots[2].getFrequency());

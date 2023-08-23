@@ -144,6 +144,10 @@ public class PanelEntity implements ICapabilityProvider {
         return null;
     }
 
+    public void onFrameSlotChange(FrameSlot frameSlot) {
+
+    }
+
     @Nullable
     public static PanelEntity loadStatic(PanelState pState, IFrameEntity frame, CompoundTag pTag) {
         String s = pTag.getString("id");

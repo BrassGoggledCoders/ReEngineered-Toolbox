@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.Frequency;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
@@ -33,6 +34,12 @@ public class RedstoneInputPanelEntity extends RedstoneIOPanelEntity {
     @Override
     public void onRemove() {
         super.onRemove();
+        this.redstoneHandlerLazyOptional.ifPresent(IFrequencyRedstoneHandler::markRequiresUpdate);
+    }
+
+    @Override
+    public void onFrameSlotChange(FrameSlot frameSlot) {
+        super.onFrameSlotChange(frameSlot);
         this.redstoneHandlerLazyOptional.ifPresent(IFrequencyRedstoneHandler::markRequiresUpdate);
     }
 

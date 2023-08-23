@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredText;
 
@@ -33,6 +34,13 @@ public class RedstoneOutputPanelEntity extends RedstoneIOPanelEntity {
             this.redstoneHandlerLazyOptional.map(redstoneHandler -> redstoneHandler.getPower(this.getIoPort().getFrequency()))
                     .ifPresent(this::setPowerAndUpdate);
         }
+    }
+
+    @Override
+    public void onFrameSlotChange(FrameSlot frameSlot) {
+        super.onFrameSlotChange(frameSlot);
+        this.redstoneHandlerLazyOptional.map(redstoneHandler -> redstoneHandler.getPower(this.getIoPort().getFrequency()))
+                .ifPresent(this::setPowerAndUpdate);
     }
 
     @Override

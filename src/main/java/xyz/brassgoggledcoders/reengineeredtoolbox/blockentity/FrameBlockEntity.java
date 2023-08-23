@@ -152,6 +152,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
                 this.setChanged();
                 this.requestModelDataUpdate();
                 this.getNoNullLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
+                this.getNoNullLevel().updateNeighborsAt(this.getBlockPos(), this.getBlockState().getBlock());
                 return InteractionResultHolder.sidedSuccess(panelState, this.getNoNullLevel().isClientSide());
             }
         }
@@ -271,6 +272,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
                         frameSlot.setFrequency(toolStackDye.flatMap(Frequency::getByDye)
                                 .orElse(frameSlot.getFrequency().next())
                         );
+                        panelEntity.onFrameSlotChange(frameSlot);
                         return true;
                     }
                 }
