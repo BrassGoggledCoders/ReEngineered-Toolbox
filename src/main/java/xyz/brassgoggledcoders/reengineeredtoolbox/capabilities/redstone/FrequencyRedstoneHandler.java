@@ -16,14 +16,13 @@ import java.util.function.Predicate;
 
 public class FrequencyRedstoneHandler implements IFrequencyRedstoneHandler {
     private final IFrameEntity frame;
-    //Needs Update is an Int to allow for nested updated to tick out
-    private int needsUpdate;
+    private boolean needsUpdate;
     private final Object2IntMap<Frequency> powerCache;
     private final List<RedstoneProvider<?>> redstoneProviderList;
 
     public FrequencyRedstoneHandler(IFrameEntity frame) {
         this.frame = frame;
-        this.needsUpdate = 1;
+        this.needsUpdate = true;
         this.powerCache = new Object2IntArrayMap<>();
         this.redstoneProviderList = new ArrayList<>();
     }
@@ -50,11 +49,12 @@ public class FrequencyRedstoneHandler implements IFrequencyRedstoneHandler {
 
     @Override
     public void markRequiresUpdate() {
-        this.needsUpdate++;
+        this.needsUpdate = true;
     }
 
     public void tick() {
-        if (this.needsUpdate > 0) {
+        if (this.needsUpdate) {
+            this.needsUpdate = false;
             this.powerCache.clear();
             this.redstoneProviderList.removeIf(Predicate.not(RedstoneProvider::isValid));
             this.redstoneProviderList.forEach(redstoneProvider -> redstoneProvider.providePower((frequency, power) ->
@@ -66,7 +66,6 @@ public class FrequencyRedstoneHandler implements IFrequencyRedstoneHandler {
             ));
 
             this.frame.notifyStorageChange(ReEngineeredCapabilities.FREQUENCY_REDSTONE_HANDLER);
-            this.needsUpdate--;
         }
     }
 }
