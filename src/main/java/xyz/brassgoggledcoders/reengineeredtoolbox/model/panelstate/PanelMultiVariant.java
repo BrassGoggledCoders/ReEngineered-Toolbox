@@ -2,6 +2,7 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.model.panelstate;
 
 import com.google.common.collect.Lists;
 import com.google.gson.*;
+import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.model.MultiVariant;
 import net.minecraft.client.renderer.block.model.Variant;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -9,6 +10,8 @@ import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.SimpleModelState;
+import net.minecraftforge.client.model.generators.ModelFile;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -33,7 +36,8 @@ public class PanelMultiVariant extends MultiVariant {
             WeightedBakedModel.Builder weightedbakedmodel$builder = new WeightedBakedModel.Builder();
 
             for (Variant variant : this.getVariants()) {
-                BakedModel bakedmodel = pModelBakery.bake(variant.getModelLocation(), pTransform, pSpriteGetter);
+                ModelState modelState = new SimpleModelState(pTransform.getRotation().compose(variant.getRotation()));
+                BakedModel bakedmodel = pModelBakery.bake(variant.getModelLocation(), modelState, pSpriteGetter);
                 weightedbakedmodel$builder.add(bakedmodel, variant.getWeight());
             }
 
