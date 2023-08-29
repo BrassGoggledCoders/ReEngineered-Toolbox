@@ -201,7 +201,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     @NotNull
     public PanelState getPanelState(@NotNull IPanelPosition panelPosition) {
         Direction direction = panelPosition.getFacing();
-        return this.panelStateMap.getOrDefault(direction, ReEngineeredPanels.PLUG.withDirection(direction));
+        return this.panelStateMap.getOrDefault(direction, ReEngineeredPanels.PLUG.getDefaultState());
     }
 
     @Override

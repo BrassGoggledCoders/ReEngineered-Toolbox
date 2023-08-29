@@ -40,14 +40,6 @@ public class PanelState extends StateHolder<Panel, PanelState> {
         return this.owner;
     }
 
-    public PanelState withDirection(Direction direction) {
-        FacingPropertyComponent component = this.getPanel().getComponent(FacingPropertyComponent.class);
-        if (component != null) {
-            return this.setValue(component.getProperty(), direction);
-        }
-        return this;
-    }
-
     @Nullable
     public Property<Direction> getFacingProperty() {
         return this.facingProperty.get();

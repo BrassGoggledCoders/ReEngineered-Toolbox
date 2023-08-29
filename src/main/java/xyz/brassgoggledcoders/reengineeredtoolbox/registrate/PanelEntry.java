@@ -23,8 +23,4 @@ public class PanelEntry<P extends Panel> extends ItemProviderEntry<P> implements
     public PanelState getDefaultState() {
         return this.asPanel().defaultPanelState();
     }
-
-    public PanelState withDirection(Direction direction) {
-        return this.getDefaultState().withDirection(direction);
-    }
 }
