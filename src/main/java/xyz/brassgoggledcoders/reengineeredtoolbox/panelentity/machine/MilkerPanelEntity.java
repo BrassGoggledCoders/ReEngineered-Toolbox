@@ -30,7 +30,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.RecipeCache;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.milking.MilkingContainer;
 import xyz.brassgoggledcoders.reengineeredtoolbox.recipe.milking.MilkingRecipe;
 import xyz.brassgoggledcoders.reengineeredtoolbox.saveddata.MilkingSavedData;
-import xyz.brassgoggledcoders.reengineeredtoolbox.util.VectorHelper;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.util.VectorHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;

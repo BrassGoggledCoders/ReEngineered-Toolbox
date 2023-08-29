@@ -1,7 +1,9 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot;
 
 import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.util.VectorHelper;
 
 public record FrameSlotView(
         float xPos,
@@ -10,38 +12,11 @@ public record FrameSlotView(
         float width
 ) {
 
-    public boolean isInside(Vec3 look, Direction direction) {
-        double xLook;
-        double yLook;
+    public boolean isInside(Vec3 look3, Direction direction) {
+        Vec2 panelLook = VectorHelper.convertToVec2(look3, direction);
 
-        if (direction.getAxis().isHorizontal()) {
-            yLook = look.y() - (int) look.y();
-        } else {
-            yLook = direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? look.z() : -look.z();
-        }
-
-        yLook = Math.abs(yLook);
-        yLook = yLook - (int) yLook;
-        yLook *= 16D;
-
-        if (direction == Direction.DOWN) {
-            yLook = 16 - yLook;
-        }
-
-
-        xLook = switch (direction.getAxis()) {
-            case X -> look.z();
-            case Y -> direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? look.x() : -look.x();
-            case Z -> look.x();
-        };
-
-        xLook = Math.abs(xLook);
-        xLook = xLook - (int) xLook;
-        xLook *= 16D;
-
-        if (direction == Direction.WEST || direction == Direction.SOUTH || direction.getAxis() == Direction.Axis.Y) {
-            xLook = 16 - xLook;
-        }
+        double xLook = panelLook.x;
+        double yLook = panelLook.y;
 
         return xLook > this.xPos() && xLook < this.xPos() + this.width() &&
                 yLook > this.yPos() && yLook < this.yPos() + this.height();

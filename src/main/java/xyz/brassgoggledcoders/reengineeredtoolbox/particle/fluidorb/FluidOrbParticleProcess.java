@@ -4,7 +4,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import xyz.brassgoggledcoders.reengineeredtoolbox.util.VectorHelper;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.util.VectorHelper;
 
 import java.lang.ref.WeakReference;
 
