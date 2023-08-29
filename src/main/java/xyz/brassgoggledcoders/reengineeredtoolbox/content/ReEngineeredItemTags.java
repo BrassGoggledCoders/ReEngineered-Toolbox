@@ -19,7 +19,7 @@ public class ReEngineeredItemTags {
         tagsProvider.tag(CAN_REMOVE_PANEL)
                 .addOptionalTag(new ResourceLocation("forge", "tools/wrenches"))
                 .addOptionalTag(new ResourceLocation("forge", "wrenches"))
-                .addOptionalTag(new ResourceLocation("immersiveengineering", "hammer"));
+                .addOptional(new ResourceLocation("immersiveengineering", "hammer"));
     }
 
     public static void setup() {

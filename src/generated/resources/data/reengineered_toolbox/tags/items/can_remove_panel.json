@@ -9,7 +9,7 @@
       "required": false
     },
     {
-      "id": "#immersiveengineering:hammer",
+      "id": "immersiveengineering:hammer",
       "required": false
     }
   ]
