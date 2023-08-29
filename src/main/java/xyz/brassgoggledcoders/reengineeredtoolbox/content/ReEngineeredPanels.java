@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -29,6 +30,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.fluid.FrequencyBa
 import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.item.FrequencyBackedItemHandler;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelcomponent.RedstoneSignalPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelcomponent.panelentity.BasicCapabilityPanelEntityPanelComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelcomponent.stateproperty.RotationStatePanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.energy.EnergyIOPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.DaylightDetectorPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.io.redstone.RedstoneInputPanelEntity;
@@ -37,6 +39,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.FreezerPan
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.machine.MilkerPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.redstone.LatchPower;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.redstone.RedstoneNorLatchPanelEntity;
+import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.TankTreadPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.panelentity.world.dispenser.DispenserPanelEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.registrate.PanelEntry;
 
@@ -328,6 +331,30 @@ public class ReEngineeredPanels {
                     context,
                     provider.modLoc("panel/redstone_nor_latch_one")
             ))
+            .build()
+            .register();
+
+    public static final PanelEntry<Panel> TRACK = ReEngineeredToolbox.getRegistrateAddon()
+            .object("track")
+            .panel()
+            .component(new PanelEntityPanelComponent(TankTreadPanelEntity::new))
+            .component(new RotationStatePanelComponent())
+            .panelState((context, provider) -> {
+                ModelFile modelFile = provider.models()
+                        .flatPanel("track", provider.retLoc("panel/track"));
+                provider.getVariantBuilder(context.get())
+                        .forAllStates(panelState -> ConfiguredModel.builder()
+                                .modelFile(modelFile)
+                                .rotationY(switch (panelState.getValue(RotationStatePanelComponent.ROTATION)) {
+                                    case NONE -> 0;
+                                    case CLOCKWISE_90 -> 90;
+                                    case CLOCKWISE_180 -> 180;
+                                    case COUNTERCLOCKWISE_90 -> 270;
+                                })
+                                .build()
+                        );
+            })
+            .item()
             .build()
             .register();
 

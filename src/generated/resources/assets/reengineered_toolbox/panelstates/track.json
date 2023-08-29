@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "rotation=180": {
+      "model": "reengineered_toolbox:panel/track",
+      "y": 180
+    },
+    "rotation=clockwise_90": {
+      "model": "reengineered_toolbox:panel/track",
+      "y": 90
+    },
+    "rotation=counterclockwise_90": {
+      "model": "reengineered_toolbox:panel/track",
+      "y": 270
+    },
+    "rotation=none": {
+      "model": "reengineered_toolbox:panel/track"
+    }
+  }
+}
