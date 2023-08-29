@@ -30,29 +30,31 @@ public class VectorHelper {
         if (direction.getAxis().isHorizontal()) {
             y = vec3.y() - (int) vec3.y();
         } else {
-            y = direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? vec3.z() : -vec3.z();
+            y = direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? -vec3.z() : vec3.z();
         }
 
-        y = Math.abs(y);
         y = y - (int) y;
         y *= 16D;
-
-        if (direction == Direction.DOWN) {
+        if (y < 0 && direction.getAxis().isVertical()) {
+            y = Math.abs(y);
             y = 16 - y;
+        } else {
+            y = Math.abs(y);
         }
-
 
         x = switch (direction.getAxis()) {
             case X -> vec3.z();
-            case Y -> direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? vec3.x() : -vec3.x();
-            case Z -> vec3.x();
+            case Y, Z -> -vec3.x();
         };
 
-        x = Math.abs(x);
+        if (direction.getAxis() != Direction.Axis.Y) {
+            x = direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? -x : x;
+        }
+
         x = x - (int) x;
         x *= 16D;
-
-        if (direction == Direction.WEST || direction == Direction.SOUTH || direction.getAxis() == Direction.Axis.Y) {
+        if (x < 0) {
+            x = Math.abs(x);
             x = 16 - x;
         }
 
