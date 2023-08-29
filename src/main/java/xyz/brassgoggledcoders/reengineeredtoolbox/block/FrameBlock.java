@@ -79,14 +79,13 @@ public class FrameBlock extends Block implements EntityBlock {
                 }
             } else if (heldItem.is(ReEngineeredItemTags.CAN_REMOVE_PANEL)) {
                 if (frameEntity.hasPanel(panelPosition)) {
+                    BlockPos offsetPos = panelPosition.offset(frameEntity);
                     frameEntity.removePanel(panelPosition, pPlayer, heldItem)
-                            .forEach(itemStack -> popResource(pLevel, pPos, itemStack));
+                            .forEach(itemStack -> popResource(pLevel, offsetPos, itemStack));
 
                     return InteractionResult.sidedSuccess(pLevel.isClientSide());
                 }
-
             }
-
 
             return frameEntity.getPanelState(panelPosition)
                     .use(frameEntity, panelPosition, pPlayer, pHand, pHit);

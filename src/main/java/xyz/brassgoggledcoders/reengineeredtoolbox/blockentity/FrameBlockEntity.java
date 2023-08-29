@@ -123,15 +123,24 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     }
 
     @Override
-    public InteractionResultHolder<PanelState> putPanelState(@NotNull IPanelPosition panelPosition, PanelState panelState, boolean replace) {
+    public InteractionResultHolder<PanelState> putPanelState(@NotNull IPanelPosition panelPosition, @Nullable PanelState panelState, boolean replace) {
         Direction direction = panelPosition.getFacing();
         if (direction != null) {
             PanelState existingPanelState = this.panelStateMap.get(direction);
-            if (existingPanelState == null || replace) {
-                this.panelStateMap.put(direction, panelState);
+            if (existingPanelState == null || replace || panelState == null) {
+                if (panelState != null) {
+                    this.panelStateMap.put(direction, panelState);
+                } else {
+                    this.panelStateMap.remove(direction);
+                }
+
                 if (existingPanelState != null) {
                     PanelEntity panelEntity = this.getPanelEntity(panelPosition);
-                    if (panelEntity == null || existingPanelState.getPanel() != panelState.getPanel()) {
+                    if (panelEntity != null && panelState == null) {
+                        panelEntity.onRemove();
+                        this.panelEntityMap.remove(direction);
+                        panelEntity = null;
+                    } else if (panelState != null && (panelEntity == null || existingPanelState.getPanel() != panelState.getPanel())) {
                         if (panelEntity != null) {
                             panelEntity.onRemove();
                         }
@@ -142,7 +151,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
                         panelEntity.setPanelPosition(panelPosition);
                         this.panelEntityMap.put(direction, panelEntity);
                     }
-                } else {
+                } else if (panelState != null) {
                     PanelEntity panelEntity = panelState.createPanelEntity(this);
                     if (panelEntity != null) {
                         panelEntity.setPanelPosition(panelPosition);
@@ -153,6 +162,9 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
                 this.requestModelDataUpdate();
                 this.getNoNullLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
                 this.getNoNullLevel().updateNeighborsAt(this.getBlockPos(), this.getBlockState().getBlock());
+                if (panelState == null) {
+                    panelState = ReEngineeredPanels.PLUG.getDefaultState();
+                }
                 return InteractionResultHolder.sidedSuccess(panelState, this.getNoNullLevel().isClientSide());
             }
         }
@@ -172,13 +184,17 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
     @Override
     public List<ItemStack> removePanel(@NotNull IPanelPosition panelPosition, @Nullable Player player, @NotNull ItemStack heldItem) {
-        if (this.getLevel() instanceof ServerLevel serverLevel) {
-            if (this.hasPanel(panelPosition)) {
-                PanelState panelState = this.getPanelState(panelPosition);
+
+        if (this.hasPanel(panelPosition)) {
+            PanelState panelState = this.getPanelState(panelPosition);
+            PanelEntity panelEntity = this.getPanelEntity(panelPosition);
+            this.putPanelState(panelPosition, null, true);
+
+            if (this.getLevel() instanceof ServerLevel serverLevel) {
                 LootContext.Builder lootContext = new LootContext.Builder(serverLevel)
                         .withRandom(serverLevel.getRandom())
                         .withParameter(ReEngineeredLootAPI.PANELSTATE, panelState)
-                        .withOptionalParameter(ReEngineeredLootAPI.PANEL_ENTITY, this.getPanelEntity(panelPosition))
+                        .withOptionalParameter(ReEngineeredLootAPI.PANEL_ENTITY, panelEntity)
                         .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(this.getFramePos()))
                         .withParameter(LootContextParams.BLOCK_ENTITY, this)
                         .withParameter(LootContextParams.BLOCK_STATE, this.getBlockState())
