@@ -15,7 +15,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelComponent;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.PanelStatePropertyComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.IStatePropertyPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 
 import java.util.ArrayList;
@@ -47,13 +47,13 @@ public class Panel implements ItemLike {
                 .build();
 
         StateDefinition.Builder<Panel, PanelState> builder = new StateDefinition.Builder<>(this);
-        for (PanelStatePropertyComponent<?> propertyComponent : this.getComponents(PanelStatePropertyComponent.class)) {
+        for (IStatePropertyPanelComponent<?> propertyComponent : this.getComponents(IStatePropertyPanelComponent.class)) {
             builder.add(propertyComponent.getProperty());
         }
         this.stateDefinition = builder.create(Panel::defaultPanelState, PanelState::new);
 
         PanelState panelState = this.stateDefinition.any();
-        for (PanelStatePropertyComponent<?> propertyComponent : this.getComponents(PanelStatePropertyComponent.class)) {
+        for (IStatePropertyPanelComponent<?> propertyComponent : this.getComponents(IStatePropertyPanelComponent.class)) {
             panelState = propertyComponent.setValueToPanelState(panelState);
         }
         this.defaultPanelState = panelState;

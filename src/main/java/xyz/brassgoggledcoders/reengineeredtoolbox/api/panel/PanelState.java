@@ -16,7 +16,7 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.interaction
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.panelentity.IPanelEntityPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.redstone.IRedstonePanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.FacingPropertyComponent;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.PanelStatePropertyComponent;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateproperty.IStatePropertyPanelComponent;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 
 import java.util.Iterator;
@@ -31,7 +31,7 @@ public class PanelState extends StateHolder<Panel, PanelState> {
         this.facingProperty = Suppliers.memoize(() -> Optional.ofNullable(this.getPanel()
                                 .getComponent(FacingPropertyComponent.class)
                         )
-                        .map(PanelStatePropertyComponent::getProperty)
+                        .map(IStatePropertyPanelComponent::getProperty)
                         .orElse(null)
         );
     }

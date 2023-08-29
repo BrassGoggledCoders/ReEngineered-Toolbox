@@ -3,7 +3,6 @@ package xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.stateprope
 import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelcomponent.PanelComponent;
 
 public class PanelStatePropertyComponent<T extends Comparable<T>> extends PanelComponent implements IStatePropertyPanelComponent<T> {
@@ -31,15 +30,5 @@ public class PanelStatePropertyComponent<T extends Comparable<T>> extends PanelC
     @Nullable
     public T getDefaultValue() {
         return defaultValue;
-    }
-
-    @Override
-    @NotNull
-    public PanelState setValueToPanelState(@NotNull PanelState panelState) {
-        if (this.getDefaultValue() != null) {
-            return panelState.setValue(this.getProperty(), this.getDefaultValue());
-        }
-
-        return panelState;
     }
 }

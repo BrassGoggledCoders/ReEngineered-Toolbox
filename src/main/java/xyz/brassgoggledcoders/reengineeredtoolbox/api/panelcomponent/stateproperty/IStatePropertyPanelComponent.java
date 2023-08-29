@@ -14,5 +14,11 @@ public interface IStatePropertyPanelComponent<T extends Comparable<T>> {
     T getDefaultValue();
 
     @NotNull
-    PanelState setValueToPanelState(@NotNull PanelState panelState);
+    default PanelState setValueToPanelState(@NotNull PanelState panelState) {
+        if (this.getDefaultValue() != null) {
+            return panelState.setValue(this.getProperty(), this.getDefaultValue());
+        }
+
+        return panelState;
+    }
 }
