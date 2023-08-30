@@ -39,19 +39,12 @@ import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.Frequency;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.loot.ReEngineeredLootAPI;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.BlockPanelPosition;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.*;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
-import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.energy.FrequencyEnergyHandler;
-import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.fluid.FrequencyFluidHandler;
-import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.item.FrequencyItemHandler;
-import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.redstone.FrequencyRedstoneHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.capabilities.FrequencyCapabilityProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.content.ReEngineeredPanels;
 import xyz.brassgoggledcoders.reengineeredtoolbox.menu.FrameMenuProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.util.NbtHelper;
-import xyz.brassgoggledcoders.reengineeredtoolbox.util.functional.Option;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,24 +52,27 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
+    private static final PanelInfo EMPTY = new PanelInfo(
+            ReEngineeredPanels.PLUG.getDefaultState(),
+            null
+    );
+
     public static final EnumMap<Direction, ModelProperty<PanelState>> PANEL_STATE_MODEL_PROPERTIES = Arrays.stream(Direction.values())
             .map(direction -> Pair.of(direction, new ModelProperty<PanelState>()))
             .collect(Collectors.toMap(
-                    Pair::left,
-                    Pair::right,
+                    Pair::getFirst,
+                    Pair::getSecond,
                     (u, v) -> u,
                     () -> new EnumMap<>(Direction.class)
             ));
 
-    private final Map<Direction, PanelState> panelStateMap;
-    private final Map<Direction, PanelEntity> panelEntityMap;
+    private final Map<IPanelPosition, PanelInfo> panelInfoMap;
     private final TreeMap<Long, Set<IPanelPosition>> scheduledTicks;
     private final FrequencyCapabilityProvider frequencyCapabilityProvider;
 
     public FrameBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
-        this.panelStateMap = new ConcurrentHashMap<>();
-        this.panelEntityMap = new EnumMap<>(Direction.class);
+        this.panelInfoMap = new ConcurrentHashMap<>();
         this.scheduledTicks = new TreeMap<>(Long::compareTo);
 
         this.frequencyCapabilityProvider = new FrequencyCapabilityProvider(this);
@@ -99,67 +95,53 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
     @Override
     public InteractionResultHolder<PanelState> putPanelState(@NotNull IPanelPosition panelPosition, @Nullable PanelState panelState, boolean replace) {
-        Direction direction = panelPosition.getFacing();
-        if (direction != null) {
-            PanelState existingPanelState = this.panelStateMap.get(direction);
-            if (existingPanelState == null || replace || panelState == null) {
-                if (panelState != null) {
-                    this.panelStateMap.put(direction, panelState);
-                } else {
-                    this.panelStateMap.remove(direction);
-                }
+        PanelInfo existingPanelInfo = this.panelInfoMap.get(panelPosition);
 
-                if (existingPanelState != null) {
-                    PanelEntity panelEntity = this.getPanelEntity(panelPosition);
-                    if (panelEntity != null && panelState == null) {
-                        panelEntity.onRemove();
-                        this.panelEntityMap.remove(direction);
-                        panelEntity = null;
-                    } else if (panelState != null && (panelEntity == null || existingPanelState.getPanel() != panelState.getPanel())) {
-                        if (panelEntity != null) {
-                            panelEntity.onRemove();
-                        }
-                        panelEntity = panelState.createPanelEntity(this);
-                    }
-                    if (panelEntity != null) {
-                        panelEntity.setPanelState(panelState);
-                        panelEntity.setPanelPosition(panelPosition);
-                        this.panelEntityMap.put(direction, panelEntity);
-                    }
-                } else if (panelState != null) {
-                    PanelEntity panelEntity = panelState.createPanelEntity(this);
-                    if (panelEntity != null) {
-                        panelEntity.setPanelPosition(panelPosition);
-                        this.panelEntityMap.put(direction, panelEntity);
-                    }
-                }
-                this.setChanged();
-                this.requestModelDataUpdate();
-                this.getNoNullLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
-                this.getNoNullLevel().updateNeighborsAt(this.getBlockPos(), this.getBlockState().getBlock());
-                if (panelState == null) {
-                    panelState = ReEngineeredPanels.PLUG.getDefaultState();
-                }
-                return InteractionResultHolder.sidedSuccess(panelState, this.getNoNullLevel().isClientSide());
+        if (panelState == null || existingPanelInfo == null || replace) {
+            if (panelState == null && existingPanelInfo != null) {
+                this.panelInfoMap.remove(panelPosition);
+                existingPanelInfo.ifEntityPresent(PanelEntity::onRemove);
             }
+
+            if (panelState != null) {
+                PanelEntity panelEntity = null;
+                if (existingPanelInfo != null) {
+                    panelEntity = existingPanelInfo.panelEntity();
+                    if (panelEntity != null && existingPanelInfo.panelState().getPanel() != panelState.getPanel()) {
+                        panelEntity.onRemove();
+                        panelEntity = null;
+                    }
+                }
+                if (panelEntity == null) {
+                    panelEntity = panelState.createPanelEntity(this);
+                }
+                if (panelEntity != null) {
+                    panelEntity.setPanelState(panelState);
+                    panelEntity.setPanelPosition(panelPosition);
+                }
+                this.panelInfoMap.put(panelPosition, new PanelInfo(panelState, panelEntity));
+            }
+
+            this.setChanged();
+            this.requestModelDataUpdate();
+            this.getNoNullLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
+            this.getNoNullLevel().updateNeighborsAt(this.getBlockPos(), this.getBlockState().getBlock());
+            if (panelState == null) {
+                panelState = ReEngineeredPanels.PLUG.getDefaultState();
+            }
+            return InteractionResultHolder.sidedSuccess(panelState, this.getNoNullLevel().isClientSide());
         }
 
-        if (direction != null) {
-            return InteractionResultHolder.fail(this.panelStateMap.get(direction));
-        } else {
-            return InteractionResultHolder.fail(ReEngineeredPanels.PLUG.getDefaultState());
-        }
+        return InteractionResultHolder.fail(this.getPanelState(panelPosition));
     }
 
     @Override
     public boolean hasPanel(@NotNull IPanelPosition panelPosition) {
-        return Option.ofNullable(panelPosition.getFacing())
-                .exists(panelStateMap::containsKey);
+        return panelInfoMap.containsKey(panelPosition);
     }
 
     @Override
     public List<ItemStack> removePanel(@NotNull IPanelPosition panelPosition, @Nullable Player player, @NotNull ItemStack heldItem) {
-
         if (this.hasPanel(panelPosition)) {
             PanelState panelState = this.getPanelState(panelPosition);
             PanelEntity panelEntity = this.getPanelEntity(panelPosition);
@@ -191,18 +173,16 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     @Override
     @NotNull
     public PanelState getPanelState(@NotNull IPanelPosition panelPosition) {
-        Direction direction = panelPosition.getFacing();
-        return this.panelStateMap.getOrDefault(direction, ReEngineeredPanels.PLUG.getDefaultState());
+        return this.panelInfoMap.getOrDefault(panelPosition, EMPTY)
+                .panelState();
     }
 
     @Override
     @Nullable
     public PanelEntity getPanelEntity(@Nullable IPanelPosition panelPosition) {
-        Direction direction = Optional.ofNullable(panelPosition)
-                .map(IPanelPosition::getFacing)
-                .orElse(null);
-        if (direction != null) {
-            return this.panelEntityMap.get(direction);
+        if (panelPosition != null && this.panelInfoMap.containsKey(panelPosition)) {
+            return this.panelInfoMap.getOrDefault(panelPosition, EMPTY)
+                    .panelEntity();
         } else {
             return null;
         }
@@ -275,9 +255,10 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
     @Override
     public <T> void notifyStorageChange(Capability<T> frequencyCapability) {
-        for (PanelEntity panelEntity : this.panelEntityMap.values()) {
-            panelEntity.notifyStorageChanged(frequencyCapability);
+        for (PanelInfo panelInfo : this.panelInfoMap.values()) {
+            panelInfo.ifEntityPresent(panelEntity -> panelEntity.notifyStorageChanged(frequencyCapability));
         }
+    }
 
     @Override
     public IFrequencyCapabilityProvider getFrequencyProvider() {
@@ -286,7 +267,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
     @Override
     public Map<IPanelPosition, PanelInfo> getPanelInfo() {
-        return ImmutableMap.copyOf(this.panelStateMap);
+        return ImmutableMap.copyOf(this.panelInfoMap);
     }
 
     @Override
@@ -298,9 +279,8 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         long gameTime = this.getFrameLevel().getGameTime();
         Map.Entry<Long, Set<IPanelPosition>> scheduledTick = this.scheduledTicks.lowerEntry(gameTime);
         while (scheduledTick != null) {
-            for (IPanelPosition direction : scheduledTick.getValue()) {
-                Optional.ofNullable(direction.getFacing())
-                        .map(this.panelEntityMap::get)
+            for (IPanelPosition panelPosition : scheduledTick.getValue()) {
+                Optional.ofNullable(this.getPanelEntity(panelPosition))
                         .ifPresent(PanelEntity::scheduledTick);
             }
             this.scheduledTicks.remove(scheduledTick.getKey());
@@ -333,8 +313,10 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         for (Direction direction : Direction.values()) {
             CompoundTag panelTag = panelsTag.getCompound(direction.getName());
             if (!panelTag.isEmpty()) {
+                IPanelPosition panelPosition = BlockPanelPosition.fromDirection(direction);
+
                 PanelState panelState = NbtHelper.readPanelState(panelTag.getCompound("PanelState"));
-                this.panelStateMap.put(direction, panelState);
+
                 PanelEntity panelEntity;
                 if (panelTag.contains("PanelEntity")) {
                     panelEntity = PanelEntity.loadStatic(panelState, this, panelTag.getCompound("PanelEntity"));
@@ -344,19 +326,20 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
                 if (panelEntity != null) {
                     panelEntity.setPanelPosition(BlockPanelPosition.fromDirection(direction));
-                    this.panelEntityMap.put(direction, panelEntity);
                 }
+                this.panelInfoMap.put(panelPosition, new PanelInfo(panelState, panelEntity));
             }
         }
     }
 
     private void writePanels(CompoundTag panelsTag) {
         for (Direction direction : Direction.values()) {
-            PanelState panelState = this.panelStateMap.get(direction);
-            if (panelState != null) {
+            PanelInfo panelPair = this.panelInfoMap.get(BlockPanelPosition.fromDirection(direction));
+            if (panelPair != null) {
+                PanelState panelState = panelPair.panelState();
                 CompoundTag panelTag = new CompoundTag();
                 panelTag.put("PanelState", NbtHelper.writePanelState(panelState));
-                PanelEntity panelEntity = this.panelEntityMap.get(direction);
+                PanelEntity panelEntity = panelPair.panelEntity();
                 if (panelEntity != null) {
                     panelTag.put("PanelEntity", panelEntity.save());
                 }
@@ -397,7 +380,8 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
-        this.panelEntityMap.values().forEach(PanelEntity::invalidate);
+        this.panelInfoMap.values()
+                .forEach(panelInfo -> panelInfo.ifEntityPresent(PanelEntity::invalidate));
 
         this.frequencyCapabilityProvider.invalidate();
     }
@@ -428,7 +412,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     }
 
     public void serverTick() {
-        this.panelEntityMap.values().forEach(PanelEntity::serverTick);
+        this.panelInfoMap.values()
                 .forEach(panelInfo -> panelInfo.ifEntityPresent(PanelEntity::serverTick));
         this.frequencyCapabilityProvider.run();
     }
