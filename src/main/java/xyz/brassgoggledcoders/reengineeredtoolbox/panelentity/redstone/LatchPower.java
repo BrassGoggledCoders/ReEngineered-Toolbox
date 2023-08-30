@@ -12,7 +12,7 @@ public enum LatchPower implements StringRepresentable {
     TWO,
     BOTH;
 
-    public static Property<LatchPower> PROPERTY = EnumProperty.create("latch_power", LatchPower.class);
+    public static final Property<LatchPower> PROPERTY = EnumProperty.create("latch_power", LatchPower.class);
 
     @Override
     @NotNull

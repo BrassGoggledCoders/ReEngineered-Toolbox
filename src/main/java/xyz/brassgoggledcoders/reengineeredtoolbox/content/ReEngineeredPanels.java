@@ -347,9 +347,9 @@ public class ReEngineeredPanels {
                                 .modelFile(modelFile)
                                 .rotationY(switch (panelState.getValue(RotationStatePanelComponent.ROTATION)) {
                                     case NONE -> 0;
-                                    case CLOCKWISE_90 -> 90;
+                                    case CLOCKWISE_90 -> 270;
                                     case CLOCKWISE_180 -> 180;
-                                    case COUNTERCLOCKWISE_90 -> 270;
+                                    case COUNTERCLOCKWISE_90 -> 90;
                                 })
                                 .build()
                         );
