@@ -12,12 +12,15 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyCapabilityProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.IPanelPosition;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.Panel;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelInfo;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panel.PanelState;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.panelentity.PanelEntity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -76,4 +79,10 @@ public interface IFrameEntity extends ICapabilityProvider {
     boolean changeFrameSlot(@NotNull BlockHitResult hitResult, ItemStack toolStack);
 
     <T> void notifyStorageChange(Capability<T> frequencyItemHandler);
+
+    IFrequencyCapabilityProvider getFrequencyProvider();
+
+    Map<IPanelPosition, PanelInfo> getPanelInfo();
+
+    void needsSaved();
 }

@@ -1,6 +1,7 @@
 package xyz.brassgoggledcoders.reengineeredtoolbox.blockentity;
 
-import it.unimi.dsi.fastutil.Pair;
+import com.google.common.collect.ImmutableMap;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -33,11 +34,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.ReEngineeredCapabilities;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyEnergyHandler;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyFluidHandler;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyItemHandler;
-import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyRedstoneHandler;
+import xyz.brassgoggledcoders.reengineeredtoolbox.api.capability.IFrequencyCapabilityProvider;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.IFrameEntity;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.FrameSlot;
 import xyz.brassgoggledcoders.reengineeredtoolbox.api.frame.slot.Frequency;
@@ -74,18 +71,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     private final Map<Direction, PanelState> panelStateMap;
     private final Map<Direction, PanelEntity> panelEntityMap;
     private final TreeMap<Long, Set<IPanelPosition>> scheduledTicks;
-
-    private final FrequencyItemHandler frequencyItemHandler;
-    private final LazyOptional<IFrequencyItemHandler> frequencyItemHandlerLazy;
-
-    private final FrequencyRedstoneHandler frequencyRedstoneHandler;
-    private final LazyOptional<IFrequencyRedstoneHandler> frequencyRedstoneHandlerLazy;
-
-    private final FrequencyFluidHandler frequencyFluidHandler;
-    private final LazyOptional<IFrequencyFluidHandler> frequencyFluidHandlerLazy;
-
-    private final FrequencyEnergyHandler frequencyEnergyHandler;
-    private final LazyOptional<IFrequencyEnergyHandler> frequencyEnergyHandlerLazy;
+    private final FrequencyCapabilityProvider frequencyCapabilityProvider;
 
     public FrameBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
@@ -93,18 +79,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         this.panelEntityMap = new EnumMap<>(Direction.class);
         this.scheduledTicks = new TreeMap<>(Long::compareTo);
 
-        this.frequencyItemHandler = new FrequencyItemHandler(this::setChanged);
-        this.frequencyItemHandlerLazy = LazyOptional.of(() -> frequencyItemHandler);
-
-        this.frequencyRedstoneHandler = new FrequencyRedstoneHandler(this);
-        this.frequencyRedstoneHandlerLazy = LazyOptional.of(() -> this.frequencyRedstoneHandler);
-
-        this.frequencyFluidHandler = new FrequencyFluidHandler(this::setChanged);
-        this.frequencyFluidHandlerLazy = LazyOptional.of(() -> this.frequencyFluidHandler);
-
-        this.frequencyEnergyHandler = new FrequencyEnergyHandler(10000, this::setChanged);
-        this.frequencyEnergyHandlerLazy = LazyOptional.of(() -> this.frequencyEnergyHandler);
-
+        this.frequencyCapabilityProvider = new FrequencyCapabilityProvider(this);
     }
 
     @NotNull
@@ -303,6 +278,20 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         for (PanelEntity panelEntity : this.panelEntityMap.values()) {
             panelEntity.notifyStorageChanged(frequencyCapability);
         }
+
+    @Override
+    public IFrequencyCapabilityProvider getFrequencyProvider() {
+        return this.frequencyCapabilityProvider;
+    }
+
+    @Override
+    public Map<IPanelPosition, PanelInfo> getPanelInfo() {
+        return ImmutableMap.copyOf(this.panelStateMap);
+    }
+
+    @Override
+    public void needsSaved() {
+        this.setChanged();
     }
 
     public void doScheduledTick() {
@@ -325,9 +314,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         CompoundTag panelsTag = new CompoundTag();
         writePanels(panelsTag);
         pTag.put("Panels", panelsTag);
-        pTag.put("FrequencyItemHandler", this.frequencyItemHandler.serializeNBT());
-        pTag.put("FrequencyFluidHandler", this.frequencyFluidHandler.serializeNBT());
-        pTag.put("FrequencyEnergyHandler", this.frequencyEnergyHandler.serializeNBT());
+        pTag.put("FrequencyCapabilityProvider", this.frequencyCapabilityProvider.serializeNBT());
     }
 
     @Override
@@ -338,9 +325,8 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
             CompoundTag panelsTag = pTag.getCompound("Panels");
             readPanels(panelsTag);
         }
-        this.frequencyItemHandler.deserializeNBT(pTag.getCompound("FrequencyItemHandler"));
-        this.frequencyFluidHandler.deserializeNBT(pTag.getCompound("FrequencyFluidHandler"));
-        this.frequencyEnergyHandler.deserializeNBT(pTag.getCompound("FrequencyEnergyHandler"));
+
+        this.frequencyCapabilityProvider.deserializeNBT(pTag.getCompound("FrequencyCapabilityProvider"));
     }
 
     private void readPanels(CompoundTag panelsTag) {
@@ -413,10 +399,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
         super.invalidateCaps();
         this.panelEntityMap.values().forEach(PanelEntity::invalidate);
 
-        this.frequencyItemHandlerLazy.invalidate();
-        this.frequencyRedstoneHandlerLazy.invalidate();
-        this.frequencyFluidHandlerLazy.invalidate();
-        this.frequencyEnergyHandlerLazy.invalidate();
+        this.frequencyCapabilityProvider.invalidate();
     }
 
     @Nullable
@@ -430,15 +413,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         LazyOptional<T> lazyOptional = LazyOptional.empty();
         if (side == null) {
-            if (cap == ReEngineeredCapabilities.FREQUENCY_ITEM_HANDLER) {
-                lazyOptional = this.frequencyItemHandlerLazy.cast();
-            } else if (cap == ReEngineeredCapabilities.FREQUENCY_REDSTONE_HANDLER) {
-                lazyOptional = this.frequencyRedstoneHandlerLazy.cast();
-            } else if (cap == ReEngineeredCapabilities.FREQUENCY_FLUID_HANDLER) {
-                lazyOptional = this.frequencyFluidHandlerLazy.cast();
-            } else if (cap == ReEngineeredCapabilities.FREQUENCY_ENERGY_HANDLER) {
-                lazyOptional = this.frequencyEnergyHandlerLazy.cast();
-            }
+            lazyOptional = this.frequencyCapabilityProvider.getCapability(cap);
         } else {
             PanelEntity panelEntity = this.getPanelEntity(BlockPanelPosition.fromDirection(side));
             if (panelEntity != null) {
@@ -454,6 +429,7 @@ public class FrameBlockEntity extends BlockEntity implements IFrameEntity {
 
     public void serverTick() {
         this.panelEntityMap.values().forEach(PanelEntity::serverTick);
-        this.frequencyRedstoneHandler.tick();
+                .forEach(panelInfo -> panelInfo.ifEntityPresent(PanelEntity::serverTick));
+        this.frequencyCapabilityProvider.run();
     }
 }
